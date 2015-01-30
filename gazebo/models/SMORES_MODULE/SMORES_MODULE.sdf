@@ -1,0 +1,167 @@
+<?xml version='1.0'?>
+<sdf version='1.4'>
+    <model name="SMORES_MODULE">
+        <static>false</static>
+        
+        <link name='BackFrame'>
+            <pose>0 0 0.05 1.5707 0 0</pose>
+            <inertial>
+                <pose>0.5 0.5 0.328099 0 0 0</pose>
+                <inertia>
+                    <ixx>0.041728</ixx>
+                    <ixy>0.0</ixy>
+                    <ixz>0.0</ixz>
+                    <iyy>0.062372</iyy>
+                    <iyz>0.0</iyz>
+                    <izz>0.060405</izz>
+                </inertia>
+            </inertial>
+            <collision name='backframe_collision'>
+                <geometry>
+                    <mesh>
+                        <uri>model://SMORES_MODULE/meshes/BackFrame.dae</uri>
+                    </mesh>
+                </geometry>
+            </collision>
+
+            <visual name='backframe_visual'>
+                <geometry>
+                    <mesh>
+                        <uri>model://SMORES_MODULE/meshes/BackFrame.dae</uri>
+                    </mesh>
+                </geometry>
+            </visual>
+        </link>
+
+        <link name='FrontFrame'>
+            <pose>0 -0.125 0.05 1.5707 0 0</pose>
+            <inertial>
+                <pose>0.5 0.5 0.561416 0 0 0</pose>
+                <inertia>
+                    <ixx>0.104128</ixx>
+                    <ixy>0.0</ixy>
+                    <ixz>0.0</ixz>
+                    <iyy>0.089313</iyy>
+                    <iyz>0.0</iyz>
+                    <izz>0.090897</izz>
+                </inertia>
+            </inertial>
+            <collision name='frontframe_collision'>
+                <geometry>
+                    <mesh>
+                        <uri>model://SMORES_MODULE/meshes/FrontFrame.dae</uri>
+                    </mesh>
+                </geometry>
+            </collision>
+
+            <visual name='frontframe_visual'>
+                <geometry>
+                    <mesh>
+                        <uri>model://SMORES_MODULE/meshes/FrontFrame.dae</uri>
+                    </mesh>
+                </geometry>
+            </visual>
+        </link>
+
+        <link name='LeftWheel'>
+            <pose>0.525 -0.5 0.05 1.5707 0 1.5707</pose>
+            <collision name='leftwheel_collision'>
+                <geometry>
+                    <mesh>
+                        <uri>model://SMORES_MODULE/meshes/Wheel.dae</uri>
+                    </mesh>
+                </geometry>
+            </collision>
+
+            <visual name='leftwheel_visual'>
+                <geometry>
+                    <mesh>
+                        <uri>model://SMORES_MODULE/meshes/Wheel.dae</uri>
+                    </mesh>
+                </geometry>
+            </visual>
+        </link>
+
+        <link name='RightWheel'>
+            <pose>0.475 -0.5 0.05 1.5707 0 -1.5707</pose>
+            <collision name='rightwheel_collision'>
+                <geometry>
+                    <mesh>
+                        <uri>model://SMORES_MODULE/meshes/Wheel.dae</uri>
+                    </mesh>
+                </geometry>
+            </collision>
+
+            <visual name='rightwheel_visual'>
+                <geometry>
+                    <mesh>
+                        <uri>model://SMORES_MODULE/meshes/Wheel.dae</uri>
+                    </mesh>
+                </geometry>
+            </visual>
+        </link>
+
+        <link name='FrontWheel'>
+            <pose>0.5 -0.65 0.05 1.5707 0 0</pose>
+            <collision name='frontwheel_collision'>
+                <geometry>
+                    <mesh>
+                        <uri>model://SMORES_MODULE/meshes/Wheel.dae</uri>
+                    </mesh>
+                </geometry>
+            </collision>
+
+            <visual name='frontwheel_visual'>
+                <geometry>
+                    <mesh>
+                        <uri>model://SMORES_MODULE/meshes/Wheel.dae</uri>
+                    </mesh>
+                </geometry>
+            </visual>
+        </link>
+
+        <joint type="revolute" name="frontframe_hinge">
+            <pose>0.5 0.5 0.4 0 0 0</pose>
+            <child>FrontFrame</child>
+            <parent>BackFrame</parent>
+            <axis>
+                <xyz>1 0 0</xyz>
+            </axis>
+        </joint>
+
+        <joint type="revolute" name="leftwheel_hinge">
+            <pose>0 0.5 0.5 0 0 0</pose>
+            <child>LeftWheel</child>
+            <parent>BackFrame</parent>
+            <axis>
+                <xyz>1 0 0</xyz>
+            </axis>
+        </joint>
+
+        <joint type="revolute" name="rightwheel_hinge">
+            <pose>0 0.5 0.5 0 0 0</pose>
+            <child>RightWheel</child>
+            <parent>BackFrame</parent>
+            <axis>
+                <xyz>1 0 0</xyz>
+            </axis>
+        </joint>
+
+        <joint type="revolute" name="frontwheel_hinge">
+            <pose>0 0.5 0.5 0 0 0</pose>
+            <child>FrontWheel</child>
+            <parent>FrontFrame</parent>
+            <axis>
+                <xyz>0 1 0</xyz>
+                <dynamics>
+                    <damping>0.20000</damping>
+                </dynamics>
+                <limit>
+                    <lower>-1.5707963</lower>
+                    <upper>1.5707963</upper>
+                </limit>
+            </axis>
+        </joint>
+    </model>
+</sdf>
+
