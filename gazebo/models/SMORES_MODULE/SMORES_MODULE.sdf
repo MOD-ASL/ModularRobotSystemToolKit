@@ -162,6 +162,7 @@
                 </limit>
             </axis>
         </joint>
+    <plugin name="SMORES_MODULE_controller" filename="libSMORES_MODULE_controller.so"/>
     </model>
 </sdf>
 
