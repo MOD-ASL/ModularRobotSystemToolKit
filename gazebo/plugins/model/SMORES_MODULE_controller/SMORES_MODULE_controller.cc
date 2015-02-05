@@ -57,9 +57,35 @@ namespace gazebo
       joint_name)
   {
     physics::JointPtr found_joint;
+    std::map< std::string, physics::JointPtr > joints =
+      this->joint_controller->GetJoints();
+    std::map< std::string, physics::JointPtr >::iterator it;
 
+    it = joints.find(joint_name);
+    if ( it == joints.end() )
+    {
+      BOOST_LOG_TRIVIAL(error) << "Cannot find joint with name " + joint_name;
+      PrintJointNames();
+    }
+    else
+    {
+      found_joint = it->second;
+    }
     return found_joint;
-  }
+  } // SmoresModuleController::GetJointByName
+
+  void SmoresModuleController::PrintJointNames(void)
+  {
+    BOOST_LOG_TRIVIAL(info) << "The available joints are ...";
+    std::map< std::string, physics::JointPtr > joints =
+      this->joint_controller->GetJoints();
+    std::map< std::string, physics::JointPtr >::iterator it;
+
+    for (it=joints.begin(); it!=joints.end(); ++it)
+    {
+      BOOST_LOG_TRIVIAL(info) << it->first;
+    }
+  } // SmoresModuleController::PrintJointNames
 
   GZ_REGISTER_MODEL_PLUGIN(SmoresModuleController)
 } // namespace gazebo

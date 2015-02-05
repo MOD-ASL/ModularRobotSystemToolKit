@@ -47,6 +47,7 @@ namespace gazebo
     private:
       void LoadJointController(void);
       physics::JointPtr GetJointByName(const std::string joint_name);
+      void PrintJointNames(void);
     
     private:
       physics::ModelPtr model;
