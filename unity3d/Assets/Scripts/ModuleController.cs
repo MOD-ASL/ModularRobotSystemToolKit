@@ -12,7 +12,7 @@ public class ModuleController : MonoBehaviour {
 	IDictionary<string, int> jointMode = new Dictionary<string, int>();
 	private Vector3 screenPoint;
 	private Vector3 offset;
-	private bool dragMode = false;
+	//private bool dragMode = false;
 	// Use this for initialization
 	void Start () {
 		jointVel.Add("LeftWheel", 0.0f);

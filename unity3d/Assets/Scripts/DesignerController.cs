@@ -4,10 +4,11 @@ using System.Collections;
 public class DesignerController : MonoBehaviour {
 	private bool addMode = false;
 	private bool dragMode = false;
+	private bool snapMode = true;
 	private Transform candidateModule;
 	private Vector3 newCandidateModulePos;
-	private Vector3 screenPoint;
-	private Vector3 offset;
+	//private Vector3 screenPoint;
+	//private Vector3 offset;
 	private float distCam2Origin;
 	private Color originalColor;
 	private int moduleCount = 1;
@@ -35,16 +36,25 @@ public class DesignerController : MonoBehaviour {
 		}
 	}
 
-	Transform FindSelectedModule () {
+	void ToggleDragMode () {
+		dragMode = !dragMode;
+	}
+
+	void ToggleSnapMode () {
+		snapMode = !snapMode;
+	}
+
+	bool FindSelectedModule () {
 		Ray ray = Camera.main.ScreenPointToRay( Input.mousePosition );
 		RaycastHit hit;
 		
 		if( Physics.Raycast( ray, out hit, 500 ) ) {
-			if (hit.transform.parent.name.StartsWith("Module")) {
-				return hit.transform.parent;
+			if (hit.transform.parent && hit.transform.parent.name.StartsWith("Module")) {
+				selectedModule = hit.transform.parent;
+				return true;
 			}
 		}
-		return null;
+		return false;
 	}
 
 	void OnRaiseAddMode () {
@@ -68,29 +78,44 @@ public class DesignerController : MonoBehaviour {
 		if (!dragMode && Input.GetKeyDown(KeyCode.A)) {
 			ToggleAddMode();
 		}
-		if (!addMode && FindSelectedModule() != null) {
+		if (!addMode && FindSelectedModule()) {
 			if (Input.GetKeyDown(KeyCode.X)) {
-				FindSelectedModule().Rotate(new Vector3(90,0,0), Space.World);
+				selectedModule.Rotate(new Vector3(90,0,0), Space.World);
 			}
 			if (Input.GetKeyDown(KeyCode.Y)) {
-				FindSelectedModule().Rotate(new Vector3(0,90,0), Space.World);
+				selectedModule.Rotate(new Vector3(0,90,0), Space.World);
 			}
 			if (Input.GetKeyDown(KeyCode.Z)) {
-				FindSelectedModule().Rotate(new Vector3(0,0,90), Space.World);
+				selectedModule.Rotate(new Vector3(0,0,90), Space.World);
 			}
 			if (Input.GetKeyDown(KeyCode.M)) {
-				selectedModule = FindSelectedModule();
-				screenPoint = Camera.main.WorldToScreenPoint(selectedModule.position);
-				offset = selectedModule.position - Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, screenPoint.z));
+				OnSelectModule(true);
 				dragMode = true;
 			}
 		}
 		if (dragMode && Input.GetKeyDown(KeyCode.Escape)) {
 			Screen.showCursor = true;
 			dragMode = false;
+			OnSelectModule(false);
+		}
+		if (Input.GetKeyDown (KeyCode.LeftShift)) {
+			ToggleSnapMode();
 		}
 	}
-	
+
+	void OnSelectModule (bool select) {
+		if (select) {
+			foreach (Transform other in selectedModule) {
+				originalColor = other.gameObject.renderer.material.color;
+				other.gameObject.renderer.material.color = Color.green;
+			}
+		} else {
+			foreach (Transform other in selectedModule) {
+				other.gameObject.renderer.material.color = originalColor;
+			}
+		}
+	}
+
 	void ActionBasedOnMode () {
 		if (addMode) {
 			distCam2Origin = Camera.main.transform.position.magnitude;
@@ -121,14 +146,14 @@ public class DesignerController : MonoBehaviour {
 		}
 
 		else if (dragMode) {
-			Vector3 curScreenPoint = new Vector3(Input.mousePosition.x, Input.mousePosition.y, screenPoint.z);
-			Vector3 curPosition = Camera.main.ScreenToWorldPoint(curScreenPoint) + offset;
-			selectedModule.position = ProcessPosition(curPosition);
+			distCam2Origin = Camera.main.transform.position.magnitude;
+			newCandidateModulePos = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, distCam2Origin));
+			selectedModule.position = ProcessPosition(newCandidateModulePos);
 		}
 	}
 
 	Vector3 ProcessPosition (Vector3 pos) {
-		if (!Input.GetKey(KeyCode.LeftShift)) {
+		if (!snapMode) {
 			return pos;
 		}
 		Vector3 newPos = new Vector3(Mathf.Round(pos.x/10)*10, Mathf.Round(pos.y/10)*10, Mathf.Round(pos.z/10)*10);
