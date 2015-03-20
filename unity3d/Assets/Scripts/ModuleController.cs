@@ -13,10 +13,17 @@ public class ModuleController : MonoBehaviour {
 				}
 			}
 		}
+
+		HingeJoint j = Component.FindObjectOfType<HingeJoint>();
+		Debug.Log (j);
 	}
 	
 	// Update is called once per frame
 	void Update () {
 	
+	}
+
+	public void UpdateCenterJoint (float jointValue) {
+
 	}
 }
