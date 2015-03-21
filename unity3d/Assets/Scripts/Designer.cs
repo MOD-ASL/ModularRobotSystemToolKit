@@ -29,7 +29,7 @@ public class Designer : MonoBehaviour {
 			GameObject parent = hit.transform.parent.gameObject;
 			if (parent.tag == "Module") {
 				selectedModule = parent;
-				UIManagerScript.SetCurrentModule (selectedModule);
+				UIManagerScript.SetSelectedModule (selectedModule);
 			}
 		}
 	}
