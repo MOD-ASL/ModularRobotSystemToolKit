@@ -38,9 +38,6 @@ public class PanelModuleSettingController : MonoBehaviour {
 
 	public void UpdateSelectedModule (GameObject module) {
 		selectedModule = module;
-		if (!isShow) {
-			Show (true);
-		}
 		UpdateText ();
 		UpdateSliderControlInfo ();
 	}
@@ -50,5 +47,16 @@ public class PanelModuleSettingController : MonoBehaviour {
 		sliderLeftJoint.GetComponent<SliderControl> ().UpdateJointInfo (selectedModule);
 		sliderRightJoint.GetComponent<SliderControl> ().UpdateJointInfo (selectedModule);
 		sliderFrontJoint.GetComponent<SliderControl> ().UpdateJointInfo (selectedModule);
+	}
+
+	public void Reset () {
+		selectedModule = null;
+		isShow = false;
+		gameObject.SetActive (isShow);
+		UpdateText ();
+		sliderCenterJoint.GetComponent<SliderControl> ().Reset ();
+		sliderLeftJoint.GetComponent<SliderControl> ().Reset ();
+		sliderRightJoint.GetComponent<SliderControl> ().Reset ();
+		sliderFrontJoint.GetComponent<SliderControl> ().Reset ();
 	}
 }

@@ -13,8 +13,14 @@ public class ModuleController : MonoBehaviour {
 	GameObject leftWheel;
 	GameObject frontWheel;
 
+	int currentMode; // 0 for edit mode with fixed backPlate. 1 for edit mode. 2 for simulation mode
+
 	// Use this for initialization
 	void Start () {
+
+	}
+
+	void Awake () {
 		Collider[] colliders = gameObject.GetComponentsInChildren<Collider>();
 		foreach (Collider collider1 in colliders) {
 			foreach (Collider collider2 in colliders) {
@@ -26,11 +32,63 @@ public class ModuleController : MonoBehaviour {
 
 		LoadJointsPointer ();
 		LoadGameObjects ();
+		SetMode (0);
 	}
 	
 	// Update is called once per frame
 	void Update () {
-	
+
+	}
+
+	public void SetMode (int mode) {
+		currentMode = mode;
+		UpdateModuleFromMode ();
+	}
+
+	public void UpdateJointsFromModule (GameObject module) {
+		UpdateCenterJointAngle (module.GetComponent<ModuleController> ().centerJoint.spring.targetPosition);
+		UpdateLeftJointAngle (module.GetComponent<ModuleController> ().leftJoint.spring.targetPosition);
+		UpdateRightJointAngle (module.GetComponent<ModuleController> ().rightJoint.spring.targetPosition);
+		UpdateFrontJointAngle (module.GetComponent<ModuleController> ().frontJoint.spring.targetPosition);
+	}
+
+	void UpdateModuleFromMode () {
+		if (currentMode == 0) {
+			body.GetComponent<Rigidbody> ().isKinematic = false;
+			body.GetComponent<Rigidbody> ().useGravity = false;
+			leftWheel.GetComponent<Rigidbody> ().isKinematic = false;
+			leftWheel.GetComponent<Rigidbody> ().useGravity = false;
+			rightWheel.GetComponent<Rigidbody> ().isKinematic = false;
+			rightWheel.GetComponent<Rigidbody> ().useGravity = false;
+			frontWheel.GetComponent<Rigidbody> ().isKinematic = false;
+			frontWheel.GetComponent<Rigidbody> ().useGravity = false;
+			backPlate.GetComponent<Rigidbody> ().isKinematic = true;
+			backPlate.GetComponent<Rigidbody> ().useGravity = false;
+		}
+		else if (currentMode == 1) {
+			body.GetComponent<Rigidbody> ().isKinematic = false;
+			body.GetComponent<Rigidbody> ().useGravity = false;
+			leftWheel.GetComponent<Rigidbody> ().isKinematic = false;
+			leftWheel.GetComponent<Rigidbody> ().useGravity = false;
+			rightWheel.GetComponent<Rigidbody> ().isKinematic = false;
+			rightWheel.GetComponent<Rigidbody> ().useGravity = false;
+			frontWheel.GetComponent<Rigidbody> ().isKinematic = false;
+			frontWheel.GetComponent<Rigidbody> ().useGravity = false;
+			backPlate.GetComponent<Rigidbody> ().isKinematic = false;
+			backPlate.GetComponent<Rigidbody> ().useGravity = false;
+		}
+		else {
+			body.GetComponent<Rigidbody> ().isKinematic = false;
+			body.GetComponent<Rigidbody> ().useGravity = true;
+			leftWheel.GetComponent<Rigidbody> ().isKinematic = false;
+			leftWheel.GetComponent<Rigidbody> ().useGravity = true;
+			rightWheel.GetComponent<Rigidbody> ().isKinematic = false;
+			rightWheel.GetComponent<Rigidbody> ().useGravity = true;
+			frontWheel.GetComponent<Rigidbody> ().isKinematic = false;
+			frontWheel.GetComponent<Rigidbody> ().useGravity = true;
+			backPlate.GetComponent<Rigidbody> ().isKinematic = false;
+			backPlate.GetComponent<Rigidbody> ().useGravity = true;
+		}
 	}
 
 	public float GetJointValue (string jointName) {
@@ -43,7 +101,7 @@ public class ModuleController : MonoBehaviour {
 	public void UpdateCenterJointAngle (float jointValue) {
 		body.GetComponent<Rigidbody> ().WakeUp ();
 		JointSpring spring = centerJoint.spring;
-		spring.spring = 10000.0f;
+		spring.spring = 100000.0f;
 		spring.damper = 30.0f;
 		spring.targetPosition = jointValue;
 		centerJoint.spring = spring;
@@ -53,7 +111,7 @@ public class ModuleController : MonoBehaviour {
 	public void UpdateLeftJointAngle (float jointValue) {
 		leftWheel.GetComponent<Rigidbody> ().WakeUp ();
 		JointSpring spring = leftJoint.spring;
-		spring.spring = 10000.0f;
+		spring.spring = 100000.0f;
 		spring.damper = 30.0f;
 		spring.targetPosition = jointValue;
 		leftJoint.spring = spring;
@@ -63,7 +121,7 @@ public class ModuleController : MonoBehaviour {
 	public void UpdateRightJointAngle (float jointValue) {
 		rightWheel.GetComponent<Rigidbody> ().WakeUp ();
 		JointSpring spring = rightJoint.spring;
-		spring.spring = 10000.0f;
+		spring.spring = 100000.0f;
 		spring.damper = 30.0f;
 		spring.targetPosition = jointValue;
 		rightJoint.spring = spring;
@@ -73,7 +131,7 @@ public class ModuleController : MonoBehaviour {
 	public void UpdateFrontJointAngle (float jointValue) {
 		frontWheel.GetComponent<Rigidbody> ().WakeUp ();
 		JointSpring spring = frontJoint.spring;
-		spring.spring = 10000.0f;
+		spring.spring = 100000.0f;
 		spring.damper = 30.0f;
 		spring.targetPosition = jointValue;
 		frontJoint.spring = spring;

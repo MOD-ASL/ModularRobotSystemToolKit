@@ -5,7 +5,7 @@ using UnityEngine.Events;
 
 public class SliderControl : MonoBehaviour {
 
-	Slider slider;
+	public Slider slider;
 
 	// Use this for initialization
 	void Start () {
@@ -15,10 +15,6 @@ public class SliderControl : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 	
-	}
-
-	void Awake () {
-		slider = gameObject.GetComponent<Slider> ();
 	}
 
 	public void UpdateJointInfo (GameObject target) {
@@ -43,5 +39,10 @@ public class SliderControl : MonoBehaviour {
 		}
 		slider.onValueChanged.AddListener (targetFunction);
 		slider.value = jointValue;
+	}
+
+	public void Reset () {
+		slider.onValueChanged.RemoveAllListeners ();
+		slider.value = 0.0f;
 	}
 }

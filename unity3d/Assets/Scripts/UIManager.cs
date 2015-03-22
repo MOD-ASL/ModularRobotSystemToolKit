@@ -18,7 +18,12 @@ public class UIManager : MonoBehaviour {
 
 	// Setter of currentModule
 	public void SetSelectedModule (GameObject module) {
-		if ((module != null) && (selectedModule != module)) {
+		if (module == null) {
+			selectedModule = module;
+			panelModuleSetting.GetComponent<PanelModuleSettingController> ().Reset ();
+			return;
+		}
+		if (selectedModule != module) {
 			selectedModule = module;
 			panelModuleSetting.GetComponent<PanelModuleSettingController> ().UpdateSelectedModule (selectedModule);
 		}
