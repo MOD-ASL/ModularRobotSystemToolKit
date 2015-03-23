@@ -7,13 +7,13 @@ public class ModuleController : MonoBehaviour {
 	HingeJoint rightJoint;
 	HingeJoint frontJoint;
 
-	GameObject backPlate;
-	GameObject body;
-	GameObject rightWheel;
-	GameObject leftWheel;
-	GameObject frontWheel;
+	public GameObject backPlate;
+	public GameObject body;
+	public GameObject rightWheel;
+	public GameObject leftWheel;
+	public GameObject frontWheel;
 
-	int currentMode; // 0 for edit mode with fixed backPlate. 1 for edit mode. 2 for simulation mode
+	public int currentMode; // 0 for edit mode with fixed backPlate. 1 for edit mode. 2 for simulation mode
 
 	// Use this for initialization
 	void Start () {
@@ -159,4 +159,64 @@ public class ModuleController : MonoBehaviour {
 			else if (child.name == "FrontWheel") frontWheel = child.gameObject;
 		}
 	}
+
+	public void OnSelected () {
+		foreach (Transform child in transform) {
+			Renderer rend = child.GetComponent<Renderer> ();
+			rend.material.color = new Color (0.3f, 1.0f, 0.3f);
+		}
+	}
+
+	public void OnDeselected () {
+		foreach (Transform child in transform) {
+			Renderer rend = child.GetComponent<Renderer> ();
+			rend.material.color = new Color (0.6f, 0.6f, 0.6f);
+		}
+	}
+
+	public void OnHighlighted (bool hightlight) {
+		if (gameObject.tag == "Ghost") {
+			foreach (Transform child in transform) {
+				Renderer rend = child.GetComponent<Renderer> ();
+				if (hightlight) {
+					rend.material.color = new Color (0.8f, 0.8f, 0.0f);
+				}
+				else {
+					rend.material.color = new Color (0.9f, 1.0f, 0.35f);
+				}
+			}
+		}
+	}
+
+	public void OnLite (bool lite) {
+
+		foreach (Transform child in transform) {
+			Renderer rend = child.GetComponent<Renderer> ();
+			if (lite) {
+				rend.material.color = new Color (1.0f, 1.0f, 1.0f);
+			}
+			else {
+				rend.material.color = new Color (0.6f, 0.6f, 0.6f);
+			}
+		}
+
+	}
+
+
+	public GameObject[] GetAllNodes () {
+		GameObject[] nodes = new GameObject[4];
+		nodes[0] = backPlate;
+		nodes[1] = leftWheel;
+		nodes[2] = rightWheel;
+		nodes[3] = frontWheel;
+		return nodes;
+	}
+
+	public void SetToTrigger (bool trigger) {
+		foreach (Transform child in transform) {
+			Collider c = child.GetComponent<Collider> ();
+			c.isTrigger = trigger;
+		}
+	}
 }
+
