@@ -68,33 +68,40 @@ public class ModuleController : MonoBehaviour {
 		}
 	}
 
-	void NoPhysics () {
+	// set all parts to be kinematic or not
+	void SetKinematic (bool kinematic) {
 		foreach (GameObject part in partsHashTable.Values) {
-			part.GetComponent<Rigidbody> ().isKinematic = false;
-			part.GetComponent<Rigidbody> ().useGravity = false;
+			part.GetComponent<Rigidbody> ().isKinematic = kinematic;
+		}
+	}
+
+	// set all parts to use gravity or not
+	void SetGravity (bool gravity) {
+		foreach (GameObject part in partsHashTable.Values) {
+			part.GetComponent<Rigidbody> ().useGravity = gravity;
 		}
 	}
 
 	void UpdateModuleFromMode () {
-		NoPhysics ();
+		SetKinematic (false);
 		if (currentMode == 0) {
+			SetGravity (false);
 			partsHashTable[PartNames.BackPlate.ToString ()].GetComponent<Rigidbody> ().isKinematic = true;
 		}
 		else if (currentMode == 1) {
+			SetGravity (false);
 		}
 		else if (currentMode == 2) {
-			partsHashTable[PartNames.FrontWheel.ToString ()].GetComponent<Rigidbody> ().useGravity = true;
-			partsHashTable[PartNames.Body.ToString ()].GetComponent<Rigidbody> ().useGravity = true;
-			partsHashTable[PartNames.LeftWheel.ToString ()].GetComponent<Rigidbody> ().useGravity = true;
-			partsHashTable[PartNames.RightWheel.ToString ()].GetComponent<Rigidbody> ().useGravity = true;
-			partsHashTable[PartNames.BackPlate.ToString ()].GetComponent<Rigidbody> ().useGravity = true;
+			SetGravity (true);
 		}
 	}
 
+	// return the joint value of the given joint name
 	public float GetJointValue (string jointName) {
 		return jointsHashTable[jointName].spring.targetPosition;
 	}
 
+	// update joint target position with the given value
 	public void UpdateJointAngle (float jointValue, string jointName) {
 		partsHashTable[jointName].GetComponent<Rigidbody> ().WakeUp ();
 		JointSpring spring = jointsHashTable[jointName].spring;
@@ -105,18 +112,22 @@ public class ModuleController : MonoBehaviour {
 		jointsHashTable[jointName].useSpring = true;
 	}
 
+	// update the angle of center joint (for slider callback)
 	public void UpdateCenterJointAngle (float jointValue) {
 		UpdateJointAngle (jointValue, PartNames.Body.ToString ());
 	}
 
+	// update the angle of left joint (for slider callback)
 	public void UpdateLeftJointAngle (float jointValue) {
 		UpdateJointAngle (jointValue, PartNames.LeftWheel.ToString ());
 	}
 
+	// update the angle of right joint (for slider callback)
 	public void UpdateRightJointAngle (float jointValue) {
 		UpdateJointAngle (jointValue, PartNames.RightWheel.ToString ());
 	}
 
+	// update the angle of front joint (for slider callback)
 	public void UpdateFrontJointAngle (float jointValue) {
 		UpdateJointAngle (jointValue, PartNames.FrontWheel.ToString ());
 	}
@@ -145,6 +156,7 @@ public class ModuleController : MonoBehaviour {
 		}
 	}
 
+	// change the color when the module is selected or not
 	public void OnSelected (bool select) {
 		if (select) {
 			ChangeColor (colorManager.moduleSelected);
@@ -154,6 +166,7 @@ public class ModuleController : MonoBehaviour {
 		}
 	}
 
+	// change the color when the module is highlighted or not
 	public void OnHighlighted (bool hightlight) {
 		if (gameObject.tag == "Ghost") {
 			if (hightlight) {
@@ -165,6 +178,7 @@ public class ModuleController : MonoBehaviour {
 		}
 	}
 
+	// change the color when the module is in lite mode or not
 	public void OnLite (bool lite) {
 		if (lite) {
 			ChangeColor (colorManager.moduleLite);
@@ -174,6 +188,7 @@ public class ModuleController : MonoBehaviour {
 		}
 	}
 
+	// set all parts to trigger or not
 	public void SetToTrigger (bool trigger) {
 		foreach (Transform child in transform) {
 			Collider c = child.GetComponent<Collider> ();
@@ -181,6 +196,7 @@ public class ModuleController : MonoBehaviour {
 		}
 	}
 
+	// change the color of all parts
 	void ChangeColor (Color c) {
 		foreach (Transform child in transform) {
 			Renderer rend = child.GetComponent<Renderer> ();
