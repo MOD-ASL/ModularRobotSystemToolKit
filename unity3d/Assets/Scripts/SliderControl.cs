@@ -19,26 +19,27 @@ public class SliderControl : MonoBehaviour {
 
 	public void UpdateJointInfo (GameObject target) {
 		slider.onValueChanged.RemoveAllListeners ();
+		string jointName;
 		UnityAction<float> targetFunction;
-		float jointValue;
+
 		if (slider.name == "SliderCenterJoint") {
+			jointName = ModuleController.PartNames.Body.ToString ();
 			targetFunction = target.GetComponent<ModuleController> ().UpdateCenterJointAngle;
-			jointValue = target.GetComponent<ModuleController> ().GetJointValue ("centerJoint");
 		}
 		else if (slider.name == "SliderLeftJoint") {
+			jointName = ModuleController.PartNames.LeftWheel.ToString ();
 			targetFunction = target.GetComponent<ModuleController> ().UpdateLeftJointAngle;
-			jointValue = target.GetComponent<ModuleController> ().GetJointValue ("leftJoint");
 		}
 		else if (slider.name == "SliderRightJoint") {
+			jointName = ModuleController.PartNames.RightWheel.ToString ();
 			targetFunction = target.GetComponent<ModuleController> ().UpdateRightJointAngle;
-			jointValue = target.GetComponent<ModuleController> ().GetJointValue ("rightJoint");
 		}
 		else {
+			jointName = ModuleController.PartNames.FrontWheel.ToString ();
 			targetFunction = target.GetComponent<ModuleController> ().UpdateFrontJointAngle;
-			jointValue = target.GetComponent<ModuleController> ().GetJointValue ("frontJoint");
 		}
 		slider.onValueChanged.AddListener (targetFunction);
-		slider.value = jointValue;
+		slider.value = target.GetComponent<ModuleController> ().GetJointValue (jointName);
 	}
 
 	public void Reset () {

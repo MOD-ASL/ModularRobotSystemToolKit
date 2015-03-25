@@ -6,10 +6,11 @@ public class PanelBottomMenuController : MonoBehaviour {
 	bool isSimulate = false;
 	bool isAddModule = false;
 	public Button buttonAddModule;
+	ColorManager colorManager;
 
 	// Use this for initialization
 	void Start () {
-	
+		colorManager = (ColorManager) GameObject.FindObjectOfType<ColorManager> ();
 	}
 
 	public void OnClickSimulate (float data) {
@@ -26,7 +27,7 @@ public class PanelBottomMenuController : MonoBehaviour {
 		ColorBlock cb;
 		if (isAddModule) {
 			cb = buttonAddModule.colors;
-			cb.normalColor =  new Color (1.0f, 0.5f, 0.5f);
+			cb.normalColor =  colorManager.buttonInMode;
 			buttonAddModule.colors = cb;
 		}
 		else if (isSimulate) {
@@ -34,7 +35,7 @@ public class PanelBottomMenuController : MonoBehaviour {
 		}
 		else {
 			cb = buttonAddModule.colors;
-			cb.normalColor =  new Color (1.0f, 1.0f, 1.0f);
+			cb.normalColor =  colorManager.buttonNormal;
 			buttonAddModule.colors = cb;
 			buttonAddModule.GetComponent<Button> ().interactable = true;
 		}

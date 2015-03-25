@@ -1,26 +1,34 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class ModuleController : MonoBehaviour {
-	HingeJoint centerJoint;
-	HingeJoint leftJoint;
-	HingeJoint rightJoint;
-	HingeJoint frontJoint;
 
-	public GameObject backPlate;
-	public GameObject body;
-	public GameObject rightWheel;
-	public GameObject leftWheel;
-	public GameObject frontWheel;
+	// name of part joint connected to -> HingeJoint
+	public Dictionary<string, HingeJoint> jointsHashTable = new Dictionary<string, HingeJoint>();
+	// part name -> GameObject of part
+	public Dictionary<string, GameObject> partsHashTable = new Dictionary<string, GameObject>();
+	// node name -> GameObject of part
+	public Dictionary<string, GameObject> nodesHashTable = new Dictionary<string, GameObject>();
+
+	ColorManager colorManager;
 
 	public int currentMode; // 0 for edit mode with fixed backPlate. 1 for edit mode. 2 for simulation mode
 
+	// constant
+	float jointSpringForce = 100000.0f;
+	float jointDamperForce = 30.0f;
+
+	// define enum for part name
+	public enum PartNames {BackPlate, Body, RightWheel, LeftWheel, FrontWheel};
+	
 	// Use this for initialization
 	void Start () {
 
 	}
 
 	void Awake () {
+		// ignore collisions among different parts within the module
 		Collider[] colliders = gameObject.GetComponentsInChildren<Collider>();
 		foreach (Collider collider1 in colliders) {
 			foreach (Collider collider2 in colliders) {
@@ -30,8 +38,15 @@ public class ModuleController : MonoBehaviour {
 			}
 		}
 
-		LoadJointsPointer ();
-		LoadGameObjects ();
+		// load color manager
+		colorManager = (ColorManager) GameObject.FindObjectOfType<ColorManager> ();
+
+		// load pointers
+		LoadJointPointers ();
+		LoadPartPointers ();
+		LoadNodePointers ();
+
+		// set of the mode for the module
 		SetMode (0);
 	}
 	
@@ -40,182 +55,136 @@ public class ModuleController : MonoBehaviour {
 
 	}
 
+	// set the mode and update the module accordingly
 	public void SetMode (int mode) {
 		currentMode = mode;
 		UpdateModuleFromMode ();
 	}
 
+	// update the joint target positions based on the corresponding joint from the given module
 	public void UpdateJointsFromModule (GameObject module) {
-		UpdateCenterJointAngle (module.GetComponent<ModuleController> ().centerJoint.spring.targetPosition);
-		UpdateLeftJointAngle (module.GetComponent<ModuleController> ().leftJoint.spring.targetPosition);
-		UpdateRightJointAngle (module.GetComponent<ModuleController> ().rightJoint.spring.targetPosition);
-		UpdateFrontJointAngle (module.GetComponent<ModuleController> ().frontJoint.spring.targetPosition);
+		foreach (string jointName in jointsHashTable.Keys) {
+			UpdateJointAngle (module.GetComponent<ModuleController> ().GetJointValue (jointName), jointName);
+		}
+	}
+
+	void NoPhysics () {
+		foreach (GameObject part in partsHashTable.Values) {
+			part.GetComponent<Rigidbody> ().isKinematic = false;
+			part.GetComponent<Rigidbody> ().useGravity = false;
+		}
 	}
 
 	void UpdateModuleFromMode () {
+		NoPhysics ();
 		if (currentMode == 0) {
-			body.GetComponent<Rigidbody> ().isKinematic = false;
-			body.GetComponent<Rigidbody> ().useGravity = false;
-			leftWheel.GetComponent<Rigidbody> ().isKinematic = false;
-			leftWheel.GetComponent<Rigidbody> ().useGravity = false;
-			rightWheel.GetComponent<Rigidbody> ().isKinematic = false;
-			rightWheel.GetComponent<Rigidbody> ().useGravity = false;
-			frontWheel.GetComponent<Rigidbody> ().isKinematic = false;
-			frontWheel.GetComponent<Rigidbody> ().useGravity = false;
-			backPlate.GetComponent<Rigidbody> ().isKinematic = true;
-			backPlate.GetComponent<Rigidbody> ().useGravity = false;
+			partsHashTable[PartNames.BackPlate.ToString ()].GetComponent<Rigidbody> ().isKinematic = true;
 		}
 		else if (currentMode == 1) {
-			body.GetComponent<Rigidbody> ().isKinematic = false;
-			body.GetComponent<Rigidbody> ().useGravity = false;
-			leftWheel.GetComponent<Rigidbody> ().isKinematic = false;
-			leftWheel.GetComponent<Rigidbody> ().useGravity = false;
-			rightWheel.GetComponent<Rigidbody> ().isKinematic = false;
-			rightWheel.GetComponent<Rigidbody> ().useGravity = false;
-			frontWheel.GetComponent<Rigidbody> ().isKinematic = false;
-			frontWheel.GetComponent<Rigidbody> ().useGravity = false;
-			backPlate.GetComponent<Rigidbody> ().isKinematic = false;
-			backPlate.GetComponent<Rigidbody> ().useGravity = false;
 		}
-		else {
-			body.GetComponent<Rigidbody> ().isKinematic = false;
-			body.GetComponent<Rigidbody> ().useGravity = true;
-			leftWheel.GetComponent<Rigidbody> ().isKinematic = false;
-			leftWheel.GetComponent<Rigidbody> ().useGravity = true;
-			rightWheel.GetComponent<Rigidbody> ().isKinematic = false;
-			rightWheel.GetComponent<Rigidbody> ().useGravity = true;
-			frontWheel.GetComponent<Rigidbody> ().isKinematic = false;
-			frontWheel.GetComponent<Rigidbody> ().useGravity = true;
-			backPlate.GetComponent<Rigidbody> ().isKinematic = false;
-			backPlate.GetComponent<Rigidbody> ().useGravity = true;
+		else if (currentMode == 2) {
+			partsHashTable[PartNames.FrontWheel.ToString ()].GetComponent<Rigidbody> ().useGravity = true;
+			partsHashTable[PartNames.Body.ToString ()].GetComponent<Rigidbody> ().useGravity = true;
+			partsHashTable[PartNames.LeftWheel.ToString ()].GetComponent<Rigidbody> ().useGravity = true;
+			partsHashTable[PartNames.RightWheel.ToString ()].GetComponent<Rigidbody> ().useGravity = true;
+			partsHashTable[PartNames.BackPlate.ToString ()].GetComponent<Rigidbody> ().useGravity = true;
 		}
 	}
 
 	public float GetJointValue (string jointName) {
-		if (jointName == "centerJoint") return centerJoint.spring.targetPosition;
-		else if (jointName == "leftJoint") return leftJoint.spring.targetPosition;
-		else if (jointName == "rightJoint") return rightJoint.spring.targetPosition;
-		else return frontJoint.spring.targetPosition;
+		return jointsHashTable[jointName].spring.targetPosition;
+	}
+
+	public void UpdateJointAngle (float jointValue, string jointName) {
+		partsHashTable[jointName].GetComponent<Rigidbody> ().WakeUp ();
+		JointSpring spring = jointsHashTable[jointName].spring;
+		spring.spring = jointSpringForce;
+		spring.damper = jointDamperForce;
+		spring.targetPosition = jointValue;
+		jointsHashTable[jointName].spring = spring;
+		jointsHashTable[jointName].useSpring = true;
 	}
 
 	public void UpdateCenterJointAngle (float jointValue) {
-		body.GetComponent<Rigidbody> ().WakeUp ();
-		JointSpring spring = centerJoint.spring;
-		spring.spring = 100000.0f;
-		spring.damper = 30.0f;
-		spring.targetPosition = jointValue;
-		centerJoint.spring = spring;
-		centerJoint.useSpring = true;
+		UpdateJointAngle (jointValue, PartNames.Body.ToString ());
 	}
 
 	public void UpdateLeftJointAngle (float jointValue) {
-		leftWheel.GetComponent<Rigidbody> ().WakeUp ();
-		JointSpring spring = leftJoint.spring;
-		spring.spring = 100000.0f;
-		spring.damper = 30.0f;
-		spring.targetPosition = jointValue;
-		leftJoint.spring = spring;
-		leftJoint.useSpring = true;
+		UpdateJointAngle (jointValue, PartNames.LeftWheel.ToString ());
 	}
 
 	public void UpdateRightJointAngle (float jointValue) {
-		rightWheel.GetComponent<Rigidbody> ().WakeUp ();
-		JointSpring spring = rightJoint.spring;
-		spring.spring = 100000.0f;
-		spring.damper = 30.0f;
-		spring.targetPosition = jointValue;
-		rightJoint.spring = spring;
-		rightJoint.useSpring = true;
+		UpdateJointAngle (jointValue, PartNames.RightWheel.ToString ());
 	}
 
 	public void UpdateFrontJointAngle (float jointValue) {
-		frontWheel.GetComponent<Rigidbody> ().WakeUp ();
-		JointSpring spring = frontJoint.spring;
-		spring.spring = 100000.0f;
-		spring.damper = 30.0f;
-		spring.targetPosition = jointValue;
-		frontJoint.spring = spring;
-		frontJoint.useSpring = true;
+		UpdateJointAngle (jointValue, PartNames.FrontWheel.ToString ());
 	}
-
+	
 	// Load the pointers of all joints for easier reference
-	void LoadJointsPointer () {
+	void LoadJointPointers () {
 		HingeJoint[] joints = gameObject.GetComponentsInChildren<HingeJoint> ();
 		foreach (HingeJoint joint in joints) {
-			if (joint.connectedBody.name == "Body") centerJoint = joint;
-			else if (joint.connectedBody.name == "RightWheel") rightJoint = joint;
-			else if (joint.connectedBody.name == "LeftWheel") leftJoint = joint;
-			else if (joint.connectedBody.name == "FrontWheel") frontJoint = joint;
+			jointsHashTable.Add (joint.connectedBody.name, joint);
 		}
 	}
 
-	// Load the pointers of all chile game object for easier reference
-	void LoadGameObjects () {
+	// Load the pointers of all child game object for easier reference
+	void LoadPartPointers () {
 		foreach (Transform child in transform) {
-			if (child.name == "Body") body = child.gameObject;
-			else if (child.name == "BackPlate") backPlate = child.gameObject;
-			else if (child.name == "LeftWheel") leftWheel = child.gameObject;
-			else if (child.name == "RightWheel") rightWheel = child.gameObject;
-			else if (child.name == "FrontWheel") frontWheel = child.gameObject;
+			partsHashTable.Add (child.name, child.gameObject);
 		}
 	}
 
-	public void OnSelected () {
+	// Load the pointers of all node game object for easier reference
+	void LoadNodePointers () {
 		foreach (Transform child in transform) {
-			Renderer rend = child.GetComponent<Renderer> ();
-			rend.material.color = new Color (0.3f, 1.0f, 0.3f);
+			if (child.name != "Body") {
+				nodesHashTable.Add (child.name, child.gameObject);
+			}
 		}
 	}
 
-	public void OnDeselected () {
-		foreach (Transform child in transform) {
-			Renderer rend = child.GetComponent<Renderer> ();
-			rend.material.color = new Color (0.6f, 0.6f, 0.6f);
+	public void OnSelected (bool select) {
+		if (select) {
+			ChangeColor (colorManager.moduleSelected);
+		}
+		else {
+			ChangeColor (colorManager.moduleNormal);
 		}
 	}
 
 	public void OnHighlighted (bool hightlight) {
 		if (gameObject.tag == "Ghost") {
-			foreach (Transform child in transform) {
-				Renderer rend = child.GetComponent<Renderer> ();
-				if (hightlight) {
-					rend.material.color = new Color (0.8f, 0.8f, 0.0f);
-				}
-				else {
-					rend.material.color = new Color (0.9f, 1.0f, 0.35f);
-				}
+			if (hightlight) {
+				ChangeColor (colorManager.moduleHighlighted);
+			}
+			else {
+				ChangeColor (colorManager.moduleGhost);
 			}
 		}
 	}
 
 	public void OnLite (bool lite) {
-
-		foreach (Transform child in transform) {
-			Renderer rend = child.GetComponent<Renderer> ();
-			if (lite) {
-				rend.material.color = new Color (1.0f, 1.0f, 1.0f);
-			}
-			else {
-				rend.material.color = new Color (0.6f, 0.6f, 0.6f);
-			}
+		if (lite) {
+			ChangeColor (colorManager.moduleLite);
 		}
-
-	}
-
-
-	public GameObject[] GetAllNodes () {
-		GameObject[] nodes = new GameObject[4];
-		nodes[0] = backPlate;
-		nodes[1] = leftWheel;
-		nodes[2] = rightWheel;
-		nodes[3] = frontWheel;
-		return nodes;
+		else {
+			ChangeColor (colorManager.moduleNormal);
+		}
 	}
 
 	public void SetToTrigger (bool trigger) {
 		foreach (Transform child in transform) {
 			Collider c = child.GetComponent<Collider> ();
 			c.isTrigger = trigger;
+		}
+	}
+
+	void ChangeColor (Color c) {
+		foreach (Transform child in transform) {
+			Renderer rend = child.GetComponent<Renderer> ();
+			rend.material.color = c;
 		}
 	}
 }

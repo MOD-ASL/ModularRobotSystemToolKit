@@ -1420,6 +1420,7 @@ GameObject:
   - 4: {fileID: 493887253}
   - 114: {fileID: 493887254}
   - 114: {fileID: 493887255}
+  - 114: {fileID: 493887256}
   m_Layer: 0
   m_Name: DesignerManager
   m_TagString: Untagged
@@ -1465,6 +1466,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   panelModuleSetting: {fileID: 2000321978}
+--- !u!114 &493887256
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 493887252}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1bb62fad7a2be6641b87bae9c5d6263a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  buttonNormal: {r: 1, g: 1, b: 1, a: 1}
+  buttonInMode: {r: 1, g: .501960814, b: .501960814, a: 1}
+  moduleNormal: {r: .600000024, g: .600000024, b: .600000024, a: 1}
+  moduleSelected: {r: .301960796, g: 1, b: .301960796, a: 1}
+  moduleHighlighted: {r: .823529422, g: 1, b: .352941185, a: 1}
+  moduleGhost: {r: .800000012, g: .800000012, b: 0, a: 1}
+  moduleLite: {r: 1, g: 1, b: 1, a: 1}
 --- !u!1 &701550699
 GameObject:
   m_ObjectHideFlags: 0

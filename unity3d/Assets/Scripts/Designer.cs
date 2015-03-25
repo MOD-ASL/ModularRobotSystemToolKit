@@ -45,7 +45,7 @@ public class Designer : MonoBehaviour {
 					moduleUnderMouse.name = FindNextAvailableName ();
 					moduleUnderMouse.transform.parent = robot.transform;
 					moduleUnderMouse.tag = "Module";
-					moduleUnderMouse.GetComponent<ModuleController> ().OnDeselected ();
+					moduleUnderMouse.GetComponent<ModuleController> ().OnSelected (false);
 					moduleUnderMouse.GetComponent<ModuleController> ().SetToTrigger (false);
 					moduleUnderMouse.GetComponent<ModuleController> ().SetMode (1);
 
@@ -93,12 +93,7 @@ public class Designer : MonoBehaviour {
 			nodeName = nodeNames[(id + 1) % 4];
 		}
 
-		foreach (GameObject n in module.GetComponent<ModuleController> ().GetAllNodes ()) {
-			if (n.name == nodeName) {
-				return n;
-			}
-		}
-		return new GameObject ();
+		return module.GetComponent<ModuleController> ().partsHashTable[nodeName];
 	}
 
 	void SelectModule () {
@@ -109,9 +104,9 @@ public class Designer : MonoBehaviour {
 		{
 			GameObject parent = hit.transform.parent.gameObject;
 			if (parent.tag == "Module") {
-				if (selectedModule != null) selectedModule.GetComponent<ModuleController> ().OnDeselected ();
+				if (selectedModule != null) selectedModule.GetComponent<ModuleController> ().OnSelected (false);
 				selectedModule = parent;
-				selectedModule.GetComponent<ModuleController> ().OnSelected ();
+				selectedModule.GetComponent<ModuleController> ().OnSelected (true);
 				UIManagerScript.SetSelectedModule (selectedModule);
 			}
 		}
@@ -164,13 +159,13 @@ public class Designer : MonoBehaviour {
 		isSimulate = !isSimulate;
 		if (isSimulate) {
 			if (selectedModule != null) {
-				selectedModule.GetComponent<ModuleController> ().OnDeselected ();
+				selectedModule.GetComponent<ModuleController> ().OnSelected (false);
 				selectedModule = null;
 				UIManagerScript.SetSelectedModule (null);
 			}
 			foreach (Transform child in robot.transform) {
-				Vector3 pos = child.GetComponent<ModuleController> ().backPlate.transform.position;
-				Quaternion q = child.GetComponent<ModuleController> ().backPlate.transform.rotation;
+				Vector3 pos = child.GetComponent<ModuleController> ().partsHashTable[ModuleController.PartNames.BackPlate.ToString ()].transform.position;
+				Quaternion q = child.GetComponent<ModuleController> ().partsHashTable[ModuleController.PartNames.BackPlate.ToString ()].transform.rotation;
 				Transform clone = Instantiate (modulePrefab, pos, q) as Transform;
 				clone.Rotate (clone.right, 90.0f, Space.World);
 				clone.GetComponent<ModuleController> ().UpdateJointsFromModule (child.gameObject);
@@ -242,7 +237,7 @@ public class Designer : MonoBehaviour {
 		isAddModule = !isAddModule;
 		if (isAddModule) {
 			if (selectedModule != null) {
-				selectedModule.GetComponent<ModuleController> ().OnDeselected ();
+				selectedModule.GetComponent<ModuleController> ().OnSelected (false);
 				selectedModule = null;
 				UIManagerScript.SetSelectedModule (null);
 			}
@@ -261,7 +256,7 @@ public class Designer : MonoBehaviour {
 		clone.name = FindNextAvailableName ();
 		clone.position = position;
 		clone.parent = robot.transform;
-		Connect (connectedBody, clone.GetComponent<ModuleController> ().backPlate);
+		Connect (connectedBody, clone.GetComponent<ModuleController> ().partsHashTable[ModuleController.PartNames.BackPlate.ToString ()]);
 	}
 
 	string FindNextAvailableName () {
@@ -282,25 +277,14 @@ public class Designer : MonoBehaviour {
 
 	void FindAvailableSpots () {
 		availableNodes = new List<GameObject> ();
-		GameObject node;
 
 		foreach (Transform child in robot.transform) {
-			node = child.GetComponent<ModuleController> ().frontWheel;
-			if (!connectionTable.ContainsKey (child.name+":"+node.name)) {
-				availableNodes.Add (node);
+			foreach (GameObject node in child.GetComponent<ModuleController> ().nodesHashTable.Values) {
+				if (!connectionTable.ContainsKey (child.name+":"+node.name)) {
+					availableNodes.Add (node);
+				}
 			}
-			node = child.GetComponent<ModuleController> ().backPlate;
-			if (!connectionTable.ContainsKey (child.name+":"+node.name)) {
-				availableNodes.Add (node);
-			}
-			node = child.GetComponent<ModuleController> ().leftWheel;
-			if (!connectionTable.ContainsKey (child.name+":"+node.name)) {
-				availableNodes.Add (node);
-			}
-			node = child.GetComponent<ModuleController> ().rightWheel;
-			if (!connectionTable.ContainsKey (child.name+":"+node.name)) {
-				availableNodes.Add (node);
-			}
+
 		}
 	}
 
