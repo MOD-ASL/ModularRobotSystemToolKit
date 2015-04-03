@@ -9,4 +9,6 @@ public class ColorManager : MonoBehaviour {
 	public Color moduleHighlighted;
 	public Color moduleGhost;
 	public Color moduleLite;
+	public Color nodeConnected;
+	public Color nodeDisconnected;
 }

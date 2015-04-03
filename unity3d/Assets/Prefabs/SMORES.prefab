@@ -17,7 +17,7 @@ GameObject:
   - 59: {fileID: 5997664}
   m_Layer: 0
   m_Name: BackPlate
-  m_TagString: Untagged
+  m_TagString: Node
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -36,7 +36,7 @@ GameObject:
   - 54: {fileID: 5449644}
   m_Layer: 0
   m_Name: FrontWheel
-  m_TagString: Untagged
+  m_TagString: Node
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -71,7 +71,7 @@ GameObject:
   - 54: {fileID: 5436682}
   m_Layer: 0
   m_Name: LeftWheel
-  m_TagString: Untagged
+  m_TagString: Node
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -90,7 +90,7 @@ GameObject:
   - 54: {fileID: 5429492}
   m_Layer: 0
   m_Name: RightWheel
-  m_TagString: Untagged
+  m_TagString: Node
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -621,11 +621,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2b91dd66ac080bb4faf77f17db89d5b9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  backPlate: {fileID: 0}
-  body: {fileID: 0}
-  rightWheel: {fileID: 0}
-  leftWheel: {fileID: 0}
-  frontWheel: {fileID: 0}
+  currentMode: 0
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1

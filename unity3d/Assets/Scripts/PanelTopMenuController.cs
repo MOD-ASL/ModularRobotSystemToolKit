@@ -10,6 +10,7 @@ public class PanelTopMenuController : MonoBehaviour {
 	public Button buttonModuleSetting;
 	bool isSimulate = false;
 	bool isAddModule = false;
+	bool isConnectNode = false;
 	ColorManager colorManager;
 
 	// Use this for initialization
@@ -32,6 +33,11 @@ public class PanelTopMenuController : MonoBehaviour {
 		UpdateButtonColor ();
 	}
 
+	public void OnClickConnectNode (float data) {
+		isConnectNode = !isConnectNode;
+		UpdateButtonColor ();
+	}
+
 	void UpdateButtonColor () {
 		ColorBlock cb;
 		if (isSimulate) {
@@ -43,6 +49,12 @@ public class PanelTopMenuController : MonoBehaviour {
 			buttonModuleSetting.GetComponent<Button> ().interactable = false;
 		}
 		else if (isAddModule) {
+			buttonSimulate.GetComponent<Button> ().interactable = false;
+			buttonClear.GetComponent<Button> ().interactable = false;
+			buttonBringToGround.GetComponent<Button> ().interactable = false;
+			buttonModuleSetting.GetComponent<Button> ().interactable = false;
+		}
+		else if (isConnectNode) {
 			buttonSimulate.GetComponent<Button> ().interactable = false;
 			buttonClear.GetComponent<Button> ().interactable = false;
 			buttonBringToGround.GetComponent<Button> ().interactable = false;

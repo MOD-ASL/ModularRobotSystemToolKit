@@ -10,6 +10,8 @@ public class ModuleController : MonoBehaviour {
 	public Dictionary<string, GameObject> partsHashTable = new Dictionary<string, GameObject>();
 	// node name -> GameObject of part
 	public Dictionary<string, GameObject> nodesHashTable = new Dictionary<string, GameObject>();
+	// Game object of part -> connected GameObject of part
+	public Dictionary<GameObject, GameObject> nodesConnectionHashTable = new Dictionary<GameObject, GameObject>();
 
 	ColorManager colorManager;
 
@@ -152,8 +154,19 @@ public class ModuleController : MonoBehaviour {
 		foreach (Transform child in transform) {
 			if (child.name != "Body") {
 				nodesHashTable.Add (child.name, child.gameObject);
+				nodesConnectionHashTable.Add (child.gameObject, null);
 			}
 		}
+	}
+
+	// connect node
+	public void OnConnectNode (GameObject thisNode, GameObject connectedNode) {
+		nodesConnectionHashTable[thisNode] = connectedNode;
+	}
+
+	// disconnect node
+	public void OnDisconnectNode (GameObject thisNode) {
+		nodesConnectionHashTable[thisNode] = null;
 	}
 
 	// change the color when the module is selected or not
@@ -188,6 +201,23 @@ public class ModuleController : MonoBehaviour {
 		}
 	}
 
+	// change the color when the module is in connection mode or not
+	public void OnShowConnection (bool showConnection) {
+		if (showConnection) {
+			foreach (GameObject thisNode in nodesConnectionHashTable.Keys) {
+				if (nodesConnectionHashTable[thisNode] != null) {
+					ChangeColor (colorManager.nodeConnected, thisNode);
+				}
+				else {
+					ChangeColor (colorManager.nodeDisconnected, thisNode);
+				}
+			}
+		}
+		else {
+			ChangeColor (colorManager.moduleNormal);
+		}
+	}
+
 	// set all parts to trigger or not
 	public void SetToTrigger (bool trigger) {
 		foreach (Transform child in transform) {
@@ -202,6 +232,12 @@ public class ModuleController : MonoBehaviour {
 			Renderer rend = child.GetComponent<Renderer> ();
 			rend.material.color = c;
 		}
+	}
+
+	// change the color of the given part parts
+	void ChangeColor (Color c, GameObject part) {
+		Renderer rend = part.GetComponent<Renderer> ();
+		rend.material.color = c;
 	}
 }
 

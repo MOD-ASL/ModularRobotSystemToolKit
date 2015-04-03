@@ -2,27 +2,35 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.UI;
 
 public class Designer : MonoBehaviour {
 
 	GameObject selectedModule;
+	GameObject selectedNode1;
+	GameObject selectedNode2;
 	UIManager UIManagerScript;
 	GameObject robotState;
 	GameObject ghostModules;
 	public GameObject robot;
 	bool isSimulate = false;
 	bool isAddModule = false;
+	bool isConnectNode = false;
 	public Transform modulePrefab; 
 	Hashtable connectionTable = new Hashtable ();
 	Hashtable ghostModuleToAvailableNodes = new Hashtable (); // ghost module to node
-	List<GameObject> availableNodes;
+	List<GameObject> availableNodes = new List<GameObject> ();
 	public Material defaultMaterial;
 	GameObject moduleUnderMouse;
-	string[] nodeNames = {"FrontWheel", "LeftWheel", "BackPlate", "RightWheel"}; 
+	GameObject nodeUnderMouse;
+	string[] nodeNames = {"FrontWheel", "LeftWheel", "BackPlate", "RightWheel"};
+	ColorManager colorManager;
+	public Button buttonDeleteModule;
 
 	// Use this for initialization
 	void Start () {
 		UIManagerScript = gameObject.GetComponent<UIManager> ();
+		colorManager = (ColorManager) GameObject.FindObjectOfType<ColorManager> ();
 		robotState = new GameObject ();
 		robotState.name = "RobotState";
 		ghostModules = new GameObject ();
@@ -36,12 +44,19 @@ public class Designer : MonoBehaviour {
 
 		}
 		else if (isAddModule) {
-			if (moduleUnderMouse != null) moduleUnderMouse.GetComponent<ModuleController> ().OnHighlighted (false);
+			PlotAvailableNodes (true);
+			nodeUnderMouse = FindNodeUnderMouse ();
 			moduleUnderMouse = FindModuleUnderMouse ();
+
+			if (nodeUnderMouse != null) {
+				FindAvailableSpots ();
+				PlotAvailableSpots ();
+			}
 			if (moduleUnderMouse != null) {
-				moduleUnderMouse.GetComponent<ModuleController> ().OnHighlighted (true);
-				if(Input.GetMouseButtonDown(0))
-				{
+				Renderer rend = ((GameObject) ghostModuleToAvailableNodes[moduleUnderMouse]).GetComponent<Renderer> ();
+				rend.material.color = colorManager.moduleSelected;
+
+				if(Input.GetMouseButtonDown(0)) {
 					moduleUnderMouse.name = FindNextAvailableName ();
 					moduleUnderMouse.transform.parent = robot.transform;
 					moduleUnderMouse.tag = "Module";
@@ -51,21 +66,46 @@ public class Designer : MonoBehaviour {
 
 					GameObject node = FindConnectingNode (moduleUnderMouse, (GameObject) ghostModuleToAvailableNodes[moduleUnderMouse]);
 					Connect (node, (GameObject) ghostModuleToAvailableNodes[moduleUnderMouse]);
-
-					FindAvailableSpots ();
-					PlotAvailableSpots ();
-
 				}
 				if (Input.GetKeyDown (KeyCode.R)) {
 					moduleUnderMouse.transform.Rotate (moduleUnderMouse.transform.up, 90.0f, Space.World);
 				}
 			}
 		}
-		else {
-			if(Input.GetMouseButtonDown(0))
-				{
-					SelectModule ();
+		else if (isConnectNode) {
+			PlotAvailableNodes (true);
+			nodeUnderMouse = FindNodeUnderMouse ();
+			if (nodeUnderMouse != null) {
+				Renderer rend = nodeUnderMouse.GetComponent<Renderer> ();
+				rend.material.color = colorManager.moduleSelected;
+				if(Input.GetMouseButtonDown(0)) {
+					if (selectedNode1 == null) {
+						selectedNode1 = nodeUnderMouse;
+					}
+					else if (selectedNode2 == null) {
+						selectedNode2 = nodeUnderMouse;
+					}
+					else {
+						selectedNode1 = nodeUnderMouse;
+						selectedNode2 = null;
+					}
 				}
+			}
+
+			if (selectedNode1 != null) {
+				Renderer rend = selectedNode1.GetComponent<Renderer> ();
+				rend.material.color = colorManager.moduleSelected;
+			}
+
+			if (selectedNode2 != null) {
+				Renderer rend = selectedNode2.GetComponent<Renderer> ();
+				rend.material.color = colorManager.moduleSelected;
+			}
+		}
+		else {
+			if(Input.GetMouseButtonDown(0)) {
+				SelectModule ();
+			}
 		}
 	}
 
@@ -108,6 +148,12 @@ public class Designer : MonoBehaviour {
 				selectedModule = parent;
 				selectedModule.GetComponent<ModuleController> ().OnSelected (true);
 				UIManagerScript.SetSelectedModule (selectedModule);
+				if (parent.name == "SMORES 0") {
+					buttonDeleteModule.GetComponent<Button> ().interactable = false;
+				}
+				else {
+					buttonDeleteModule.GetComponent<Button> ().interactable = true;
+				}
 			}
 		}
 	}
@@ -126,8 +172,20 @@ public class Designer : MonoBehaviour {
 
 		return null;
 	}
-	
 
+	GameObject FindNodeUnderMouse () {
+		Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
+		RaycastHit hit;
+		
+		if (Physics.Raycast (ray, out hit, 100) && (hit.transform.parent != null))
+		{
+			if ((hit.transform.parent.tag == "Module") &&(hit.transform.tag == "Node")) {
+				return hit.transform.gameObject;
+			}
+		}
+		
+		return null;
+	}
 
 	public void BringToGround () {
 		float minHeight = 10.0f;
@@ -241,13 +299,38 @@ public class Designer : MonoBehaviour {
 				selectedModule = null;
 				UIManagerScript.SetSelectedModule (null);
 			}
-			FindAvailableSpots ();
-			PlotAvailableSpots ();
+			PlotAvailableNodes (true);
 		}
 		else {
+			PlotAvailableNodes (false);
 			Destroy (ghostModules);
 			ghostModules = new GameObject ();
 			ghostModules.name = "GhostModules";
+		}
+	}
+
+	public void ConnectNode () {
+		isConnectNode = !isConnectNode;
+		if (isConnectNode) {
+			if (selectedModule != null) {
+				selectedModule.GetComponent<ModuleController> ().OnSelected (false);
+				selectedModule = null;
+				UIManagerScript.SetSelectedModule (null);
+			}
+			PlotAvailableNodes (true);
+		}
+		else {
+			selectedNode1 = null;
+			selectedNode2 = null;
+			PlotAvailableNodes (false);
+		}
+	}
+
+	public void DeleteModule () {
+		if (selectedModule != null) {
+			Destroy (selectedModule);
+			selectedModule = null;
+			UIManagerScript.SetSelectedModule (null);
 		}
 	}
 
@@ -268,23 +351,19 @@ public class Designer : MonoBehaviour {
 	}
 
 	void Connect (GameObject m1, GameObject m2) {
-
 		connectionTable.Add (m1.transform.parent.name+":"+m1.name, m2.transform.parent.name+":"+m2.name);
 		connectionTable.Add (m2.transform.parent.name+":"+m2.name, m1.transform.parent.name+":"+m1.name);
 		FixedJoint j = m1.AddComponent<FixedJoint> ();
 		j.connectedBody = m2.GetComponent<Rigidbody> ();
+		m1.transform.parent.GetComponent<ModuleController> ().OnConnectNode (m1, m2);
+		m2.transform.parent.GetComponent<ModuleController> ().OnConnectNode (m2, m1);
 	}
 
 	void FindAvailableSpots () {
 		availableNodes = new List<GameObject> ();
-
-		foreach (Transform child in robot.transform) {
-			foreach (GameObject node in child.GetComponent<ModuleController> ().nodesHashTable.Values) {
-				if (!connectionTable.ContainsKey (child.name+":"+node.name)) {
-					availableNodes.Add (node);
-				}
-			}
-
+		string  name = nodeUnderMouse.transform.parent.name+":"+nodeUnderMouse.name;
+		if (!connectionTable.ContainsKey (name)) {
+			availableNodes.Add (nodeUnderMouse);
 		}
 	}
 
@@ -340,6 +419,12 @@ public class Designer : MonoBehaviour {
 				ghostModuleToAvailableNodes[clone.gameObject] = node;
 			}
 
+		}
+	}
+
+	void PlotAvailableNodes (bool p) {
+		foreach (Transform module in robot.transform) {
+			module.GetComponent<ModuleController> ().OnShowConnection (p);
 		}
 	}
 }
