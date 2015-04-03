@@ -26,6 +26,8 @@ public class Designer : MonoBehaviour {
 	string[] nodeNames = {"FrontWheel", "LeftWheel", "BackPlate", "RightWheel"};
 	ColorManager colorManager;
 	public Button buttonDeleteModule;
+	public Button buttonConnect;
+	public Text buttonConnectText;
 
 	// Use this for initialization
 	void Start () {
@@ -82,12 +84,21 @@ public class Designer : MonoBehaviour {
 					if (selectedNode1 == null) {
 						selectedNode1 = nodeUnderMouse;
 					}
-					else if (selectedNode2 == null) {
+					else if ((selectedNode2 == null) && (selectedNode1 != nodeUnderMouse)) {
 						selectedNode2 = nodeUnderMouse;
 					}
 					else {
 						selectedNode1 = nodeUnderMouse;
 						selectedNode2 = null;
+					}
+
+					if (selectedNode2 != null) {
+						buttonConnect.GetComponent<Button> ().interactable = true;
+						buttonConnectText.text = "Connect";
+					}
+					else {
+						buttonConnect.GetComponent<Button> ().interactable = false;
+						buttonConnectText.text = "Select 2nd node";
 					}
 				}
 			}
@@ -317,6 +328,8 @@ public class Designer : MonoBehaviour {
 				selectedModule = null;
 				UIManagerScript.SetSelectedModule (null);
 			}
+			buttonConnect.GetComponent<Button> ().interactable = false;
+			buttonConnectText.text = "Select 1st node";
 			PlotAvailableNodes (true);
 		}
 		else {

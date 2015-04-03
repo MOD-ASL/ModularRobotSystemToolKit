@@ -9,6 +9,7 @@ public class PanelBottomMenuController : MonoBehaviour {
 	public Button buttonAddModule;
 	public Button buttonDeleteModule;
 	public Button buttonConnectNode;
+	public Button buttonConnect;
 	ColorManager colorManager;
 
 	// Use this for initialization
@@ -28,7 +29,12 @@ public class PanelBottomMenuController : MonoBehaviour {
 
 	public void OnClickConnectNode (float data) {
 		isConnectNode = !isConnectNode;
+		buttonConnect.gameObject.SetActive (isConnectNode);
 		UpdateButtonColor ();
+	}
+
+	void PopulateButtonList () {
+
 	}
 
 	void UpdateButtonColor () {
