@@ -30,11 +30,10 @@ public class PanelBottomMenuController : MonoBehaviour {
 	public void OnClickConnectNode (float data) {
 		isConnectNode = !isConnectNode;
 		buttonConnect.gameObject.SetActive (isConnectNode);
+		Vector2 size = gameObject.GetComponent<RectTransform> ().sizeDelta;
+		size.y = (isConnectNode) ? 96.0f : 48.0f;
+		gameObject.GetComponent<RectTransform> ().sizeDelta = size;
 		UpdateButtonColor ();
-	}
-
-	void PopulateButtonList () {
-
 	}
 
 	void UpdateButtonColor () {
