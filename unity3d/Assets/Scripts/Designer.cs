@@ -374,6 +374,12 @@ public class Designer : MonoBehaviour {
 
 	public void DeleteModule () {
 		if (selectedModule != null) {
+			foreach (GameObject node1 in selectedModule.GetComponent<ModuleController> ().nodesConnectionHashTable.Keys) {
+				GameObject node2 = selectedModule.GetComponent<ModuleController> ().nodesConnectionHashTable[node1];
+				if (node2 != null) {
+					Disconnect (node1, node2, true);
+				}
+			}
 			Destroy (selectedModule);
 			selectedModule = null;
 			UIManagerScript.SetSelectedModule (null);
@@ -405,15 +411,16 @@ public class Designer : MonoBehaviour {
 		m2.transform.parent.GetComponent<ModuleController> ().OnConnectNode (m2, m1);
 	}
 
-	void Disconnect (GameObject m1, GameObject m2) {
+	void Disconnect (GameObject m1, GameObject m2, bool byDestroy = false) {
 		connectionTable.Remove (m1.transform.parent.name+":"+m1.name);
 		connectionTable.Remove (m2.transform.parent.name+":"+m2.name);
 		Destroy (m1.GetComponent<FixedJoint> ());
 		Destroy (m2.GetComponent<FixedJoint> ());
-		m1.transform.parent.GetComponent<ModuleController> ().OnDisconnectNode (m1);
+		if (!byDestroy) {
+			m1.transform.parent.GetComponent<ModuleController> ().OnDisconnectNode (m1);
+		}
 		m2.transform.parent.GetComponent<ModuleController> ().OnDisconnectNode (m2);
 	}
-
 
 	public void OnClickConnect () {
 		if (buttonConnectText.text == "Connect") {
