@@ -93,8 +93,20 @@ public class Designer : MonoBehaviour {
 					}
 
 					if (selectedNode2 != null) {
-						buttonConnect.GetComponent<Button> ().interactable = true;
-						buttonConnectText.text = "Connect";
+						if (CheckNodeAdjacency (selectedNode1, selectedNode2)) {
+							string  name = selectedNode1.transform.parent.name+":"+selectedNode1.name;
+							if (!connectionTable.ContainsKey (name)) {
+								buttonConnect.GetComponent<Button> ().interactable = true;
+								buttonConnectText.text = "Connect";
+							}
+							else {
+								buttonConnect.GetComponent<Button> ().interactable = true;
+								buttonConnectText.text = "Disconnect";
+							}
+						}
+						else {
+							buttonConnectText.text = "Not adjacent";
+						}
 					}
 					else {
 						buttonConnect.GetComponent<Button> ().interactable = false;
@@ -118,6 +130,27 @@ public class Designer : MonoBehaviour {
 				SelectModule ();
 			}
 		}
+	}
+
+	Vector3 GetNodePosition (GameObject node) {
+		Vector3 pos;
+		if (node.name == "FrontWheel") {
+			pos = node.transform.position + node.transform.right*0.5f;
+		}
+		else if (node.name == "BackPlate") {
+			pos = node.transform.position - node.transform.right*0.5f;
+		}
+		else if (node.name == "LeftWheel") {
+			pos = node.transform.position - node.transform.up*0.5f;
+		}
+		else {
+			pos = node.transform.position + node.transform.up*0.5f;
+		}
+		return pos;
+	}
+
+	bool CheckNodeAdjacency (GameObject n1, GameObject n2) {
+		return ((GetNodePosition (n1) - GetNodePosition (n2)).magnitude < 0.01f);
 	}
 
 	GameObject FindConnectingNode (GameObject module, GameObject node) {
@@ -370,6 +403,29 @@ public class Designer : MonoBehaviour {
 		j.connectedBody = m2.GetComponent<Rigidbody> ();
 		m1.transform.parent.GetComponent<ModuleController> ().OnConnectNode (m1, m2);
 		m2.transform.parent.GetComponent<ModuleController> ().OnConnectNode (m2, m1);
+	}
+
+	void Disconnect (GameObject m1, GameObject m2) {
+		connectionTable.Remove (m1.transform.parent.name+":"+m1.name);
+		connectionTable.Remove (m2.transform.parent.name+":"+m2.name);
+		Destroy (m1.GetComponent<FixedJoint> ());
+		Destroy (m2.GetComponent<FixedJoint> ());
+		m1.transform.parent.GetComponent<ModuleController> ().OnDisconnectNode (m1);
+		m2.transform.parent.GetComponent<ModuleController> ().OnDisconnectNode (m2);
+	}
+
+
+	public void OnClickConnect () {
+		if (buttonConnectText.text == "Connect") {
+			Connect (selectedNode1, selectedNode2);
+			selectedNode1 = null;
+			selectedNode2 = null;
+		}
+		else if (buttonConnectText.text == "Disconnect") {
+			Disconnect (selectedNode1, selectedNode2);
+			selectedNode1 = null;
+			selectedNode2 = null;
+		}
 	}
 
 	void FindAvailableSpots () {
