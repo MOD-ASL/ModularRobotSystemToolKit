@@ -5,6 +5,7 @@ public class UIManager : MonoBehaviour {
 
 	GameObject selectedModule;
 	public GameObject panelModuleSetting;
+	public GameObject panelSystem;
 
 	// Use this for initialization
 	void Start () {
@@ -27,5 +28,9 @@ public class UIManager : MonoBehaviour {
 			selectedModule = module;
 			panelModuleSetting.GetComponent<PanelModuleSettingController> ().UpdateSelectedModule (selectedModule);
 		}
+	}
+
+	public void ShowSystemPanel (bool show) {
+		panelSystem.SetActive (show);
 	}
 }

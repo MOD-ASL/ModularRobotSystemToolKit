@@ -25,13 +25,16 @@ public class Designer : MonoBehaviour {
 	GameObject nodeUnderMouse;
 	string[] nodeNames = {"FrontWheel", "LeftWheel", "BackPlate", "RightWheel"};
 	ColorManager colorManager;
+	SaveLoadManager saveLoadManagerScript;
 	public Button buttonDeleteModule;
 	public Button buttonConnect;
 	public Text buttonConnectText;
+	public Text confName;
 
 	// Use this for initialization
 	void Start () {
 		UIManagerScript = gameObject.GetComponent<UIManager> ();
+		saveLoadManagerScript = gameObject.GetComponent<SaveLoadManager> ();
 		colorManager = (ColorManager) GameObject.FindObjectOfType<ColorManager> ();
 		robotState = new GameObject ();
 		robotState.name = "RobotState";
@@ -132,6 +135,14 @@ public class Designer : MonoBehaviour {
 		}
 	}
 
+	public void OnClickSave () {
+		saveLoadManagerScript.Save (robot.transform, connectionTable, confName.text);
+	}
+
+	public void OnClickLoad () {
+		saveLoadManagerScript.Load ();
+	}
+
 	Vector3 GetNodePosition (GameObject node) {
 		Vector3 pos;
 		if (node.name == "FrontWheel") {
@@ -192,7 +203,7 @@ public class Designer : MonoBehaviour {
 				selectedModule = parent;
 				selectedModule.GetComponent<ModuleController> ().OnSelected (true);
 				UIManagerScript.SetSelectedModule (selectedModule);
-				if (parent.name == "SMORES 0") {
+				if (parent.name == "SMORES_0") {
 					buttonDeleteModule.GetComponent<Button> ().interactable = false;
 				}
 				else {
@@ -247,7 +258,7 @@ public class Designer : MonoBehaviour {
 		connectionTable = new Hashtable ();
 		UIManagerScript.SetSelectedModule (null);
 		Transform clone = Instantiate (modulePrefab, new Vector3 (0, 3, 0), Quaternion.identity) as Transform;
-		clone.name = "SMORES 0";
+		clone.name = "SMORES_0";
 		clone.SetParent (robot.transform);
 	}
 
@@ -289,7 +300,7 @@ public class Designer : MonoBehaviour {
 			List<GameObject> children = new List<GameObject>();
 			foreach (Transform child in robotState.transform) children.Add(child.gameObject);
 			foreach (GameObject child in children) {
-				if (child.name == "SMORES 0") {
+				if (child.name == "SMORES_0") {
 					child.GetComponent<ModuleController> ().SetMode (0);
 				}
 				else {
@@ -396,10 +407,10 @@ public class Designer : MonoBehaviour {
 
 	string FindNextAvailableName () {
 		int i = 1;
-		while (GameObject.Find ("SMORES " + i.ToString ()) != null) {
+		while (GameObject.Find ("SMORES_" + i.ToString ()) != null) {
 			i++;
 		}
-		return "SMORES " + i.ToString ();
+		return "SMORES_" + i.ToString ();
 	}
 
 	void Connect (GameObject m1, GameObject m2) {

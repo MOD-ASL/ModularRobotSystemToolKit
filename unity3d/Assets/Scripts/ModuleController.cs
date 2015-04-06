@@ -57,6 +57,23 @@ public class ModuleController : MonoBehaviour {
 
 	}
 
+	public string GetPositionInString () {
+		Vector3 position = partsHashTable["Body"].transform.position;
+		Quaternion q = partsHashTable["Body"].transform.rotation;
+
+		return string.Format ("{0,1:0.000} {1,1:0.000} {2,1:0.000} {3,1:0.000} {4,1:0.000} {5,1:0.000} {6,1:0.000}", 
+		                      position.x, position.y, position.z, q.w, q.x, q.y, q.z);
+	}
+
+	public string GetJointAnglesInString () {
+		float f = jointsHashTable[PartNames.FrontWheel.ToString ()].spring.targetPosition/180.0f*Mathf.PI;
+		float l = jointsHashTable[PartNames.LeftWheel.ToString ()].spring.targetPosition/180.0f*Mathf.PI;
+		float r = jointsHashTable[PartNames.RightWheel.ToString ()].spring.targetPosition/180.0f*Mathf.PI;
+		float c = jointsHashTable[PartNames.Body.ToString ()].spring.targetPosition/180.0f*Mathf.PI;
+
+		return string.Format ("{0,1:0.000} {1,1:0.000} {2,1:0.000} {3,1:0.000}", f, l, r, c);
+	}
+
 	// set the mode and update the module accordingly
 	public void SetMode (int mode) {
 		currentMode = mode;

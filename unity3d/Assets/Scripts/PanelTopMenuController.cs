@@ -8,6 +8,8 @@ public class PanelTopMenuController : MonoBehaviour {
 	public Button buttonClear;
 	public Button buttonBringToGround;
 	public Button buttonModuleSetting;
+	public Button buttonSystem;
+	bool isSystem = false;
 	bool isSimulate = false;
 	bool isAddModule = false;
 	bool isConnectNode = false;
@@ -25,6 +27,11 @@ public class PanelTopMenuController : MonoBehaviour {
 
 	public void OnClickSimulate (float data) {
 		isSimulate = !isSimulate;
+		UpdateButtonColor ();
+	}
+
+	public void OnClickSystem (float data) {
+		isSystem = !isSystem;
 		UpdateButtonColor ();
 	}
 
@@ -47,14 +54,23 @@ public class PanelTopMenuController : MonoBehaviour {
 			buttonClear.GetComponent<Button> ().interactable = false;
 			buttonBringToGround.GetComponent<Button> ().interactable = false;
 			buttonModuleSetting.GetComponent<Button> ().interactable = false;
+			buttonSystem.GetComponent<Button> ().interactable = false;
 		}
 		else if (isAddModule) {
 			buttonSimulate.GetComponent<Button> ().interactable = false;
 			buttonClear.GetComponent<Button> ().interactable = false;
 			buttonBringToGround.GetComponent<Button> ().interactable = false;
 			buttonModuleSetting.GetComponent<Button> ().interactable = false;
+			buttonSystem.GetComponent<Button> ().interactable = false;
 		}
 		else if (isConnectNode) {
+			buttonSimulate.GetComponent<Button> ().interactable = false;
+			buttonClear.GetComponent<Button> ().interactable = false;
+			buttonBringToGround.GetComponent<Button> ().interactable = false;
+			buttonModuleSetting.GetComponent<Button> ().interactable = false;
+			buttonSystem.GetComponent<Button> ().interactable = false;
+		}
+		else if (isSystem) {
 			buttonSimulate.GetComponent<Button> ().interactable = false;
 			buttonClear.GetComponent<Button> ().interactable = false;
 			buttonBringToGround.GetComponent<Button> ().interactable = false;
@@ -68,6 +84,7 @@ public class PanelTopMenuController : MonoBehaviour {
 			buttonClear.GetComponent<Button> ().interactable = true;
 			buttonBringToGround.GetComponent<Button> ().interactable = true;
 			buttonModuleSetting.GetComponent<Button> ().interactable = true;
+			buttonSystem.GetComponent<Button> ().interactable = true;
 		}
 	}
 }
