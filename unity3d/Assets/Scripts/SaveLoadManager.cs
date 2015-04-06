@@ -5,6 +5,9 @@ using System.IO;
 using System.Xml; 
 using System.Xml.Serialization;
 using UnityEngine.UI;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 public class SaveLoadManager : MonoBehaviour {
 	// Use this for initialization
@@ -58,6 +61,7 @@ public class SaveLoadManager : MonoBehaviour {
 			}
 			doneList.Add (n1);
 			string n2 = (string) c.Value;
+			doneList.Add (n2);
 
 			XmlNode cNode = xmlDoc.CreateElement ("connection");
 			XmlNode m1 = xmlDoc.CreateElement ("module1");
@@ -82,8 +86,15 @@ public class SaveLoadManager : MonoBehaviour {
 			connectionsNode.AppendChild (cNode);
 		}
 
-
+		#if UNITY_EDITOR
+		string filename = EditorUtility.SaveFilePanel(
+			"Save Configuration",
+			Application.dataPath,
+			name + ".conf",
+			"conf");
+		#else
 		string filename = Path.Combine (Application.dataPath, name + ".conf");
+		#endif
 		xmlDoc.Save (filename);
 	}
 

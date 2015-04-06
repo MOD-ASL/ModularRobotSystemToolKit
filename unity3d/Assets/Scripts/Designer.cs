@@ -167,27 +167,23 @@ public class Designer : MonoBehaviour {
 	GameObject FindConnectingNode (GameObject module, GameObject node) {
 		int angle;
 		string nodeName;
+
+		angle = Mathf.RoundToInt(module.transform.rotation.eulerAngles.y - node.transform.parent.rotation.eulerAngles.y);
+		int id = angle / 90;
+		if (id < 0) id +=4;
+
 		if (node.name == "FrontWheel") {
-			angle = Mathf.RoundToInt(module.transform.rotation.eulerAngles.y);
-			int id = angle % 90;
 			nodeName = nodeNames[(id + 2) % 4];
 		}
 		else if (node.name == "BackPlate") {
-			angle = Mathf.RoundToInt(module.transform.rotation.eulerAngles.y);
-			int id = angle % 90;
 			nodeName = nodeNames[id];
 		}
 		else if (node.name == "LeftWheel") {
-			angle = Mathf.RoundToInt(module.transform.rotation.eulerAngles.y);
-			int id = angle % 90;
 			nodeName = nodeNames[(id + 3) % 4];
 		}
 		else {
-			angle = Mathf.RoundToInt(module.transform.rotation.eulerAngles.y);
-			int id = angle % 90;
 			nodeName = nodeNames[(id + 1) % 4];
 		}
-
 		return module.GetComponent<ModuleController> ().partsHashTable[nodeName];
 	}
 
