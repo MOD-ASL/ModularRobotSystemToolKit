@@ -2,7 +2,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using System.Xml; 
+using System.Xml;
+using System;
 using System.Xml.Serialization;
 using UnityEngine.UI;
 #if UNITY_EDITOR
@@ -10,9 +11,17 @@ using UnityEditor;
 #endif
 
 public class SaveLoadManager : MonoBehaviour {
+	public Transform SMORES;
+	enum jointNameEnum {FrontWheel, LeftWheel, RightWheel, Body};
+	enum nodeNameEnum {FrontWheel, LeftWheel, RightWheel, BackPlate};
+	public Hashtable connectionTable = new Hashtable ();
+	public int newConfCount;
+	GameObject newConf;
+	XmlDocument xmlDoc;
+
 	// Use this for initialization
 	void Start () {
-
+		newConfCount = 0;
 	}
 	
 	// Update is called once per frame
@@ -98,8 +107,97 @@ public class SaveLoadManager : MonoBehaviour {
 		xmlDoc.Save (filename);
 	}
 
-	public void Load () {
+	public GameObject Load () {
 
+		#if UNITY_EDITOR
+		string filename = EditorUtility.OpenFilePanel(
+			"Save Configuration",
+			Application.dataPath,
+			"conf");
+		#else
+		string filename = "";
+		#endif
+
+		newConf = new GameObject ();
+		newConf.name = Path.GetFileNameWithoutExtension(filename)+newConfCount.ToString ();
+		connectionTable = new Hashtable ();
+
+		xmlDoc = new XmlDocument ();
+		xmlDoc.Load(filename);
+		XmlNode modulesEL = xmlDoc.SelectSingleNode ("configuration/modules");
+
+		foreach (XmlNode el in modulesEL.SelectNodes ("module")) {
+			CreateModule (el);
+		}
+		return newConf;
+	}
+
+	public void ConnectAllModules () {
+		XmlNode connectionsEL = xmlDoc.SelectSingleNode ("configuration/connections");
+		foreach (XmlNode el in connectionsEL.SelectNodes ("connection")) {
+			string module1Name = el.SelectSingleNode ("module1").InnerText;
+			string module2Name = el.SelectSingleNode ("module2").InnerText;
+			string node1Name = Enum.GetName(typeof(nodeNameEnum), int.Parse(el.SelectSingleNode ("node1").InnerText));
+			string node2Name = Enum.GetName(typeof(nodeNameEnum), int.Parse(el.SelectSingleNode ("node2").InnerText));
+			
+			Transform module1 = newConf.transform.FindChild (module1Name+"_"+newConf.name);
+			Transform module2 = newConf.transform.FindChild (module2Name+"_"+newConf.name);
+
+			Transform node1 = module1.FindChild(node1Name);
+			Transform node2 = module2.FindChild(node2Name);
+			
+			Connect (node1.gameObject, node2.gameObject);
+			module1.GetComponent<ModuleController> ().SetMode (1);
+			module2.GetComponent<ModuleController> ().SetMode (1);
+			module1.GetComponent<ModuleController> ().SetToTrigger (false);
+			module2.GetComponent<ModuleController> ().SetToTrigger (false);
+		}
+	}
+
+	Transform CreateModule (XmlNode el) {
+		string name = el.SelectSingleNode ("name").InnerText;
+		string[] position_str = el.SelectSingleNode ("position").InnerText.Split(' ');
+		string[] joints_str = el.SelectSingleNode ("joints").InnerText.Split(' ');
+		
+		float x = float.Parse(position_str[0]);
+		float y = float.Parse(position_str[1]);
+		float z = float.Parse(position_str[2]);
+		Quaternion rot;
+		
+		if (position_str.Length == 6) {
+			rot = Quaternion.identity;
+		}
+		else {
+			float rotW = float.Parse(position_str[3]);
+			float rotX = float.Parse(position_str[4]);
+			float rotY = float.Parse(position_str[5]);
+			float rotZ = float.Parse(position_str[6]);
+
+			rot = new Quaternion(rotX, rotY, rotZ, rotW);
+		}
+		
+		Transform clone = Instantiate(SMORES, new Vector3(x, y, z), rot) as Transform;
+		clone.name = name+"_"+newConf.name;
+		clone.transform.Rotate (Vector3.right, 90.0f);
+		clone.SetParent(newConf.transform);
+		clone.GetComponent<ModuleController> ().SetToTrigger (true);
+
+		int id = -1;
+		foreach(string joint_str in joints_str) {
+			id++;
+			string jointName = Enum.GetName(typeof(jointNameEnum), id);
+			clone.GetComponent<ModuleController>().UpdateJointAngle (float.Parse(joint_str), jointName);
+		}
+		return clone;
+	}
+
+	void Connect (GameObject m1, GameObject m2) {
+		connectionTable.Add (m1.transform.parent.name+":"+m1.name, m2.transform.parent.name+":"+m2.name);
+		connectionTable.Add (m2.transform.parent.name+":"+m2.name, m1.transform.parent.name+":"+m1.name);
+		FixedJoint j = m1.AddComponent<FixedJoint> ();
+		j.connectedBody = m2.GetComponent<Rigidbody> ();
+		m1.transform.parent.GetComponent<ModuleController> ().OnConnectNode (m1, m2);
+		m2.transform.parent.GetComponent<ModuleController> ().OnConnectNode (m2, m1);
 	}
 
 	string GetNodeIndex (string node) {

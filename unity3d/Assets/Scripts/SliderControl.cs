@@ -42,6 +42,10 @@ public class SliderControl : MonoBehaviour {
 		slider.value = target.GetComponent<ModuleController> ().GetJointValue (jointName);
 	}
 
+	public void UpdateSliderValue (string newValue) {
+		slider.value = float.Parse(newValue);
+	}
+
 	public void Reset () {
 		slider.onValueChanged.RemoveAllListeners ();
 		slider.value = 0.0f;

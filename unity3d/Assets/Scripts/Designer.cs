@@ -16,6 +16,7 @@ public class Designer : MonoBehaviour {
 	bool isSimulate = false;
 	bool isAddModule = false;
 	bool isConnectNode = false;
+	bool isDrag = false;
 	public Transform modulePrefab; 
 	Hashtable connectionTable = new Hashtable ();
 	Hashtable ghostModuleToAvailableNodes = new Hashtable (); // ghost module to node
@@ -30,6 +31,7 @@ public class Designer : MonoBehaviour {
 	public Button buttonConnect;
 	public Text buttonConnectText;
 	public Text confName;
+	GameObject newConf;
 
 	// Use this for initialization
 	void Start () {
@@ -39,6 +41,7 @@ public class Designer : MonoBehaviour {
 		robotState = new GameObject ();
 		robotState.name = "RobotState";
 		ghostModules = new GameObject ();
+		newConf = new GameObject ();
 		ghostModules.name = "GhostModules";
 		Clear ();
 	}
@@ -61,7 +64,7 @@ public class Designer : MonoBehaviour {
 				Renderer rend = ((GameObject) ghostModuleToAvailableNodes[moduleUnderMouse]).GetComponent<Renderer> ();
 				rend.material.color = colorManager.moduleSelected;
 
-				if(Input.GetMouseButtonDown(0)) {
+				if (Input.GetMouseButtonDown(0)) {
 					moduleUnderMouse.name = FindNextAvailableName ();
 					moduleUnderMouse.transform.parent = robot.transform;
 					moduleUnderMouse.tag = "Module";
@@ -96,19 +99,25 @@ public class Designer : MonoBehaviour {
 					}
 
 					if (selectedNode2 != null) {
-						if (CheckNodeAdjacency (selectedNode1, selectedNode2)) {
-							string  name = selectedNode1.transform.parent.name+":"+selectedNode1.name;
-							if (!connectionTable.ContainsKey (name)) {
-								buttonConnect.GetComponent<Button> ().interactable = true;
-								buttonConnectText.text = "Connect";
-							}
-							else {
-								buttonConnect.GetComponent<Button> ().interactable = true;
-								buttonConnectText.text = "Disconnect";
-							}
+						if (!CheckDifferentConf (selectedNode1, selectedNode2)) {
+							buttonConnect.GetComponent<Button> ().interactable = true;
+							buttonConnectText.text = "Connect two conf";
 						}
 						else {
-							buttonConnectText.text = "Not adjacent";
+							if (CheckNodeAdjacency (selectedNode1, selectedNode2)) {
+								string  name = selectedNode1.transform.parent.name+":"+selectedNode1.name;
+								if (!connectionTable.ContainsKey (name)) {
+									buttonConnect.GetComponent<Button> ().interactable = true;
+									buttonConnectText.text = "Connect";
+								}
+								else {
+									buttonConnect.GetComponent<Button> ().interactable = true;
+									buttonConnectText.text = "Disconnect";
+								}
+							}
+							else {
+								buttonConnectText.text = "Not adjacent";
+							}
 						}
 					}
 					else {
@@ -133,6 +142,33 @@ public class Designer : MonoBehaviour {
 				SelectModule ();
 			}
 		}
+
+		if (isDrag) {
+			float distCam2Origin = Camera.main.transform.position.magnitude;
+			Vector3 newPos = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, distCam2Origin));
+			newConf.transform.position = newPos;
+			if (Input.GetMouseButtonDown (0)) {
+				saveLoadManagerScript.ConnectAllModules ();
+				foreach (string m1 in saveLoadManagerScript.connectionTable.Keys) {
+					string m2 = (string) saveLoadManagerScript.connectionTable[m1];
+					connectionTable.Add (m1, m2);
+				}
+				saveLoadManagerScript.newConfCount += 1;
+				isDrag = false;
+			}
+			if (Input.GetKeyDown (KeyCode.R)) {
+				newConf.transform.Rotate (newConf.transform.up, 90.0f, Space.World);
+			}
+			if (Input.GetKeyDown (KeyCode.Escape)) {
+				isDrag = false;
+				Destroy (newConf);
+				newConf = new GameObject ();
+			}
+		}
+	}
+
+	bool CheckDifferentConf (GameObject n1, GameObject n2) {
+		return (n1.transform.parent.parent == n2.transform.parent.parent);
 	}
 
 	public void OnClickSave () {
@@ -140,7 +176,9 @@ public class Designer : MonoBehaviour {
 	}
 
 	public void OnClickLoad () {
-		saveLoadManagerScript.Load ();
+		newConf = saveLoadManagerScript.Load ();
+
+		isDrag = true;
 	}
 
 	Vector3 GetNodePosition (GameObject node) {
@@ -200,7 +238,7 @@ public class Designer : MonoBehaviour {
 				selectedModule.GetComponent<ModuleController> ().OnSelected (true);
 				UIManagerScript.SetSelectedModule (selectedModule);
 				if (parent.name == "SMORES_0") {
-					buttonDeleteModule.GetComponent<Button> ().interactable = false;
+					buttonDeleteModule.GetComponent<Button> ().interactable = true;
 				}
 				else {
 					buttonDeleteModule.GetComponent<Button> ().interactable = true;
@@ -440,6 +478,41 @@ public class Designer : MonoBehaviour {
 			selectedNode1 = null;
 			selectedNode2 = null;
 		}
+		else if (buttonConnectText.text == "Connect two conf") {
+			MoveNewConf (selectedNode1, selectedNode2);
+			Connect (selectedNode1, selectedNode2);
+			selectedNode1 = null;
+			selectedNode2 = null;
+		}
+		buttonConnect.GetComponent<Button> ().interactable = false;
+		buttonConnectText.text = "Select 1st node";
+	}
+
+	void MoveNewConf (GameObject n1, GameObject n2) {
+		GameObject baseNode;
+		GameObject remoteNode;
+
+		if (n1.transform.parent.parent.name != "Robot") {
+			baseNode = n2;
+			remoteNode = n1;
+		}
+		else {
+			baseNode = n1;
+			remoteNode = n2;
+		}
+
+		Vector3 posDiff = GetNodePosition (baseNode) - GetNodePosition (remoteNode);
+
+		foreach (Transform module in newConf.transform) {
+			module.transform.position += posDiff;
+		}
+
+		List<GameObject> children = new List<GameObject>();
+		foreach (Transform child in newConf.transform) children.Add(child.gameObject);
+		foreach(GameObject child in children) { 
+		    child.transform.SetParent (robot.transform);
+			child.GetComponent<ModuleController> ().SetToTrigger (false);
+		}
 	}
 
 	void FindAvailableSpots () {
@@ -496,7 +569,7 @@ public class Designer : MonoBehaviour {
 				clone.tag = "Ghost";
 				clone.parent = ghostModules.transform;
 				clone.GetComponent<ModuleController> ().SetToTrigger (true);
-				clone.transform.Rotate (transform.right, 90.0f);
+				clone.transform.Rotate (Vector3.right, 90.0f);
 				clone.GetComponent<ModuleController> ().OnHighlighted (false);
 
 				ghostModuleToAvailableNodes[clone.gameObject] = node;
@@ -507,6 +580,9 @@ public class Designer : MonoBehaviour {
 
 	void PlotAvailableNodes (bool p) {
 		foreach (Transform module in robot.transform) {
+			module.GetComponent<ModuleController> ().OnShowConnection (p);
+		}
+		foreach (Transform module in newConf.transform) {
 			module.GetComponent<ModuleController> ().OnShowConnection (p);
 		}
 	}
