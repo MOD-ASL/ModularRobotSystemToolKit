@@ -1,102 +1,88 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine.UI;
 
 public class PanelBottomMenuController : MonoBehaviour {
-	bool isSimulate = false;
-	bool isAddModule = false;
-	bool isConnectNode = false;
-	bool isSystem = false;
+
 	public Button buttonSystem;
 	public Button buttonAddModule;
 	public Button buttonDeleteModule;
-	public Button buttonConnectNode;
+	public Button buttonConnectNodes;
 	public Button buttonConnect;
+    public Button buttonRecordBehavior;
+
+    private List<Button> allButtons;
+
 	ColorManager colorManager;
 	UIManager UIManagerScript;
+    public ModeManager modeManager;
 
 	// Use this for initialization
 	void Start () {
 		UIManagerScript = (UIManager) GameObject.FindObjectOfType<UIManager> ();
 		colorManager = (ColorManager) GameObject.FindObjectOfType<ColorManager> ();
+        allButtons = new List<Button> () {buttonSystem, buttonAddModule, buttonDeleteModule, buttonConnect, buttonConnectNodes, buttonRecordBehavior};
 	}
 
-	public void OnClickSimulate (float data) {
-		isSimulate = !isSimulate;
-		UpdateButtonColor ();
-	}
+    // Set all buttons to be interactable or not
+    void SetAllButtonsInteractableOrNot (bool interactable) {
+        allButtons.ForEach (b => b.GetComponent<Button> ().interactable = interactable);
+    }
 
-	public void OnClickAddModule (float data) {
-		isAddModule = !isAddModule;
-		UpdateButtonColor ();
-	}
-
-	public void OnClickSystem (float data) {
-		isSystem = !isSystem;
-		UpdateButtonColor ();
-	}
-
-	public void OnClickConnectNode (float data) {
-		isConnectNode = !isConnectNode;
-		buttonConnect.gameObject.SetActive (isConnectNode);
-		Vector2 size = gameObject.GetComponent<RectTransform> ().sizeDelta;
-		size.y = (isConnectNode) ? 96.0f : 48.0f;
-		gameObject.GetComponent<RectTransform> ().sizeDelta = size;
-		UpdateButtonColor ();
-	}
+    public void ChangeMode () {
+        UpdateButtonColor ();
+    }
 
 	void UpdateButtonColor () {
-		ColorBlock cb;
-		if (isAddModule) {
-			cb = buttonAddModule.colors;
-			cb.normalColor =  colorManager.buttonInMode;
-			buttonAddModule.colors = cb;
-			buttonConnectNode.GetComponent<Button> ().interactable = false;
-			buttonDeleteModule.GetComponent<Button> ().interactable = false;
-			buttonSystem.GetComponent<Button> ().interactable = false;
+        SetAllButtonsInteractableOrNot (false);
+		if (modeManager.IsAddModule) {
+            OnButtonInModeOrNot (buttonAddModule, true);
+			buttonAddModule.GetComponent<Button> ().interactable = true;
 		}
-		else if (isConnectNode) {
-			cb = buttonConnectNode.colors;
-			cb.normalColor =  colorManager.buttonInMode;
-			buttonConnectNode.colors = cb;
-			buttonAddModule.GetComponent<Button> ().interactable = false;
-			buttonDeleteModule.GetComponent<Button> ().interactable = false;
-			buttonSystem.GetComponent<Button> ().interactable = false;
+		else if (modeManager.IsConnectNodes) {
+            OnButtonInModeOrNot (buttonConnectNodes, true);
+            buttonConnectNodes.GetComponent<Button> ().interactable = true;
+
+            OnConnectNodes ();
 		}
-		else if (isSimulate) {
-			buttonAddModule.GetComponent<Button> ().interactable = false;
-			buttonConnectNode.GetComponent<Button> ().interactable = false;
-			buttonDeleteModule.GetComponent<Button> ().interactable = false;
-			buttonSystem.GetComponent<Button> ().interactable = false;
-		}
-		else if (isSystem) {
-			cb = buttonSystem.colors;
-			cb.normalColor =  colorManager.buttonInMode;
-			buttonSystem.colors = cb;
-			buttonAddModule.GetComponent<Button> ().interactable = false;
-			buttonConnectNode.GetComponent<Button> ().interactable = false;
-			buttonDeleteModule.GetComponent<Button> ().interactable = false;
-			UIManagerScript.ShowSystemPanel (isSystem);
+		else if (modeManager.IsSimulate) {}
+        else if (modeManager.IsRecordBehavior) {}
+		else if (modeManager.IsSystem) {
+            OnButtonInModeOrNot (buttonSystem, true);
+            buttonSystem.GetComponent<Button> ().interactable = true;
+            UIManagerScript.ShowSystemPanel (true);
 		}
 		else {
-			cb = buttonAddModule.colors;
-			cb.normalColor =  colorManager.buttonNormal;
-			buttonAddModule.colors = cb;
-			cb = buttonConnectNode.colors;
-			cb.normalColor =  colorManager.buttonNormal;
-			buttonConnectNode.colors = cb;
-			cb = buttonSystem.colors;
-			cb.normalColor =  colorManager.buttonNormal;
-			buttonSystem.colors = cb;
-			buttonAddModule.GetComponent<Button> ().interactable = true;
-			buttonConnectNode.GetComponent<Button> ().interactable = true;
-			buttonDeleteModule.GetComponent<Button> ().interactable = true;
-			buttonSystem.GetComponent<Button> ().interactable = true;
-			UIManagerScript.ShowSystemPanel (isSystem);
+            OnButtonInModeOrNot (buttonAddModule, false);
+            OnButtonInModeOrNot (buttonConnectNodes, false);
+            OnButtonInModeOrNot (buttonSystem, false);
+            SetAllButtonsInteractableOrNot (true);
+            UIManagerScript.ShowSystemPanel (modeManager.IsSystem);
+            OnConnectNodes ();
 		}
 	}
 
-	// Update is called once per frame
+    void OnButtonInModeOrNot (Button b, bool inMode) {
+        ColorBlock cb;
+        cb = b.colors;
+        if (inMode) {
+            cb.normalColor =  colorManager.buttonInMode;
+        }
+        else {
+            cb.normalColor =  colorManager.buttonNormal;
+        }
+        b.colors = cb;
+    }
+
+    void OnConnectNodes () {
+        buttonConnect.gameObject.SetActive (modeManager.IsConnectNodes);
+        Vector2 size = gameObject.GetComponent<RectTransform> ().sizeDelta;
+        size.y = (modeManager.IsConnectNodes) ? 96.0f : 48.0f;
+        gameObject.GetComponent<RectTransform> ().sizeDelta = size;
+    }
+    
+    // Update is called once per frame
 	void Update () {
 	
 	}

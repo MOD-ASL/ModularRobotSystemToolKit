@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine.UI;
 
 public class PanelTopMenuController : MonoBehaviour {
@@ -8,16 +9,15 @@ public class PanelTopMenuController : MonoBehaviour {
 	public Button buttonClear;
 	public Button buttonBringToGround;
 	public Button buttonModuleSetting;
-	public Button buttonSystem;
-	bool isSystem = false;
-	bool isSimulate = false;
-	bool isAddModule = false;
-	bool isConnectNode = false;
-	ColorManager colorManager;
+
+	private List<Button> allButtons;
+
+	public ColorManager colorManager;
+	public ModeManager modeManager;
 
 	// Use this for initialization
 	void Start () {
-		colorManager = (ColorManager) GameObject.FindObjectOfType<ColorManager> ();
+		allButtons = new List<Button> () {buttonSimulate, buttonClear, buttonModuleSetting, buttonBringToGround};
 	}
 	
 	// Update is called once per frame
@@ -25,66 +25,40 @@ public class PanelTopMenuController : MonoBehaviour {
 	
 	}
 
-	public void OnClickSimulate (float data) {
-		isSimulate = !isSimulate;
+	// Set all buttons to be interactable or not
+	void SetAllButtonsInteractableOrNot (bool interactable) {
+		allButtons.ForEach (b => b.GetComponent<Button> ().interactable = interactable);
+	}
+
+	public void ChangeMode () {
 		UpdateButtonColor ();
 	}
 
-	public void OnClickSystem (float data) {
-		isSystem = !isSystem;
-		UpdateButtonColor ();
-	}
-
-	public void OnClickAddModule (float data) {
-		isAddModule = !isAddModule;
-		UpdateButtonColor ();
-	}
-
-	public void OnClickConnectNode (float data) {
-		isConnectNode = !isConnectNode;
-		UpdateButtonColor ();
-	}
+    void OnButtonInModeOrNot (Button b, bool inMode) {
+        ColorBlock cb;
+        cb = b.colors;
+        if (inMode) {
+            cb.normalColor =  colorManager.buttonInMode;
+        }
+        else {
+            cb.normalColor =  colorManager.buttonNormal;
+        }
+        b.colors = cb;
+    }
 
 	void UpdateButtonColor () {
-		ColorBlock cb;
-		if (isSimulate) {
-			cb = buttonSimulate.colors;
-			cb.normalColor =  colorManager.buttonInMode;
-			buttonSimulate.colors = cb;
-			buttonClear.GetComponent<Button> ().interactable = false;
-			buttonBringToGround.GetComponent<Button> ().interactable = false;
-			buttonModuleSetting.GetComponent<Button> ().interactable = false;
-			buttonSystem.GetComponent<Button> ().interactable = false;
-		}
-		else if (isAddModule) {
-			buttonSimulate.GetComponent<Button> ().interactable = false;
-			buttonClear.GetComponent<Button> ().interactable = false;
-			buttonBringToGround.GetComponent<Button> ().interactable = false;
-			buttonModuleSetting.GetComponent<Button> ().interactable = false;
-			buttonSystem.GetComponent<Button> ().interactable = false;
-		}
-		else if (isConnectNode) {
-			buttonSimulate.GetComponent<Button> ().interactable = false;
-			buttonClear.GetComponent<Button> ().interactable = false;
-			buttonBringToGround.GetComponent<Button> ().interactable = false;
-			buttonModuleSetting.GetComponent<Button> ().interactable = false;
-			buttonSystem.GetComponent<Button> ().interactable = false;
-		}
-		else if (isSystem) {
-			buttonSimulate.GetComponent<Button> ().interactable = false;
-			buttonClear.GetComponent<Button> ().interactable = false;
-			buttonBringToGround.GetComponent<Button> ().interactable = false;
-			buttonModuleSetting.GetComponent<Button> ().interactable = false;
-		}
-		else {
-			cb = buttonSimulate.colors;
-			cb.normalColor =  colorManager.buttonNormal;
-			buttonSimulate.colors = cb;
+		SetAllButtonsInteractableOrNot (false);
+		if (modeManager.IsSimulate) {
+            OnButtonInModeOrNot (buttonSimulate, true);
 			buttonSimulate.GetComponent<Button> ().interactable = true;
-			buttonClear.GetComponent<Button> ().interactable = true;
-			buttonBringToGround.GetComponent<Button> ().interactable = true;
-			buttonModuleSetting.GetComponent<Button> ().interactable = true;
-			buttonSystem.GetComponent<Button> ().interactable = true;
+		}
+		else if (modeManager.IsAddModule) {}
+		else if (modeManager.IsConnectNodes) {}
+		else if (modeManager.IsSystem) {}
+		else if (modeManager.IsRecordBehavior) {}
+		else {
+			OnButtonInModeOrNot (buttonSimulate, false);
+			SetAllButtonsInteractableOrNot (true);
 		}
 	}
 }

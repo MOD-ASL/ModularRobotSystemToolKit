@@ -10,12 +10,10 @@ public class Designer : MonoBehaviour {
 	GameObject selectedNode1;
 	GameObject selectedNode2;
 	UIManager UIManagerScript;
+    public ModeManager modeManager;
 	GameObject robotState;
 	GameObject ghostModules;
 	public GameObject robot;
-	bool isSimulate = false;
-	bool isAddModule = false;
-	bool isConnectNode = false;
 	bool isDrag = false;
 	public Transform modulePrefab; 
 	Hashtable connectionTable = new Hashtable ();
@@ -48,10 +46,10 @@ public class Designer : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		if (isSimulate) {
+		if (modeManager.IsSimulate) {
 
 		}
-		else if (isAddModule) {
+		else if (modeManager.IsAddModule) {
 			PlotAvailableNodes (true);
 			nodeUnderMouse = FindNodeUnderMouse ();
 			moduleUnderMouse = FindModuleUnderMouse ();
@@ -80,7 +78,7 @@ public class Designer : MonoBehaviour {
 				}
 			}
 		}
-		else if (isConnectNode) {
+		else if (modeManager.IsConnectNodes) {
 			PlotAvailableNodes (true);
 			nodeUnderMouse = FindNodeUnderMouse ();
 			if (nodeUnderMouse != null) {
@@ -303,8 +301,7 @@ public class Designer : MonoBehaviour {
 	}
 
 	public void Simulate () {
-		isSimulate = !isSimulate;
-		if (isSimulate) {
+		if (modeManager.IsSimulate) {
 			if (selectedModule != null) {
 				selectedModule.GetComponent<ModuleController> ().OnSelected (false);
 				selectedModule = null;
@@ -381,8 +378,7 @@ public class Designer : MonoBehaviour {
 	}
 
 	public void AddModule () {
-		isAddModule = !isAddModule;
-		if (isAddModule) {
+		if (modeManager.IsAddModule) {
 			if (selectedModule != null) {
 				selectedModule.GetComponent<ModuleController> ().OnSelected (false);
 				selectedModule = null;
@@ -399,8 +395,7 @@ public class Designer : MonoBehaviour {
 	}
 
 	public void ConnectNode () {
-		isConnectNode = !isConnectNode;
-		if (isConnectNode) {
+		if (modeManager.IsConnectNodes) {
 			if (selectedModule != null) {
 				selectedModule.GetComponent<ModuleController> ().OnSelected (false);
 				selectedModule = null;
