@@ -8,6 +8,7 @@ public class UIManager : MonoBehaviour {
 	public GameObject panelSystem;
     public GameObject panelTopMenu;
     public GameObject panelBottomMenu;
+    public GameObject panelBehaviorManager;
 
 	// Use this for initialization
 	void Start () {
@@ -35,6 +36,10 @@ public class UIManager : MonoBehaviour {
 	public void ShowSystemPanel (bool show) {
 		panelSystem.SetActive (show);
 	}
+
+    public void ShowBehaviorManagerPanel (bool show) {
+        panelBehaviorManager.SetActive (show);
+    }
 
     public void ChangeMode () {
         panelTopMenu.GetComponent<PanelTopMenuController> ().ChangeMode ();

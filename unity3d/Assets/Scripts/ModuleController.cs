@@ -19,7 +19,7 @@ public class ModuleController : MonoBehaviour {
 
 	// constant
 	float jointSpringForce = 100000.0f;
-	float jointDamperForce = 30.0f;
+	public float jointDamperForce = 3000.0f;
 
 	// define enum for part name
 	public enum PartNames {BackPlate, Body, RightWheel, LeftWheel, FrontWheel};
@@ -74,6 +74,15 @@ public class ModuleController : MonoBehaviour {
 		return string.Format ("{0,1:0.000} {1,1:0.000} {2,1:0.000} {3,1:0.000}", f, l, r, c);
 	}
 
+    public float[] GetJointAnglesInArray () {
+        float f = jointsHashTable[PartNames.FrontWheel.ToString ()].spring.targetPosition;
+        float l = jointsHashTable[PartNames.LeftWheel.ToString ()].spring.targetPosition;
+        float r = jointsHashTable[PartNames.RightWheel.ToString ()].spring.targetPosition;
+        float c = jointsHashTable[PartNames.Body.ToString ()].spring.targetPosition;
+        
+        return new float[4] {f, l, r, c};
+    }
+
 	// set the mode and update the module accordingly
 	public void SetMode (int mode) {
 		currentMode = mode;
@@ -86,6 +95,21 @@ public class ModuleController : MonoBehaviour {
 			UpdateJointAngle (module.GetComponent<ModuleController> ().GetJointValue (jointName), jointName);
 		}
 	}
+
+    // update the joint target positions based on the corresponding joint from the given module state
+    public bool UpdateJointsFromModuleState (ModuleState mState) {
+        bool reached;
+        UpdateJointAngle (mState.jointAngles[0], PartNames.FrontWheel.ToString ());
+        reached = (Mathf.Abs (mState.jointAngles[0] - GetJointValue (PartNames.FrontWheel.ToString (), false)) < 2f);
+        UpdateJointAngle (mState.jointAngles[1], PartNames.LeftWheel.ToString ());
+        reached = (Mathf.Abs (mState.jointAngles[1] - GetJointValue (PartNames.LeftWheel.ToString (), false)) < 2f);
+        UpdateJointAngle (mState.jointAngles[2], PartNames.RightWheel.ToString ());
+        reached = (Mathf.Abs (mState.jointAngles[2] - GetJointValue (PartNames.RightWheel.ToString (), false)) < 2f);
+        UpdateJointAngle (mState.jointAngles[3], PartNames.Body.ToString ());
+        reached = (Mathf.Abs (mState.jointAngles[3] - GetJointValue (PartNames.Body.ToString (), false)) < 2f);
+
+        return reached;
+    }
 
 	// set all parts to be kinematic or not
 	void SetKinematic (bool kinematic) {
@@ -116,8 +140,11 @@ public class ModuleController : MonoBehaviour {
 	}
 
 	// return the joint value of the given joint name
-	public float GetJointValue (string jointName) {
-		return jointsHashTable[jointName].spring.targetPosition;
+	public float GetJointValue (string jointName, bool targetValue = true) {
+        if (targetValue) {
+            return jointsHashTable[jointName].spring.targetPosition;
+        }
+        return jointsHashTable[jointName].angle;
 	}
 
 	// update joint target position with the given value

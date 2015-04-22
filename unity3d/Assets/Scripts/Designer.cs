@@ -11,7 +11,8 @@ public class Designer : MonoBehaviour {
 	GameObject selectedNode2;
 	UIManager UIManagerScript;
     public ModeManager modeManager;
-	GameObject robotState;
+    public BehaviorDesigner behaviorDesigner;
+	GameObject robotSpaceHolder;
 	GameObject ghostModules;
 	public GameObject robot;
 	bool isDrag = false;
@@ -27,6 +28,7 @@ public class Designer : MonoBehaviour {
 	SaveLoadManager saveLoadManagerScript;
 	public Button buttonDeleteModule;
 	public Button buttonConnect;
+    public Button buttonRecord;
 	public Text buttonConnectText;
 	public Text confName;
 	GameObject newConf;
@@ -36,8 +38,8 @@ public class Designer : MonoBehaviour {
 		UIManagerScript = gameObject.GetComponent<UIManager> ();
 		saveLoadManagerScript = gameObject.GetComponent<SaveLoadManager> ();
 		colorManager = (ColorManager) GameObject.FindObjectOfType<ColorManager> ();
-		robotState = new GameObject ();
-		robotState.name = "RobotState";
+		robotSpaceHolder = new GameObject ();
+		robotSpaceHolder.name = "RobotSpaceHolder";
 		ghostModules = new GameObject ();
 		newConf = new GameObject ();
 		ghostModules.name = "GhostModules";
@@ -47,7 +49,10 @@ public class Designer : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		if (modeManager.IsSimulate) {
-
+            GameObject empty = (GameObject) GameObject.Find("New Game Object");
+            if (empty){
+                GameObject.Destroy(empty);
+            }
 		}
 		else if (modeManager.IsAddModule) {
 			PlotAvailableNodes (true);
@@ -78,6 +83,11 @@ public class Designer : MonoBehaviour {
 				}
 			}
 		}
+        else if (modeManager.IsRecordBehavior) {
+            if(Input.GetMouseButtonDown(0)) {
+                SelectModule ();
+            }
+        }
 		else if (modeManager.IsConnectNodes) {
 			PlotAvailableNodes (true);
 			nodeUnderMouse = FindNodeUnderMouse ();
@@ -289,7 +299,7 @@ public class Designer : MonoBehaviour {
 		selectedModule = null;
 		connectionTable = new Hashtable ();
 		UIManagerScript.SetSelectedModule (null);
-		Transform clone = Instantiate (modulePrefab, new Vector3 (0, 3, 0), Quaternion.identity) as Transform;
+		Transform clone = Instantiate (modulePrefab, new Vector3 (0, 5, 0), Quaternion.identity) as Transform;
 		clone.name = "SMORES_0";
 		clone.SetParent (robot.transform);
 	}
@@ -314,13 +324,14 @@ public class Designer : MonoBehaviour {
 				clone.Rotate (clone.right, 90.0f, Space.World);
 				clone.GetComponent<ModuleController> ().UpdateJointsFromModule (child.gameObject);
 				clone.name = child.name;
-				clone.SetParent (robotState.transform);
+				clone.SetParent (robotSpaceHolder.transform);
 				clone.GetComponent<ModuleController> ().SetToTrigger (true);
 				clone.GetComponent<ModuleController> ().SetMode (0);
 				clone.GetComponent<ModuleController> ().OnLite (true);
 				//clone.gameObject.SetActive (false);
 			}
 
+            robot.transform.position = new Vector3 (10, 0, 0);
 			foreach (Transform child in robot.transform) {
 				child.GetComponent<ModuleController> ().SetToTrigger (false);
 				child.GetComponent<ModuleController> ().SetMode (2);
@@ -328,8 +339,9 @@ public class Designer : MonoBehaviour {
 		}
 		else {
 			RemoveAllModules ();
+            robot.transform.position = new Vector3 (0, 0, 0);
 			List<GameObject> children = new List<GameObject>();
-			foreach (Transform child in robotState.transform) children.Add(child.gameObject);
+			foreach (Transform child in robotSpaceHolder.transform) children.Add(child.gameObject);
 			foreach (GameObject child in children) {
 				if (child.name == "SMORES_0") {
 					child.GetComponent<ModuleController> ().SetMode (0);
@@ -394,7 +406,7 @@ public class Designer : MonoBehaviour {
 		}
 	}
 
-	public void ConnectNode () {
+	public void ConnectNodes () {
 		if (modeManager.IsConnectNodes) {
 			if (selectedModule != null) {
 				selectedModule.GetComponent<ModuleController> ().OnSelected (false);
@@ -577,6 +589,9 @@ public class Designer : MonoBehaviour {
 		foreach (Transform module in robot.transform) {
 			module.GetComponent<ModuleController> ().OnShowConnection (p);
 		}
+        if (newConf == null) {
+            return;
+        }
 		foreach (Transform module in newConf.transform) {
 			module.GetComponent<ModuleController> ().OnShowConnection (p);
 		}

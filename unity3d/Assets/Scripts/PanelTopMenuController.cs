@@ -55,7 +55,9 @@ public class PanelTopMenuController : MonoBehaviour {
 		else if (modeManager.IsAddModule) {}
 		else if (modeManager.IsConnectNodes) {}
 		else if (modeManager.IsSystem) {}
-		else if (modeManager.IsRecordBehavior) {}
+		else if (modeManager.IsRecordBehavior) {
+            buttonModuleSetting.GetComponent<Button> ().interactable = true;
+        }
 		else {
 			OnButtonInModeOrNot (buttonSimulate, false);
 			SetAllButtonsInteractableOrNot (true);

@@ -42,7 +42,10 @@ public class PanelModuleSettingController : MonoBehaviour {
 		UpdateSliderControlInfo ();
 	}
 
-	void UpdateSliderControlInfo () {
+	public void UpdateSliderControlInfo () {
+        if (selectedModule == null) {
+            return;
+        }
 		sliderCenterJoint.GetComponent<SliderControl> ().UpdateJointInfo (selectedModule);
 		sliderLeftJoint.GetComponent<SliderControl> ().UpdateJointInfo (selectedModule);
 		sliderRightJoint.GetComponent<SliderControl> ().UpdateJointInfo (selectedModule);

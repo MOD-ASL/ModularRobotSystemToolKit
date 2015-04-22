@@ -11,6 +11,10 @@ public class PanelBottomMenuController : MonoBehaviour {
 	public Button buttonConnectNodes;
 	public Button buttonConnect;
     public Button buttonRecordBehavior;
+    public Button buttonRecord;
+    public Button buttonDeleteRState;
+    public Button buttonNewBehavior;
+    public Button buttonPlayBehavior;
 
     private List<Button> allButtons;
 
@@ -43,11 +47,18 @@ public class PanelBottomMenuController : MonoBehaviour {
 		else if (modeManager.IsConnectNodes) {
             OnButtonInModeOrNot (buttonConnectNodes, true);
             buttonConnectNodes.GetComponent<Button> ().interactable = true;
-
             OnConnectNodes ();
 		}
-		else if (modeManager.IsSimulate) {}
-        else if (modeManager.IsRecordBehavior) {}
+		else if (modeManager.IsSimulate) {
+            buttonPlayBehavior.gameObject.SetActive (true);
+            UIManagerScript.ShowBehaviorManagerPanel (true);
+        }
+        else if (modeManager.IsRecordBehavior) {
+            OnButtonInModeOrNot (buttonRecordBehavior, true);
+            buttonRecordBehavior.GetComponent<Button> ().interactable = true;
+            UIManagerScript.ShowBehaviorManagerPanel (true);
+            OnRecordBehavior ();
+        }
 		else if (modeManager.IsSystem) {
             OnButtonInModeOrNot (buttonSystem, true);
             buttonSystem.GetComponent<Button> ().interactable = true;
@@ -57,9 +68,13 @@ public class PanelBottomMenuController : MonoBehaviour {
             OnButtonInModeOrNot (buttonAddModule, false);
             OnButtonInModeOrNot (buttonConnectNodes, false);
             OnButtonInModeOrNot (buttonSystem, false);
+            OnButtonInModeOrNot (buttonRecordBehavior, false);
             SetAllButtonsInteractableOrNot (true);
             UIManagerScript.ShowSystemPanel (modeManager.IsSystem);
+            UIManagerScript.ShowBehaviorManagerPanel (modeManager.IsRecordBehavior);
+            buttonPlayBehavior.gameObject.SetActive (modeManager.IsSimulate);
             OnConnectNodes ();
+            OnRecordBehavior ();
 		}
 	}
 
@@ -79,6 +94,17 @@ public class PanelBottomMenuController : MonoBehaviour {
         buttonConnect.gameObject.SetActive (modeManager.IsConnectNodes);
         Vector2 size = gameObject.GetComponent<RectTransform> ().sizeDelta;
         size.y = (modeManager.IsConnectNodes) ? 96.0f : 48.0f;
+        gameObject.GetComponent<RectTransform> ().sizeDelta = size;
+    }
+
+    void OnRecordBehavior () {
+        buttonRecord.gameObject.SetActive (modeManager.IsRecordBehavior);
+        buttonDeleteRState.gameObject.SetActive (modeManager.IsRecordBehavior);
+        buttonNewBehavior.gameObject.SetActive (modeManager.IsRecordBehavior);
+        buttonPlayBehavior.gameObject.SetActive (modeManager.IsRecordBehavior);
+
+        Vector2 size = gameObject.GetComponent<RectTransform> ().sizeDelta;
+        size.y = (modeManager.IsRecordBehavior) ? 96.0f : 48.0f;
         gameObject.GetComponent<RectTransform> ().sizeDelta = size;
     }
     
