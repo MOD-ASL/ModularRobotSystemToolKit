@@ -15,6 +15,7 @@ GameObject:
   - 59: {fileID: 5955882}
   - 59: {fileID: 5933682}
   - 59: {fileID: 5997664}
+  - 114: {fileID: 11481290}
   m_Layer: 0
   m_Name: BackPlate
   m_TagString: Node
@@ -34,6 +35,7 @@ GameObject:
   - 23: {fileID: 2359786}
   - 64: {fileID: 6499598}
   - 54: {fileID: 5449644}
+  - 114: {fileID: 11444224}
   m_Layer: 0
   m_Name: FrontWheel
   m_TagString: Node
@@ -69,6 +71,7 @@ GameObject:
   - 23: {fileID: 2328770}
   - 64: {fileID: 6457246}
   - 54: {fileID: 5436682}
+  - 114: {fileID: 11417902}
   m_Layer: 0
   m_Name: LeftWheel
   m_TagString: Node
@@ -88,6 +91,7 @@ GameObject:
   - 23: {fileID: 2345850}
   - 64: {fileID: 6449244}
   - 54: {fileID: 5429492}
+  - 114: {fileID: 11478606}
   m_Layer: 0
   m_Name: RightWheel
   m_TagString: Node
@@ -108,6 +112,7 @@ GameObject:
   - 64: {fileID: 6477438}
   - 54: {fileID: 5484580}
   - 59: {fileID: 5957142}
+  - 114: {fileID: 11462284}
   m_Layer: 0
   m_Name: Body
   m_TagString: Untagged
@@ -202,7 +207,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_Materials:
-  - {fileID: 2100000, guid: e1c4094e8e6608148928dfd60cd7e426, type: 2}
+  - {fileID: 2100000, guid: 9b786b6c39cfc984fb8186c488580c2f, type: 2}
   m_SubsetIndices: 
   m_StaticBatchRoot: {fileID: 0}
   m_UseLightProbes: 1
@@ -226,7 +231,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_Materials:
-  - {fileID: 2100000, guid: e1c4094e8e6608148928dfd60cd7e426, type: 2}
+  - {fileID: 2100000, guid: 8a761dee71b783046bfecc354cc82729, type: 2}
   m_SubsetIndices: 
   m_StaticBatchRoot: {fileID: 0}
   m_UseLightProbes: 1
@@ -274,7 +279,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_Materials:
-  - {fileID: 2100000, guid: e1c4094e8e6608148928dfd60cd7e426, type: 2}
+  - {fileID: 2100000, guid: 47cae9318a57f3944a0158ffec398824, type: 2}
   m_SubsetIndices: 
   m_StaticBatchRoot: {fileID: 0}
   m_UseLightProbes: 1
@@ -298,7 +303,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_Materials:
-  - {fileID: 2100000, guid: e1c4094e8e6608148928dfd60cd7e426, type: 2}
+  - {fileID: 2100000, guid: 0fa2e4314b8d32446a3244f4a29403f7, type: 2}
   m_SubsetIndices: 
   m_StaticBatchRoot: {fileID: 0}
   m_UseLightProbes: 1
@@ -610,6 +615,39 @@ MeshCollider:
   serializedVersion: 2
   m_Convex: 1
   m_Mesh: {fileID: 4300000, guid: 7ca9b82865eecb64cb4598435c21e34e, type: 3}
+--- !u!114 &11417902
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 159286}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 37ecea6aa1259c54eb63ceef7a9f8553, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &11444224
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 120244}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 37ecea6aa1259c54eb63ceef7a9f8553, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &11462284
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 188914}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 37ecea6aa1259c54eb63ceef7a9f8553, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &11469928
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -622,6 +660,29 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   currentMode: 0
+  jointDamperForce: 3000
+--- !u!114 &11478606
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 162094}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 37ecea6aa1259c54eb63ceef7a9f8553, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &11481290
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 103824}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 37ecea6aa1259c54eb63ceef7a9f8553, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1
