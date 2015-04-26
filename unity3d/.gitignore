@@ -23,3 +23,7 @@ obj/
 .Trashes
 ehthumbs.db
 Thumbs.db
+
+# Configuration Files
+*.conf
+*.conf.meta
