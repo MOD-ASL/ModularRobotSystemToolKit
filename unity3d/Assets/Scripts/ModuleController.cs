@@ -4,33 +4,48 @@ using System.Collections.Generic;
 
 public class ModuleController : MonoBehaviour {
 
-	// name of part joint connected to -> HingeJoint
+	// Name of part joint connected to -> HingeJoint
+    // Possible key: FrontWheel, RightWheel, LeftWheel, Body
 	public Dictionary<string, HingeJoint> jointsHashTable = new Dictionary<string, HingeJoint>();
-	// part name -> GameObject of part
+
+	// Part name -> GameObject of part
+    // Possible key: FrontWheel, RightWheel, LeftWheel, Body, BackPlate
 	public Dictionary<string, GameObject> partsHashTable = new Dictionary<string, GameObject>();
-	// node name -> GameObject of part
+
+	// Node name -> GameObject of part
+    // Possible key: FrontWheel, RightWheel, LeftWheel, BackPlate
 	public Dictionary<string, GameObject> nodesHashTable = new Dictionary<string, GameObject>();
+
 	// Game object of part -> connected GameObject of part
+    // Only node can connect to each other
 	public Dictionary<GameObject, GameObject> nodesConnectionHashTable = new Dictionary<GameObject, GameObject>();
 
-	ColorManager colorManager;
-
-	public int currentMode; // 0 for edit mode with fixed backPlate. 1 for edit mode. 2 for simulation mode
+    // Avaliable modes
+    // Static mode: BackPlate is fixed in place, no gravity
+    // Edit mode: No gravity
+    // Simulate mode: Full dynamics with collision
+    enum Mode {Static, Edit, Simulation};
+	// currentMode of the module
+    int currentMode;
 
 	// constant
 	float jointSpringForce = 100000.0f;
-	public float jointDamperForce = 3000.0f;
+	public float jointDamperForce = 3000.0f; //TODO: make this private
 
 	// define enum for part name
 	public enum PartNames {BackPlate, Body, RightWheel, LeftWheel, FrontWheel};
-	
+
+    ColorManager colorManager; //TODO: How to manage color?
+
+    // ----------------------------- Start of methods ----------------------------- //
+
 	// Use this for initialization
 	void Start () {
 
 	}
 
 	void Awake () {
-		// ignore collisions among different parts within the module
+		// Ignore collisions among different parts within the module
 		Collider[] colliders = gameObject.GetComponentsInChildren<Collider>();
 		foreach (Collider collider1 in colliders) {
 			foreach (Collider collider2 in colliders) {
@@ -40,15 +55,15 @@ public class ModuleController : MonoBehaviour {
 			}
 		}
 
-		// load color manager
+		// Load color manager
 		colorManager = (ColorManager) GameObject.FindObjectOfType<ColorManager> ();
 
-		// load pointers
+		// Load pointers
 		LoadJointPointers ();
 		LoadPartPointers ();
 		LoadNodePointers ();
 
-		// set of the mode for the module
+		// Set of the mode for the module
 		SetMode (0);
 	}
 	
@@ -57,46 +72,39 @@ public class ModuleController : MonoBehaviour {
 
 	}
 
-	public string GetPositionInString () {
-		Vector3 position = partsHashTable["BackPlate"].transform.position;
-		Quaternion q = partsHashTable["BackPlate"].transform.rotation;
-
-		return string.Format ("{0,1:0.000} {1,1:0.000} {2,1:0.000} {3,1:0.000} {4,1:0.000} {5,1:0.000} {6,1:0.000}", 
-		                      position.x, position.y, position.z, q.w, q.x, q.y, q.z);
-	}
-
-	public string GetJointAnglesInString () {
-		float f = jointsHashTable[PartNames.FrontWheel.ToString ()].spring.targetPosition;
-		float l = jointsHashTable[PartNames.LeftWheel.ToString ()].spring.targetPosition;
-		float r = jointsHashTable[PartNames.RightWheel.ToString ()].spring.targetPosition;
-		float c = jointsHashTable[PartNames.Body.ToString ()].spring.targetPosition;
-
-		return string.Format ("{0,1:0.000} {1,1:0.000} {2,1:0.000} {3,1:0.000}", f, l, r, c);
-	}
-
-    public float[] GetJointAnglesInArray () {
-        float f = jointsHashTable[PartNames.FrontWheel.ToString ()].spring.targetPosition;
-        float l = jointsHashTable[PartNames.LeftWheel.ToString ()].spring.targetPosition;
-        float r = jointsHashTable[PartNames.RightWheel.ToString ()].spring.targetPosition;
-        float c = jointsHashTable[PartNames.Body.ToString ()].spring.targetPosition;
-        
-        return new float[4] {f, l, r, c};
-    }
-
-	// set the mode and update the module accordingly
+	// Set the mode and update the module accordingly
 	public void SetMode (int mode) {
 		currentMode = mode;
 		UpdateModuleFromMode ();
 	}
 
-	// update the joint target positions based on the corresponding joint from the given module
+    // Update physics setting based on the mode
+    void UpdateModuleFromMode () {
+        SetKinematic (false);
+        if (currentMode == 0) {
+            // Static mode: BackPlate is fixed in place, no gravity
+            SetGravity (false);
+            partsHashTable[PartNames.BackPlate.ToString ()].GetComponent<Rigidbody> ().isKinematic = true;
+        }
+        else if (currentMode == 1) {
+            // Edit mode: No gravity
+            //TODO: should settrigger be here?
+            SetGravity (false);
+        }
+        else if (currentMode == 2) {
+            // Simulate mode: Full dynamics with collision
+            SetGravity (true);
+        }
+    }
+
+	// Update the joint target positions based on the corresponding joint from the given module
 	public void UpdateJointsFromModule (GameObject module) {
 		foreach (string jointName in jointsHashTable.Keys) {
 			UpdateJointAngle (module.GetComponent<ModuleController> ().GetJointValue (jointName), jointName);
 		}
 	}
 
-    // update the joint target positions based on the corresponding joint from the given module state
+    // Update the joint target positions based on the corresponding joint from the given module state
     public bool UpdateJointsFromModuleState (ModuleState mState) {
         bool reached;
         UpdateJointAngle (mState.jointAngles[0], PartNames.FrontWheel.ToString ());
@@ -125,19 +133,7 @@ public class ModuleController : MonoBehaviour {
 		}
 	}
 
-	void UpdateModuleFromMode () {
-		SetKinematic (false);
-		if (currentMode == 0) {
-			SetGravity (false);
-			partsHashTable[PartNames.BackPlate.ToString ()].GetComponent<Rigidbody> ().isKinematic = true;
-		}
-		else if (currentMode == 1) {
-			SetGravity (false);
-		}
-		else if (currentMode == 2) {
-			SetGravity (true);
-		}
-	}
+	
 
 	// return the joint value of the given joint name
 	public float GetJointValue (string jointName, bool targetValue = true) {
@@ -283,5 +279,48 @@ public class ModuleController : MonoBehaviour {
 		Renderer rend = part.GetComponent<Renderer> ();
 		rend.material.color = c;
 	}
+
+    // Get all joint angles of the module
+    // The return float array is in format of "FrontWheel, LeftWheel, RightWheel, Body"
+    public float[] GetJointAnglesInArray () {
+        float[] jointAngles = new float[4];
+        int count = 0;
+        foreach (string jName in new string[4] {PartNames.FrontWheel.ToString (),
+                                                PartNames.LeftWheel.ToString (), 
+                                                PartNames.RightWheel.ToString (), 
+                                                PartNames.Body.ToString ()}) {
+            jointAngles[count] = jointsHashTable[jName].spring.targetPosition;
+            count++;
+        }
+        return jointAngles;
+    }
+
+    // This method is for saving the state of the module to a file
+    // Get the position and orientation of the module
+    // The position and orientation of a module is defined by the BackPlate
+    // The return string is in format of "px py pz qw qx qy qz"
+    public string GetPositionInString () {
+        Vector3 position = partsHashTable[PartNames.BackPlate.ToString ()].transform.position;
+        Quaternion q = partsHashTable[PartNames.BackPlate.ToString ()].transform.rotation;
+        
+        return string.Format ("{0,1:0.000} {1,1:0.000} {2,1:0.000} {3,1:0.000} {4,1:0.000} {5,1:0.000} {6,1:0.000}", 
+                              position.x, position.y, position.z, q.w, q.x, q.y, q.z);
+    }
+
+    // This method is for saving the state of the module to a file
+    // Get all joint angles of the module in one string
+    // The return string is in format of "FrontWheel, LeftWheel, RightWheel, Body"
+    public string GetJointAnglesInString () {
+        string[] jointAnglesInString = new string[4];
+        int count = 0;
+        foreach (string jName in new string[4] {PartNames.FrontWheel.ToString (),
+                                                PartNames.LeftWheel.ToString (), 
+                                                PartNames.RightWheel.ToString (), 
+                                                PartNames.Body.ToString ()}) {
+            jointAnglesInString[count] = string.Format ("{0,1:0.000}", jointsHashTable[jName].spring.targetPosition);
+            count++;
+        }
+        return string.Join (" ", jointAnglesInString);
+    }
 }
 
