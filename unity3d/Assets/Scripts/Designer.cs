@@ -9,7 +9,7 @@ public class Designer : MonoBehaviour {
 	GameObject selectedModule;
 	GameObject selectedNode1;
 	GameObject selectedNode2;
-	UIManager UIManagerScript;
+	public UIManager UIManagerScript;
     public ModeManager modeManager;
     public BehaviorDesigner behaviorDesigner;
 	GameObject robotSpaceHolder;
@@ -184,10 +184,15 @@ public class Designer : MonoBehaviour {
 	}
 
 	public void OnClickLoad () {
-		newConf = saveLoadManagerScript.Load ();
+		//newConf = saveLoadManagerScript.Load ();
 
-		isDrag = true;
+		//isDrag = true;
 	}
+
+    public void OnLoadConfig (GameObject conf) {
+        newConf = conf;
+        isDrag = true;
+    }
 
 	Vector3 GetNodePosition (GameObject node) {
 		Vector3 pos;

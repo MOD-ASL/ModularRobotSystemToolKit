@@ -36,6 +36,7 @@ public class ModuleController : MonoBehaviour {
 	public enum PartNames {BackPlate, Body, RightWheel, LeftWheel, FrontWheel};
 
     ColorManager colorManager; //TODO: How to manage color?
+    public Camera sensor;
 
     // ----------------------------- Start of methods ----------------------------- //
 
@@ -69,8 +70,21 @@ public class ModuleController : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-
+        if (sensor != null) {
+            sensor.transform.position = partsHashTable[PartNames.FrontWheel.ToString ()].transform.position;
+            sensor.transform.rotation = partsHashTable[PartNames.FrontWheel.ToString ()].transform.rotation;
+            sensor.transform.RotateAround (sensor.transform.position, sensor.transform.up, 90.0f);
+            sensor.transform.RotateAround (sensor.transform.position, sensor.transform.forward, 90.0f);
+        }
 	}
+
+    public void AttachSensor (Camera s) {
+        sensor = s;
+    }
+
+    public void ResetSensor () {
+        sensor = null;
+    }
 
 	// Set the mode and update the module accordingly
 	public void SetMode (int mode) {
