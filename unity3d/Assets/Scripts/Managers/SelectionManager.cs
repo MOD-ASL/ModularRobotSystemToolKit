@@ -4,6 +4,8 @@ using System.Collections;
 
 public class SelectionManager : MonoBehaviour {
 
+    public AdditionalCallback onSelectModuleCallback; //TODO: This is a hack
+
     [HideInInspector]
     public GameObject selectedModule;
 
@@ -23,10 +25,17 @@ public class SelectionManager : MonoBehaviour {
         }
         selectedModule = module;
         selectedModule.GetComponent<ModuleInteractionController> ().SelectedOrNot (true);
+        OnSelectModule ();
     }
 
     public void ResetSelectedModule () {
-        selectedModule.GetComponent<ModuleInteractionController> ().SelectedOrNot (false);
-        selectedModule = null;
+        if (selectedModule) {
+            selectedModule.GetComponent<ModuleInteractionController> ().SelectedOrNot (false);
+            selectedModule = null;
+        }
+    }
+
+    public void OnSelectModule () {
+        onSelectModuleCallback.Invoke ();
     }
 }

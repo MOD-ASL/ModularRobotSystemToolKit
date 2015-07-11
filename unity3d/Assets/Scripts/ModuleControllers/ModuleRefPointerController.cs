@@ -19,6 +19,9 @@ public class ModuleRefPointerController : MonoBehaviour {
     // Possible key: FrontWheel, RightWheel, LeftWheel, BackPlate
     private Dictionary<string, GameObject> nodePointerDict = new Dictionary<string, GameObject>();
 
+    [HideInInspector]
+    public Mo2MaComController mo2MaComController;
+
 	// Use this for initialization
 	void Start () {
 
@@ -34,6 +37,8 @@ public class ModuleRefPointerController : MonoBehaviour {
         LoadJointPointers ();
         LoadPartPointers ();
         LoadNodePointers ();
+
+        mo2MaComController = gameObject.GetComponent<Mo2MaComController> ();
     }
 
     // Load the pointers of all joints for easier reference

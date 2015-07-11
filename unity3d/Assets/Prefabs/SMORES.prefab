@@ -17,6 +17,7 @@ GameObject:
   - 59: {fileID: 5997664}
   - 114: {fileID: 11481290}
   - 114: {fileID: 11403216}
+  - 135: {fileID: 13598184}
   m_Layer: 0
   m_Name: BackPlate
   m_TagString: Node
@@ -38,6 +39,7 @@ GameObject:
   - 54: {fileID: 5449644}
   - 114: {fileID: 11444224}
   - 114: {fileID: 11480194}
+  - 135: {fileID: 13514918}
   m_Layer: 0
   m_Name: FrontWheel
   m_TagString: Node
@@ -53,9 +55,11 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 484136}
-  - 114: {fileID: 11469928}
   - 114: {fileID: 11416486}
   - 114: {fileID: 11430948}
+  - 114: {fileID: 11443556}
+  - 114: {fileID: 11456334}
+  - 114: {fileID: 11422758}
   - 114: {fileID: 11415546}
   m_Layer: 0
   m_Name: SMORES
@@ -78,6 +82,7 @@ GameObject:
   - 54: {fileID: 5436682}
   - 114: {fileID: 11417902}
   - 114: {fileID: 11409944}
+  - 135: {fileID: 13588796}
   m_Layer: 0
   m_Name: LeftWheel
   m_TagString: Node
@@ -99,6 +104,7 @@ GameObject:
   - 54: {fileID: 5429492}
   - 114: {fileID: 11478606}
   - 114: {fileID: 11444850}
+  - 135: {fileID: 13565834}
   m_Layer: 0
   m_Name: RightWheel
   m_TagString: Node
@@ -657,6 +663,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ma2MoComManager: {fileID: 0}
+  moduleRefPointerController: {fileID: 0}
+  moduleConnectionController: {fileID: 0}
 --- !u!114 &11416486
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -669,7 +677,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mo2MaComController: {fileID: 11415546}
-  moduleRefPointerController: {fileID: 11430948}
+  partUnderMouse: {fileID: 0}
+  dummyModulePrefab: {fileID: 152096, guid: 190f05ade6a623440aaac474de5f46f2, type: 2}
 --- !u!114 &11417902
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -681,6 +690,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 37ecea6aa1259c54eb63ceef7a9f8553, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  touchedNode: {fileID: 0}
+--- !u!114 &11422758
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 152096}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c8d5d5173ce118d4790131159391e652, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mo2MaComController: {fileID: 0}
 --- !u!114 &11430948
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -692,6 +714,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3f23e5506111fa34482eaf2097cb179d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  mo2MaComController: {fileID: 0}
+--- !u!114 &11443556
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 152096}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a8a09c0c00b2c64cadbe02227bd71e1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mo2MaComController: {fileID: 0}
 --- !u!114 &11444224
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -703,6 +738,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 37ecea6aa1259c54eb63ceef7a9f8553, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  touchedNode: {fileID: 0}
 --- !u!114 &11444226
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -725,6 +761,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2148710dbb9960644a9e60705a98cc85, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &11456334
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 152096}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ecf36967a5cb33944868123a49e7b63b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mo2MaComController: {fileID: 0}
+  currentModuleMode: 0
 --- !u!114 &11462284
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -736,18 +785,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 37ecea6aa1259c54eb63ceef7a9f8553, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &11469928
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 152096}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2b91dd66ac080bb4faf77f17db89d5b9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  jointDamperForce: 3000
+  touchedNode: {fileID: 0}
 --- !u!114 &11478606
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -759,6 +797,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 37ecea6aa1259c54eb63ceef7a9f8553, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  touchedNode: {fileID: 0}
 --- !u!114 &11480194
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -781,13 +820,103 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 37ecea6aa1259c54eb63ceef7a9f8553, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  touchedNode: {fileID: 0}
+--- !u!135 &13514918
+SphereCollider:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 120244}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: .00999999978
+  m_Center: {x: .5, y: 0, z: 0}
+--- !u!135 &13565834
+SphereCollider:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 162094}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: .00999999978
+  m_Center: {x: 0, y: .5, z: 0}
+--- !u!135 &13588796
+SphereCollider:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 159286}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: .00999999978
+  m_Center: {x: 0, y: -.5, z: 0}
+--- !u!135 &13598184
+SphereCollider:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 103824}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: .00999999978
+  m_Center: {x: -.5, y: 0, z: 0}
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1
   serializedVersion: 2
   m_Modification:
     m_TransformParent: {fileID: 0}
-    m_Modifications: []
+    m_Modifications:
+    - target: {fileID: 0}
+      propertyPath: m_Delegates.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 11416486}
+    - target: {fileID: 0}
+      propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: TestSelect
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: m_Delegates.Array.data[0].eventID
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: m_Delegates.Array.data[0].callback.m_TypeName
+      value: UnityEngine.EventSystems.EventTrigger+TriggerEvent, UnityEngine.UI, Version=1.0.0.0,
+        Culture=neutral, PublicKeyToken=null
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: m_IsTrigger
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 152096}

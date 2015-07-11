@@ -9,6 +9,7 @@ public class UIManager : MonoBehaviour {
     public GameObject panelTopMenu;
     public GameObject panelBottomMenu;
     public GameObject panelBehaviorManager;
+    public GameObject panelFileSelectionManager;
 
 	// Use this for initialization
 	void Start () {
@@ -35,6 +36,9 @@ public class UIManager : MonoBehaviour {
 
 	public void ShowSystemPanel (bool show) {
 		panelSystem.SetActive (show);
+        if (!show) {
+            panelFileSelectionManager.SetActive (false);
+        }
 	}
 
     public void ShowBehaviorManagerPanel (bool show) {

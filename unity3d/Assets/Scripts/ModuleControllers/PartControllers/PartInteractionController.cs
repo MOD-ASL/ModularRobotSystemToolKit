@@ -6,10 +6,13 @@ public class PartInteractionController : MonoBehaviour, IPointerEnterHandler, IP
 
     private Renderer rend;
 
+    private ModuleInteractionController moduleInteractionController;
+
     #region IPointerEnterHandler implementation
     public void OnPointerEnter (PointerEventData eventData)
     {
-        SendMessageUpwards ("OnMouseOverPartOrNot", true);
+        moduleInteractionController.SetPartUnderMouse (gameObject);
+        moduleInteractionController.OnMouseOverPartOrNot (true);
     }
     #endregion
 
@@ -17,7 +20,8 @@ public class PartInteractionController : MonoBehaviour, IPointerEnterHandler, IP
 
     public void OnPointerExit (PointerEventData eventData)
     {
-        SendMessageUpwards ("OnMouseOverPartOrNot", false);
+        moduleInteractionController.SetPartUnderMouse (null);
+        moduleInteractionController.OnMouseOverPartOrNot (false);
     }
 
     #endregion
@@ -26,7 +30,7 @@ public class PartInteractionController : MonoBehaviour, IPointerEnterHandler, IP
 
     public void OnPointerClick (PointerEventData eventData)
     {
-        SendMessageUpwards ("OnMouseClick");
+        moduleInteractionController.OnMouseClick ();
     }
 
     #endregion
@@ -44,6 +48,7 @@ public class PartInteractionController : MonoBehaviour, IPointerEnterHandler, IP
     void Awake (){
         rend = gameObject.GetComponent<Renderer> ();
         rend.material.EnableKeyword ("_EMISSION");
+        moduleInteractionController = gameObject.GetComponentInParent<ModuleInteractionController> ();
     }
 
     // Highlight by changing the emission of the material

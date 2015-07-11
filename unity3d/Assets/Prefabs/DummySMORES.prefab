@@ -12,7 +12,7 @@ GameObject:
   - 23: {fileID: 2303732}
   - 64: {fileID: 6452646}
   - 54: {fileID: 5448674}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: BackPlate
   m_TagString: Node
   m_Icon: {fileID: 0}
@@ -31,7 +31,7 @@ GameObject:
   - 23: {fileID: 2359786}
   - 64: {fileID: 6499598}
   - 54: {fileID: 5449644}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: FrontWheel
   m_TagString: Node
   m_Icon: {fileID: 0}
@@ -46,7 +46,8 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 484136}
-  m_Layer: 0
+  - 114: {fileID: 11468142}
+  m_Layer: 2
   m_Name: DummySMORES
   m_TagString: Ghost
   m_Icon: {fileID: 0}
@@ -65,7 +66,7 @@ GameObject:
   - 23: {fileID: 2328770}
   - 64: {fileID: 6457246}
   - 54: {fileID: 5436682}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: LeftWheel
   m_TagString: Node
   m_Icon: {fileID: 0}
@@ -84,7 +85,7 @@ GameObject:
   - 23: {fileID: 2345850}
   - 64: {fileID: 6449244}
   - 54: {fileID: 5429492}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: RightWheel
   m_TagString: Node
   m_Icon: {fileID: 0}
@@ -103,7 +104,7 @@ GameObject:
   - 23: {fileID: 2333178}
   - 64: {fileID: 6477438}
   - 54: {fileID: 5484580}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Body
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -477,6 +478,18 @@ MeshCollider:
   serializedVersion: 2
   m_Convex: 1
   m_Mesh: {fileID: 4300000, guid: 7ca9b82865eecb64cb4598435c21e34e, type: 3}
+--- !u!114 &11468142
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 152096}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bcbf17e9c20c93a409c842355a263cf9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  color: {r: .500202835, g: .529411793, b: 0, a: .859000027}
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1
@@ -503,6 +516,26 @@ Prefab:
     - target: {fileID: 0}
       propertyPath: m_ReceiveShadows
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: m_Layer
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: color.r
+      value: .500202835
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: color.g
+      value: .529411793
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: color.b
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: color.a
+      value: .859000027
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}

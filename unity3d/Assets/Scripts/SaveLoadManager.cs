@@ -16,6 +16,10 @@ public class SaveLoadManager : MonoBehaviour {
 	enum nodeNameEnum {FrontWheel, LeftWheel, RightWheel, BackPlate};
 	public Hashtable connectionTable = new Hashtable ();
 	public int newConfCount;
+    public NetworkManager networkManager;
+    public FileSelectionManager fileSelectionManager;
+    public Designer designer;
+    public Text userName;
 	GameObject newConf;
 	XmlDocument xmlDoc;
 
@@ -95,42 +99,74 @@ public class SaveLoadManager : MonoBehaviour {
 			connectionsNode.AppendChild (cNode);
 		}
 
-		#if UNITY_EDITOR
-		string filename = EditorUtility.SaveFilePanel(
-			"Save Configuration",
-			Application.dataPath,
-			name + ".conf",
-			"conf");
-		#else
-		string filename = Path.Combine (Application.dataPath, name + ".conf");
-		#endif
-		xmlDoc.Save (filename);
+//		#if UNITY_EDITOR
+//		string filename = EditorUtility.SaveFilePanel(
+//			"Save Configuration",
+//			Application.dataPath,
+//			name + ".conf",
+//			"conf");
+//		#else
+//		string filename = Path.Combine (Application.dataPath, name + ".conf");
+//		#endif
+//		xmlDoc.Save (filename);
+        StartCoroutine (networkManager.SaveConfig (xmlDoc, name, userName.text));
 	}
 
-	public GameObject Load () {
+    public void DownloadAndLoad (File file) {
+        StartCoroutine (networkManager.Download (file, Load));
+    }
 
-		#if UNITY_EDITOR
-		string filename = EditorUtility.OpenFilePanel(
-			"Save Configuration",
-			Application.dataPath,
-			"conf");
-		#else
-		string filename = "";
-		#endif
+	public void Load (string fileContent, string name) {
 
-		newConf = new GameObject ();
-		newConf.name = Path.GetFileNameWithoutExtension(filename)+newConfCount.ToString ();
+//		#if UNITY_EDITOR
+//		string filename = EditorUtility.OpenFilePanel(
+//			"Save Configuration",
+//			Application.dataPath,
+//			"conf");
+//		#else
+//		string filename = "";
+//		#endif
+
+   		newConf = new GameObject ();
+        newConf.name = name;
 		connectionTable = new Hashtable ();
 
 		xmlDoc = new XmlDocument ();
-		xmlDoc.Load(filename);
+        xmlDoc.LoadXml(fileContent);
 		XmlNode modulesEL = xmlDoc.SelectSingleNode ("configuration/modules");
 
 		foreach (XmlNode el in modulesEL.SelectNodes ("module")) {
 			CreateModule (el);
 		}
-		return newConf;
+
+        fileSelectionManager.ShowPanelOrNot (false);
+        designer.OnLoadConfig (newConf);
 	}
+
+    public void OnClickLoad () {
+        fileSelectionManager.ClearList ();
+        StartCoroutine (networkManager.GetFileList (DisplayFileList));
+    }
+
+    public void DisplayFileList (string fileList) {
+
+        fileSelectionManager.ShowPanelOrNot (true);
+
+        xmlDoc = new XmlDocument ();
+        xmlDoc.LoadXml(fileList);
+        XmlNode config_list = xmlDoc.SelectSingleNode ("config_list");
+
+        foreach (XmlNode el in config_list.SelectNodes ("config")) {
+            string name = el.SelectSingleNode ("name").InnerText;
+            string userName = el.SelectSingleNode ("user_name").InnerText;
+            string url = el.SelectSingleNode ("url").InnerText;
+
+            File newFile = new File (name, userName, url, DownloadAndLoad);
+            fileSelectionManager.fileList.Add (newFile);
+        }
+
+        fileSelectionManager.PopulateList ();
+    }
 
 	public void ConnectAllModules () {
 		XmlNode connectionsEL = xmlDoc.SelectSingleNode ("configuration/connections");

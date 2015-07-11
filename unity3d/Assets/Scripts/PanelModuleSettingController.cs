@@ -11,6 +11,8 @@ public class PanelModuleSettingController : MonoBehaviour {
 	public Slider sliderLeftJoint;
 	public Slider sliderRightJoint;
 	public Slider sliderFrontJoint;
+    public Camera sensor;
+    public Toggle toggleSensor;
 
 	// Use this for initialization
 	void Start () {
@@ -37,6 +39,8 @@ public class PanelModuleSettingController : MonoBehaviour {
 	}
 
 	public void UpdateSelectedModule (GameObject module) {
+        OnClickSensor (false);
+        toggleSensor.isOn = false;
 		selectedModule = module;
 		UpdateText ();
 		UpdateSliderControlInfo ();
@@ -53,6 +57,8 @@ public class PanelModuleSettingController : MonoBehaviour {
 	}
 
 	public void Reset () {
+        OnClickSensor (false);
+        toggleSensor.isOn = false;
 		selectedModule = null;
 		isShow = false;
 		gameObject.SetActive (isShow);
@@ -62,4 +68,15 @@ public class PanelModuleSettingController : MonoBehaviour {
 		sliderRightJoint.GetComponent<SliderControl> ().Reset ();
 		sliderFrontJoint.GetComponent<SliderControl> ().Reset ();
 	}
+
+    public void OnClickSensor (bool newValue) {
+        if (selectedModule != null) {
+            if (newValue) {
+                selectedModule.GetComponent<ModuleController> ().AttachSensor (sensor);
+            }
+            else {
+            selectedModule.GetComponent<ModuleController> ().ResetSensor ();
+            }
+        }
+    }
 }

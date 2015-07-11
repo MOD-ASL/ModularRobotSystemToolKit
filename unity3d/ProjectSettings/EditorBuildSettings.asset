@@ -5,13 +5,13 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scences/SelectLevel.unity
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scences/Levels/Blank.unity
   - enabled: 1
     path: Assets/Scences/Designer.unity
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scences/Levels/Slope.unity
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scences/Levels/Stairs.unity

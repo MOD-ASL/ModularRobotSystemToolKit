@@ -4,6 +4,7 @@ using UnityEngine.UI;
 
 public class PanelSystemController : MonoBehaviour {
 	public Text confName;
+    public Text userName;
 	public Button buttonSave;
 
 	// Use this for initialization
@@ -13,7 +14,7 @@ public class PanelSystemController : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		if (confName.text == "") {
+        if (confName.text == "" || userName.text == "") {
 			buttonSave.GetComponent<Button> ().interactable = false;
 		}
 		else {
