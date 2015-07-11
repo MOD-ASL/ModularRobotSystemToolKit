@@ -60,6 +60,7 @@ public class ModuleInteractionController : MonoBehaviour {
         else if (!mouseOverPart) {
             // In add mode but mouse is off the module
             Destroy (dummyModule);
+            mo2MaComController.ma2MoComManager.ma2MaComManager.ma2UIComManager.uI2MaComDirector.statusBarDirector.ResetTextMessage ();
         }
     }
 
@@ -76,11 +77,17 @@ public class ModuleInteractionController : MonoBehaviour {
         }
         else {
             // In add mode and click on module
-            GameObject partUnderMouseCache = partUnderMouse;
-            Transform newModule = mo2MaComController.ma2MoComManager.ma2MaComManager.modulesManager.InsertModuleAt (dummyModule.transform.position,
-                                                                                              dummyModule.transform.rotation,
-                                                                                              partUnderMouse);;
-            mo2MaComController.ma2MoComManager.ma2MaComManager.connectionManager.ConnectModule2Node (newModule.gameObject, partUnderMouseCache);
+            // Check if there is collision
+            if (!dummyModule.GetComponent<DummyModuleController> ().collision) {
+                GameObject partUnderMouseCache = partUnderMouse;
+                Transform newModule = mo2MaComController.ma2MoComManager.ma2MaComManager.modulesManager.InsertModuleAt (dummyModule.transform.position,
+                                                                                                                        dummyModule.transform.rotation,
+                                                                                                                        partUnderMouse);
+                StartCoroutine (mo2MaComController.ma2MoComManager.ma2MaComManager.connectionManager.ConnectModule2Node (newModule.gameObject, partUnderMouseCache));
+            }
+            else {
+                mo2MaComController.ma2MoComManager.ma2MaComManager.ma2UIComManager.uI2MaComDirector.statusBarDirector.SetTextMessage ("Cannot add new module: Collision detected.");
+            }
         }
 
     }

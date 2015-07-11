@@ -27,11 +27,9 @@ public class PartController : MonoBehaviour {
         if (other.transform.parent.tag == "Module") {
             touchedNode = other.gameObject;
         }
-
     }
 
     public void OnTriggerExit () {
         touchedNode = null;
     }
-
 }

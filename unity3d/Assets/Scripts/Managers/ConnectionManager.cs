@@ -19,7 +19,11 @@ public class ConnectionManager : MonoBehaviour {
 	
 	}
 
-    public void ConnectModule2Node (GameObject module, GameObject node) {
+    public IEnumerator ConnectModule2Node (GameObject module, GameObject node) {
+
+        // Wait for one frame for collision to happen
+        yield return null;
+
         GameObject nodeOnModule = node.GetComponent<PartController> ().touchedNode;
 
         Connect (nodeOnModule, node);
