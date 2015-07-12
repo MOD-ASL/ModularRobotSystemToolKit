@@ -11,7 +11,7 @@ public class DropDownMenuDirector : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-	    
+	    HideMenu ();
 	}
 	
 	// Update is called once per frame
@@ -34,11 +34,10 @@ public class DropDownMenuDirector : MonoBehaviour {
     }
 
     private void ShowMenu () {
-        panelDropDown.SetActive (true);
         dropDownMenuAnimator.Play ("DropDownMenuFadeIn");
     }
 
     private void HideMenu () {
-        panelDropDown.SetActive (false);
+        dropDownMenuAnimator.Play ("DropDownMenuFadeOut");
     }
 }

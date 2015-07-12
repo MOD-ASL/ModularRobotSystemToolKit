@@ -46,21 +46,37 @@ public class ModuleInteractionController : MonoBehaviour {
 
     public void OnMouseOverPartOrNot (bool mouseOverPart) {
         Mode addMode = mo2MaComController.ma2MoComManager.ma2MaComManager.modeManagerNew.GetOrCreateModeByName ("Add");
+        Mode disOrConnectMode = mo2MaComController.ma2MoComManager.ma2MaComManager.modeManagerNew.GetOrCreateModeByName ("DisOrConnect");
         
-        if (!addMode.status) {
-            // Not in add mode
-            HighLightOrNot (mouseOverPart);
+        if (addMode.status) {
+            if (mouseOverPart && IsNodeAvailable (partUnderMouse)) {
+                // In add mode and mouse is over a part
+                dummyModule = Instantiate (dummyModulePrefab, GetDummyModulePosition (partUnderMouse), partUnderMouse.transform.rotation) as GameObject;
+                dummyModule.tag = "Ghost";
+                dummyModule.transform.Rotate (Vector3.right, 90.0f);
+            }
+            else if (!mouseOverPart) {
+                // In add mode but mouse is off the module
+                Destroy (dummyModule);
+                mo2MaComController.ma2MoComManager.ma2MaComManager.ma2UIComManager.uI2MaComDirector.statusBarDirector.ResetTextMessage ();
+            }
         }
-        else if (mouseOverPart && IsNodeAvailable (partUnderMouse)) {
-            // In add mode and mouse is over a part
-            dummyModule = Instantiate (dummyModulePrefab, GetDummyModulePosition (partUnderMouse), partUnderMouse.transform.rotation) as GameObject;
-            dummyModule.tag = "Ghost";
-            dummyModule.transform.Rotate (Vector3.right, 90.0f);
-        }
-        else if (!mouseOverPart) {
-            // In add mode but mouse is off the module
-            Destroy (dummyModule);
+        else if (disOrConnectMode.status) {
+            // In disconnect or connect mode
             mo2MaComController.ma2MoComManager.ma2MaComManager.ma2UIComManager.uI2MaComDirector.statusBarDirector.ResetTextMessage ();
+            if ((partUnderMouse != null) && (partUnderMouse.tag == "Node")) {
+                partUnderMouse.GetComponent<PartInteractionController> ().HighlightOrNot (mouseOverPart);
+                GameObject touchedNode = partUnderMouse.GetComponent<PartController> ().touchedNode;
+                if (touchedNode != null) {
+                    touchedNode.GetComponent<PartInteractionController> ().HighlightOrNot (mouseOverPart);
+                }
+                else {
+                    mo2MaComController.ma2MoComManager.ma2MaComManager.ma2UIComManager.uI2MaComDirector.statusBarDirector.SetTextMessage ("Cannot connect modules: No adjacent module found.");
+                }
+            }
+        }
+        else {
+            HighLightOrNot (mouseOverPart);
         }
     }
 
@@ -72,10 +88,9 @@ public class ModuleInteractionController : MonoBehaviour {
 
     public void OnMouseClick () {
         Mode addMode = mo2MaComController.ma2MoComManager.ma2MaComManager.modeManagerNew.GetOrCreateModeByName ("Add");
-        if (!addMode.status) {
-            mo2MaComController.OnMouseClick ();
-        }
-        else {
+        Mode disOrConnectMode = mo2MaComController.ma2MoComManager.ma2MaComManager.modeManagerNew.GetOrCreateModeByName ("DisOrConnect");
+
+        if (addMode.status) {
             // In add mode and click on module
             // Check if there is collision
             if (!dummyModule.GetComponent<DummyModuleController> ().collision) {
@@ -89,6 +104,21 @@ public class ModuleInteractionController : MonoBehaviour {
                 mo2MaComController.ma2MoComManager.ma2MaComManager.ma2UIComManager.uI2MaComDirector.statusBarDirector.SetTextMessage ("Cannot add new module: Collision detected.");
             }
         }
+        else if (disOrConnectMode.status) {
+            if (partUnderMouse.tag == "Node") {
+                // When click left mouse button in DisOrConnect mode
+                GameObject touchedNode = partUnderMouse.GetComponent<PartController> ().touchedNode;
+                if (touchedNode != null) {
+                    // Toggle the connection and display the new color
+                    mo2MaComController.ma2MoComManager.ma2MaComManager.connectionManager.ToggleConnection (partUnderMouse, touchedNode);
+                    mo2MaComController.moduleConnectionController.ShowConnectionsOrNot (true);
+                    touchedNode.transform.parent.GetComponent <ModuleConnectionController> ().ShowConnectionsOrNot (true);
+                }
+            }
+        }
+        else {
+            mo2MaComController.OnMouseClick ();
+        }
 
     }
 
@@ -97,6 +127,11 @@ public class ModuleInteractionController : MonoBehaviour {
     }
 
     public void ResetPartUnderMouse () {
+        partUnderMouse.GetComponent<PartInteractionController> ().HighlightOrNot (false);
+        GameObject touchedNode = partUnderMouse.GetComponent<PartController> ().touchedNode;
+        if (touchedNode != null) {
+            touchedNode.GetComponent<PartInteractionController> ().HighlightOrNot (false);
+        }
         SetPartUnderMouse (null);
     }
 

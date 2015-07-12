@@ -25,10 +25,39 @@ public class ModuleConnectionController : MonoBehaviour {
         mo2MaComController = gameObject.GetComponent<Mo2MaComController> ();
     }
 
+    public void ShowConnectionsOrNot (bool show) {
+        foreach (KeyValuePair<GameObject, GameObject> kvp in connectionDict) {
+            kvp.Key.GetComponent<PartInteractionController> ().ShowConnectionsOrNot (show, (kvp.Value != null));
+        }
+    }
+
     public void ResetConnectionDict () {
         connectionDict.Clear ();
         foreach (GameObject node in mo2MaComController.moduleRefPointerController.GetAllNodePointers ()) {
             connectionDict.Add (node, null);
+            Destroy (node.GetComponent<FixedJoint> ());
+        }
+    }
+
+    public void DisconnectAllNodes () {
+        foreach (KeyValuePair<GameObject, GameObject> kvp in connectionDict) {
+            // Tell other connected nodes to disconnect too
+            if (kvp.Value != null) {
+                kvp.Value.transform.parent.GetComponent<ModuleConnectionController> ().DisconnectAndReturnOtherNode (kvp.Value);
+            }
+        }
+
+        ResetConnectionDict ();
+    }
+
+    public void ConnectAllNodes () {
+        foreach (GameObject node in mo2MaComController.moduleRefPointerController.GetAllNodePointers ()) {
+            if (IsNodeAvailable (node)) {
+                GameObject touchedNode = node.GetComponent<PartController> ().touchedNode;
+                if (touchedNode) {
+                    mo2MaComController.ma2MoComManager.ma2MaComManager.connectionManager.ConnectNode2Node (node, touchedNode);
+                }
+            }
         }
     }
 
@@ -36,23 +65,9 @@ public class ModuleConnectionController : MonoBehaviour {
         connectionDict[thisNode] = otherNode;
     }
 
-    public GameObject FindClosestNodeFromGivenNode (GameObject otherNode) {
-        float minDistance = -1.0f;
-        GameObject closestNode = new GameObject ();
-        foreach (GameObject node in mo2MaComController.moduleRefPointerController.GetAllNodePointers ()) {
-            Debug.Log (node.name);
-            Debug.Log ((node.transform.localPosition));
-            if ((minDistance == -1.0f) || ((otherNode.transform.position - node.transform.position).magnitude < minDistance)) {
-                minDistance = (otherNode.transform.position - node.transform.position).magnitude;
-                closestNode = node;
-            }
-        }
-
-        return closestNode;
-    }
-
     public GameObject DisconnectAndReturnOtherNode (GameObject thisNode) {
         GameObject otherNode = connectionDict[thisNode];
+        Destroy (thisNode.GetComponent<FixedJoint> ());
         connectionDict[thisNode] = null;
         return otherNode;
     }

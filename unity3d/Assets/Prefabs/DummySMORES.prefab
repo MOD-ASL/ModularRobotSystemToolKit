@@ -12,7 +12,7 @@ GameObject:
   - 23: {fileID: 2303732}
   - 64: {fileID: 6452646}
   - 54: {fileID: 5448674}
-  - 114: {fileID: 11446606}
+  - 114: {fileID: 11491306}
   m_Layer: 2
   m_Name: BackPlate
   m_TagString: Node
@@ -32,7 +32,7 @@ GameObject:
   - 23: {fileID: 2359786}
   - 64: {fileID: 6499598}
   - 54: {fileID: 5449644}
-  - 114: {fileID: 11456590}
+  - 114: {fileID: 11480088}
   m_Layer: 2
   m_Name: FrontWheel
   m_TagString: Node
@@ -68,7 +68,7 @@ GameObject:
   - 23: {fileID: 2328770}
   - 64: {fileID: 6457246}
   - 54: {fileID: 5436682}
-  - 114: {fileID: 11479900}
+  - 114: {fileID: 11480364}
   m_Layer: 2
   m_Name: LeftWheel
   m_TagString: Node
@@ -88,7 +88,7 @@ GameObject:
   - 23: {fileID: 2345850}
   - 64: {fileID: 6449244}
   - 54: {fileID: 5429492}
-  - 114: {fileID: 11457992}
+  - 114: {fileID: 11465052}
   m_Layer: 2
   m_Name: RightWheel
   m_TagString: Node
@@ -108,7 +108,7 @@ GameObject:
   - 23: {fileID: 2333178}
   - 64: {fileID: 6477438}
   - 54: {fileID: 5484580}
-  - 114: {fileID: 11407048}
+  - 114: {fileID: 11470066}
   m_Layer: 2
   m_Name: Body
   m_TagString: Untagged
@@ -483,43 +483,7 @@ MeshCollider:
   serializedVersion: 2
   m_Convex: 1
   m_Mesh: {fileID: 4300000, guid: 7ca9b82865eecb64cb4598435c21e34e, type: 3}
---- !u!114 &11407048
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 188914}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 37ecea6aa1259c54eb63ceef7a9f8553, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  touchedNode: {fileID: 0}
---- !u!114 &11446606
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 103824}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 37ecea6aa1259c54eb63ceef7a9f8553, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  touchedNode: {fileID: 0}
---- !u!114 &11456590
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 120244}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 37ecea6aa1259c54eb63ceef7a9f8553, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  touchedNode: {fileID: 0}
---- !u!114 &11457992
+--- !u!114 &11465052
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -527,7 +491,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 162094}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 37ecea6aa1259c54eb63ceef7a9f8553, type: 3}
+  m_Script: {fileID: 11500000, guid: 629f8a3f143818b4d9b6568142352515, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   touchedNode: {fileID: 0}
@@ -544,7 +508,32 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   normalColor: {r: .615686297, g: .639215708, b: .207843155, a: .753000021}
   collisionColor: {r: 1, g: .198529422, b: .198529422, a: .597000003}
---- !u!114 &11479900
+  collision: 0
+--- !u!114 &11470066
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 188914}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 629f8a3f143818b4d9b6568142352515, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  touchedNode: {fileID: 0}
+--- !u!114 &11480088
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 120244}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 629f8a3f143818b4d9b6568142352515, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  touchedNode: {fileID: 0}
+--- !u!114 &11480364
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -552,7 +541,19 @@ MonoBehaviour:
   m_GameObject: {fileID: 159286}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 37ecea6aa1259c54eb63ceef7a9f8553, type: 3}
+  m_Script: {fileID: 11500000, guid: 629f8a3f143818b4d9b6568142352515, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  touchedNode: {fileID: 0}
+--- !u!114 &11491306
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 103824}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 629f8a3f143818b4d9b6568142352515, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   touchedNode: {fileID: 0}

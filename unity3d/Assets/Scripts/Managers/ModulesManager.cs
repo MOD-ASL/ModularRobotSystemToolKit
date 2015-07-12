@@ -55,7 +55,7 @@ public class ModulesManager : MonoBehaviour {
     }
 
     public void DeleteModule (GameObject module) {
-        //TODO: Remove connection too
+        ma2MaComManager.selectionManager.selectedModule.GetComponent<ModuleConnectionController> ().DisconnectAllNodes ();
         Destroy (ma2MaComManager.selectionManager.selectedModule);
     }
 
@@ -82,6 +82,12 @@ public class ModulesManager : MonoBehaviour {
             i++;
         }
         return moduleRootName + " " + i.ToString ();
+    }
+
+    public void ShowConnectionsOrNot (bool show) {
+        foreach (Transform m in robot) {
+            m.GetComponent<ModuleConnectionController> ().ShowConnectionsOrNot (show);
+        }
     }
 
 }

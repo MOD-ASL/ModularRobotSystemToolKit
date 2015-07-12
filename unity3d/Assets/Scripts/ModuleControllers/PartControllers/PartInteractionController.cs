@@ -5,6 +5,10 @@ using System.Collections;
 public class PartInteractionController : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler {
 
     private Renderer rend;
+    private Color originalColor;
+
+    [HideInInspector]
+    public bool selected = false;
 
     private ModuleInteractionController moduleInteractionController;
 
@@ -20,7 +24,7 @@ public class PartInteractionController : MonoBehaviour, IPointerEnterHandler, IP
 
     public void OnPointerExit (PointerEventData eventData)
     {
-        moduleInteractionController.SetPartUnderMouse (null);
+        moduleInteractionController.ResetPartUnderMouse ();
         moduleInteractionController.OnMouseOverPartOrNot (false);
     }
 
@@ -48,16 +52,36 @@ public class PartInteractionController : MonoBehaviour, IPointerEnterHandler, IP
     void Awake (){
         rend = gameObject.GetComponent<Renderer> ();
         rend.material.EnableKeyword ("_EMISSION");
+        originalColor = rend.material.color;
         moduleInteractionController = gameObject.GetComponentInParent<ModuleInteractionController> ();
     }
 
     // Highlight by changing the emission of the material
     public void HighlightOrNot (bool highlight) {
-        if (highlight) {
+        if (highlight || selected) {
             rend.material.SetColor ("_EmissionColor", Color.gray);
         }
         else {
             rend.material.SetColor ("_EmissionColor", Color.black);
         }
+    }
+
+    public void ShowConnectionsOrNot (bool show, bool connected) {
+        if (show) {
+            if (connected) {
+                rend.material.color = Color.red;
+            }
+            else {
+                rend.material.color = Color.green;
+            }
+        }
+        else {
+            rend.material.color = originalColor;
+        }
+    }
+
+    public void SelectOrNot (bool select) {
+        selected = select;
+        HighlightOrNot (select);
     }
 }

@@ -5,6 +5,8 @@ public class MenuTopDirector : MonoBehaviour {
 
     public UI2MaComDirector uI2MaComDirector;
 
+    public ButtonDisOrConnectAssistant buttonDisOrConnectAssistant;
+
 	// Use this for initialization
 	void Start () {
 
