@@ -31,7 +31,7 @@ public class ButtonModuleSettingAssistant : MonoBehaviour {
                 buttonDirector.menuTopDirector.uI2MaComDirector.statusBarDirector.ResetTextMessage ();
             }
             else {
-                buttonDirector.menuTopDirector.uI2MaComDirector.statusBarDirector.SetTextMessage ("Please select a module ...");
+                buttonDirector.menuTopDirector.uI2MaComDirector.statusBarDirector.SetTempTextMessage ("Please select a module ...");
             }
         }
         else {

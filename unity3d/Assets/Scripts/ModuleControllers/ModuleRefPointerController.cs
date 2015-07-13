@@ -10,6 +10,10 @@ public class ModuleRefPointerController : MonoBehaviour {
     // Name of part joint connected to -> HingeJoint
     // Possible key: FrontWheel, RightWheel, LeftWheel, Body
     private Dictionary<string, HingeJoint> jointPointerDict = new Dictionary<string, HingeJoint>();
+
+    // Name of part joint connected to -> JointCommandController
+    // Possible key: FrontWheel, RightWheel, LeftWheel, Body
+    private Dictionary<string, JointCommandController> jointCommandControllerDict = new Dictionary<string, JointCommandController>();
     
     // Part name -> GameObject of part
     // Possible key: FrontWheel, RightWheel, LeftWheel, Body, BackPlate
@@ -37,6 +41,7 @@ public class ModuleRefPointerController : MonoBehaviour {
         LoadJointPointers ();
         LoadPartPointers ();
         LoadNodePointers ();
+        LoadJointCommandControllers ();
 
         mo2MaComController = gameObject.GetComponent<Mo2MaComController> ();
     }
@@ -46,6 +51,16 @@ public class ModuleRefPointerController : MonoBehaviour {
         HingeJoint[] joints = gameObject.GetComponentsInChildren<HingeJoint> ();
         foreach (HingeJoint joint in joints) {
             jointPointerDict.Add (joint.connectedBody.name, joint);
+        }
+    }
+
+    // Load the pointers of all joints for easier reference
+    void LoadJointCommandControllers () {
+        HingeJoint[] joints = gameObject.GetComponentsInChildren<HingeJoint> ();
+        foreach (HingeJoint joint in joints) {
+            JointCommandController jcc = joint.connectedBody.gameObject.GetComponent<JointCommandController> ();
+            jcc.joint = joint;
+            jointCommandControllerDict.Add (joint.connectedBody.name, jcc);
         }
     }
     
@@ -67,6 +82,10 @@ public class ModuleRefPointerController : MonoBehaviour {
 
     public HingeJoint GetHingeJointPointerByName (string name) {
         return jointPointerDict[name];
+    }
+
+    public JointCommandController GetJointCommandControllerByName (string name) {
+        return jointCommandControllerDict[name];
     }
 
     public GameObject GetPartPointerByName (string name) {
@@ -99,6 +118,10 @@ public class ModuleRefPointerController : MonoBehaviour {
     
     public List<GameObject> GetAllNodePointers () {
         return new List<GameObject> (nodePointerDict.Values);
+    }
+
+    public List<JointCommandController> GetAllJointCommandControllers () {
+        return new List<JointCommandController> (jointCommandControllerDict.Values);
     }
 
 }

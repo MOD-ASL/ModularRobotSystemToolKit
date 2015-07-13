@@ -53,4 +53,10 @@ public class ModuleModeController : MonoBehaviour {
             part.GetComponent<Rigidbody> ().useGravity = gravity;
         }
     }
+
+    public void SetAnchorOrNot (bool anchor) {
+        mo2MaComController.moduleRefPointerController.GetNodePointerByName 
+            (ModuleRefPointerController.PartNames.BackPlate.ToString ())
+            .GetComponent<Rigidbody> ().isKinematic = anchor;
+    }
 }

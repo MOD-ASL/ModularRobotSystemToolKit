@@ -41,6 +41,9 @@ public class ModuleInteractionController : MonoBehaviour {
 
     public void SelectedOrNot (bool s) {
         selected = s;
+        foreach (GameObject part in mo2MaComController.moduleRefPointerController.GetAllPartPointers ()) {
+            part.GetComponent<PartInteractionController> ().SelectOrNot (s);
+        }
         HighLightOrNot (selected);
     }
 
@@ -71,7 +74,7 @@ public class ModuleInteractionController : MonoBehaviour {
                     touchedNode.GetComponent<PartInteractionController> ().HighlightOrNot (mouseOverPart);
                 }
                 else {
-                    mo2MaComController.ma2MoComManager.ma2MaComManager.ma2UIComManager.uI2MaComDirector.statusBarDirector.SetTextMessage ("Cannot connect modules: No adjacent module found.");
+                    mo2MaComController.ma2MoComManager.ma2MaComManager.ma2UIComManager.uI2MaComDirector.statusBarDirector.SetTempTextMessage ("Cannot connect modules: No adjacent module found.");
                 }
             }
         }
@@ -101,7 +104,7 @@ public class ModuleInteractionController : MonoBehaviour {
                 StartCoroutine (mo2MaComController.ma2MoComManager.ma2MaComManager.connectionManager.ConnectModule2Node (newModule.gameObject, partUnderMouseCache));
             }
             else {
-                mo2MaComController.ma2MoComManager.ma2MaComManager.ma2UIComManager.uI2MaComDirector.statusBarDirector.SetTextMessage ("Cannot add new module: Collision detected.");
+                mo2MaComController.ma2MoComManager.ma2MaComManager.ma2UIComManager.uI2MaComDirector.statusBarDirector.SetTempTextMessage ("Cannot add new module: Collision detected.");
             }
         }
         else if (disOrConnectMode.status) {

@@ -13,6 +13,9 @@ public class ModulesManager : MonoBehaviour {
     public string moduleRootName;
     public Vector3 initialPosition;
 
+    private GameObject anchorModule;
+    private GameObject sensorModule;
+
 	// Use this for initialization
 	void Start () {
         Clear ();
@@ -28,13 +31,13 @@ public class ModulesManager : MonoBehaviour {
         // Clear everything
         RemoveAllModules ();
         ma2MaComManager.selectionManager.ResetSelectedModule ();
-//        connectionTable = new Hashtable ();
-//        UIManagerScript.SetSelectedModule (null);
 
         // Spawn a new one
         Transform clone = Instantiate (modulePrefab, initialPosition, Quaternion.identity) as Transform;
         clone.name = moduleRootName + "_0";
         clone.SetParent (robot.transform);
+
+        SetAnchorModule (clone.gameObject);
     }
 
     void RemoveAllModules () {
@@ -50,7 +53,7 @@ public class ModulesManager : MonoBehaviour {
             ma2MaComManager.ma2UIComManager.uI2MaComDirector.statusBarDirector.ResetTextMessage ();
         }
         else {
-            ma2MaComManager.ma2UIComManager.uI2MaComDirector.statusBarDirector.SetTextMessage ("Please select a module before click \"Delete\".");
+            ma2MaComManager.ma2UIComManager.uI2MaComDirector.statusBarDirector.SetTempTextMessage ("Please select a module before click \"Delete\".");
         }
     }
 
@@ -88,6 +91,65 @@ public class ModulesManager : MonoBehaviour {
         foreach (Transform m in robot) {
             m.GetComponent<ModuleConnectionController> ().ShowConnectionsOrNot (show);
         }
+    }
+
+    public void SetSelectedModuleAsAnchor () {
+        if (ma2MaComManager.selectionManager.selectedModule) {
+            SetAnchorModule (ma2MaComManager.selectionManager.selectedModule);
+        }
+        else {
+            ma2MaComManager.ma2UIComManager.uI2MaComDirector.statusBarDirector.SetTempTextMessage ("Please select a module before click \"Set Anchor\".");
+        }
+    }
+
+    public void SetSelectedModuleAsSensor () {
+        if (ma2MaComManager.selectionManager.selectedModule) {
+            SetSensorModule (ma2MaComManager.selectionManager.selectedModule);
+        }
+        else {
+            ma2MaComManager.ma2UIComManager.uI2MaComDirector.statusBarDirector.SetTempTextMessage ("Please select a module before click \"Set Sensor\".");
+        }
+    }
+
+    public void SetAnchorModule (GameObject module) {
+        if (anchorModule != null) {
+            anchorModule.GetComponent<ModuleModeController> ().SetAnchorOrNot (false);
+        }
+        anchorModule = module;
+        anchorModule.GetComponent<ModuleModeController> ().SetAnchorOrNot (true);
+    }
+
+    public void SetSensorModule (GameObject module) {
+        sensorModule = module;
+    }
+
+    public List<ModuleStateObject> GetAllModuleStateObjects () {
+        List<ModuleStateObject> listOfModuleStateObjects = new List<ModuleStateObject> ();
+        foreach (Transform m in robot) {
+            listOfModuleStateObjects.Add (m.GetComponent<ModuleMotionController> ().GetModuleStateObject ());
+        }
+        return listOfModuleStateObjects;
+    }
+
+    public void SetAllModuleStateObjects (List<ModuleStateObject> listOfModuleStateObjects) {
+        foreach (ModuleStateObject mso in listOfModuleStateObjects) {
+            GameObject m = FindModuleWithName (mso.name);
+            if (m != null) {
+                m.GetComponent<ModuleMotionController> ().SetModuleStateObject (mso);
+            }
+            else {
+                Debug.Log ("Cannot find module with name " + mso.name);
+            }
+        }
+    }
+
+    public GameObject FindModuleWithName (string name) {
+        foreach (Transform m in robot) {
+            if (m.name == name) {
+                return m.gameObject;
+            }
+        }
+        return null;
     }
 
 }

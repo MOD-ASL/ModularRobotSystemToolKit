@@ -9,6 +9,8 @@ public class Ma2MaComManager : MonoBehaviour {
     public Ma2UIComManager ma2UIComManager;
     public ModeManagerNew modeManagerNew;
     public ConnectionManager connectionManager;
+    public BehaviorManager behaviorManager;
+    public SaveLoadManagerNew saveLoadManagerNew;
 
 	// Use this for initialization
 	void Start () {

@@ -15,4 +15,15 @@ public class RobotManager : MonoBehaviour {
 	void Update () {
 	
 	}
+
+    public RobotStateObject GetRobotStateObject () {
+        RobotStateObject rso = new RobotStateObject ();
+        rso.listOfModuleStateObjects = ma2MaComManager.modulesManager.GetAllModuleStateObjects ();
+        return rso;
+    }
+
+    public void SetRobotState (RobotStateObject rso) {
+        ma2MaComManager.modulesManager.SetAllModuleStateObjects (rso.listOfModuleStateObjects);
+    }
+
 }

@@ -40,6 +40,7 @@ GameObject:
   - 114: {fileID: 11444224}
   - 114: {fileID: 11480194}
   - 135: {fileID: 13514918}
+  - 114: {fileID: 11403380}
   m_Layer: 0
   m_Name: FrontWheel
   m_TagString: Node
@@ -55,12 +56,12 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 484136}
+  - 114: {fileID: 11415546}
   - 114: {fileID: 11416486}
   - 114: {fileID: 11430948}
   - 114: {fileID: 11443556}
   - 114: {fileID: 11456334}
   - 114: {fileID: 11422758}
-  - 114: {fileID: 11415546}
   m_Layer: 0
   m_Name: SMORES
   m_TagString: Module
@@ -83,6 +84,7 @@ GameObject:
   - 114: {fileID: 11417902}
   - 114: {fileID: 11409944}
   - 135: {fileID: 13588796}
+  - 114: {fileID: 11456358}
   m_Layer: 0
   m_Name: LeftWheel
   m_TagString: Node
@@ -105,6 +107,7 @@ GameObject:
   - 114: {fileID: 11478606}
   - 114: {fileID: 11444850}
   - 135: {fileID: 13565834}
+  - 114: {fileID: 11420198}
   m_Layer: 0
   m_Name: RightWheel
   m_TagString: Node
@@ -127,6 +130,7 @@ GameObject:
   - 59: {fileID: 5957142}
   - 114: {fileID: 11462284}
   - 114: {fileID: 11455392}
+  - 114: {fileID: 11419934}
   m_Layer: 0
   m_Name: Body
   m_TagString: Untagged
@@ -455,7 +459,7 @@ HingeJoint:
   m_UseSpring: 1
   m_Spring:
     spring: 100000
-    damper: 30
+    damper: 3000
     targetPosition: 0
   m_UseMotor: 0
   m_Motor:
@@ -487,7 +491,7 @@ HingeJoint:
   m_UseSpring: 1
   m_Spring:
     spring: 100000
-    damper: 30
+    damper: 3000
     targetPosition: 0
   m_UseMotor: 0
   m_Motor:
@@ -519,7 +523,7 @@ HingeJoint:
   m_UseSpring: 1
   m_Spring:
     spring: 100000
-    damper: 30
+    damper: 3000
     targetPosition: 0
   m_UseMotor: 0
   m_Motor:
@@ -551,7 +555,7 @@ HingeJoint:
   m_UseSpring: 1
   m_Spring:
     spring: 100000
-    damper: 30
+    damper: 3000
     targetPosition: 0
   m_UseMotor: 0
   m_Motor:
@@ -576,7 +580,7 @@ MeshCollider:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 162094}
   m_Material: {fileID: 0}
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
   m_Convex: 1
@@ -588,7 +592,7 @@ MeshCollider:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 103824}
   m_Material: {fileID: 0}
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
   m_Convex: 1
@@ -600,7 +604,7 @@ MeshCollider:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 159286}
   m_Material: {fileID: 0}
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
   m_Convex: 1
@@ -612,7 +616,7 @@ MeshCollider:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 188914}
   m_Material: {fileID: 0}
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
   m_Convex: 1
@@ -624,7 +628,7 @@ MeshCollider:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 120244}
   m_Material: {fileID: 0}
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
   m_Convex: 1
@@ -640,6 +644,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2148710dbb9960644a9e60705a98cc85, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  selected: 0
+--- !u!114 &11403380
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 120244}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2ee9f67f62888a1428558d9e2a3f6545, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  joint: {fileID: 0}
 --- !u!114 &11409944
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -651,6 +668,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2148710dbb9960644a9e60705a98cc85, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  selected: 0
 --- !u!114 &11415546
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -691,6 +709,30 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   touchedNode: {fileID: 0}
+--- !u!114 &11419934
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 188914}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2ee9f67f62888a1428558d9e2a3f6545, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  joint: {fileID: 0}
+--- !u!114 &11420198
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 162094}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2ee9f67f62888a1428558d9e2a3f6545, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  joint: {fileID: 0}
 --- !u!114 &11422758
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -750,6 +792,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2148710dbb9960644a9e60705a98cc85, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  selected: 0
 --- !u!114 &11455392
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -761,6 +804,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2148710dbb9960644a9e60705a98cc85, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  selected: 0
 --- !u!114 &11456334
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -774,6 +818,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mo2MaComController: {fileID: 0}
   currentModuleMode: 0
+--- !u!114 &11456358
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 159286}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2ee9f67f62888a1428558d9e2a3f6545, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  joint: {fileID: 0}
 --- !u!114 &11462284
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -809,6 +865,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2148710dbb9960644a9e60705a98cc85, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  selected: 0
 --- !u!114 &11481290
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -915,7 +972,15 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: m_IsTrigger
-      value: 1
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: joint
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: m_Spring.damper
+      value: 3000
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
