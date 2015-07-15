@@ -4,26 +4,27 @@ using UnityEngine.EventSystems;
 using System.Collections;
 using System.Collections.Generic;
 
-
-public class FileSelectionManager : MonoBehaviour {
+public class PanelFileSelectionDirector : MonoBehaviour {
     
     public GameObject sampleButton;
     public List<File> fileList;
     public ScrollRect scrollRect;
-
-    public Transform contentPanel;
-    public GameObject panelFileSelectionManager;
+    
+    public Transform panelFileList;
+    public GameObject panelFileSelectionDirector;
+    public UI2MaComDirector uI2MaComDirector;
+    public SaveLoadManagerNew.FileType fileType;
     
     void Start () {
         
     }
     
     void Update () {
-
+        
     }
-
+    
     public void ShowPanelOrNot (bool show) {
-        panelFileSelectionManager.SetActive (show);
+        panelFileSelectionDirector.SetActive (show);
     }
     
     public void PopulateList () {
@@ -42,15 +43,15 @@ public class FileSelectionManager : MonoBehaviour {
         ButtonBehaviorController button = newButton.GetComponent <ButtonBehaviorController> ();
         button.nameLabel.text = "Name: " + file.name + "\n" + "User: " + file.userName;
         button.button.onClick = file.thingToDo;
-        newButton.transform.SetParent (contentPanel);
+        newButton.transform.SetParent (panelFileList);
         scrollRect.normalizedPosition = new Vector2 (0f, 0f);
     }
     
     public void ClearList () {
         fileList = new List<File> ();
         List<GameObject> children = new List<GameObject>();
-        foreach (Transform child in contentPanel.transform) children.Add(child.gameObject);
+        foreach (Transform child in panelFileList.transform) children.Add(child.gameObject);
         children.ForEach(child => Destroy(child));
     }
-
+    
 }

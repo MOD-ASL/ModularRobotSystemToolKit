@@ -81,4 +81,20 @@ public class ModuleConnectionController : MonoBehaviour {
         }
         return true;
     }
+
+    public List<ConnectionObject> GetAllConnectionObjects () {
+        List<ConnectionObject> listOfConnectionObjects = new List<ConnectionObject> ();
+        foreach (GameObject node in mo2MaComController.moduleRefPointerController.GetAllNodePointers ()) {
+            if (node.GetComponent<FixedJoint> () != null) {
+                ConnectionObject co = new ConnectionObject ();
+                co.moduleName1 = node.transform.parent.name;
+                co.moduleName2 = node.GetComponent<PartController> ().touchedNode.transform.parent.name;
+                co.nodeName1 = node.name;
+                co.nodeName2 = node.GetComponent<PartController> ().touchedNode.name;
+
+                listOfConnectionObjects.Add (co);
+            }
+        }
+        return listOfConnectionObjects;
+    }
 }

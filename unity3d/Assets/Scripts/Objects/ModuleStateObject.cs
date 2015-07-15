@@ -7,6 +7,8 @@ public class ModuleStateObject {
 
     [XmlAttribute("name")]
     public string name;
+    public Vector3 position;
+    public Quaternion rotation;
 
     [XmlArray("JointCommands")]
     [XmlArrayItem("JointCommand")]

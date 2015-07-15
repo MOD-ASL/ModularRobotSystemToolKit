@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class ConnectionManager : MonoBehaviour {
 
@@ -69,6 +70,25 @@ public class ConnectionManager : MonoBehaviour {
     public void DisconnectAllModules () {
         foreach (Transform m in ma2MaComManager.modulesManager.robot) {
             m.GetComponent<ModuleConnectionController> ().DisconnectAllNodes ();
+        }
+    }
+
+    public List<ConnectionObject> GetAllConnectionObjects () {
+        List<ConnectionObject> listOfConnectionObjects = new List<ConnectionObject> ();
+        foreach (Transform m in ma2MaComManager.modulesManager.robot) {
+            listOfConnectionObjects.AddRange (m.GetComponent<ModuleConnectionController> ().GetAllConnectionObjects ());
+        }
+        return listOfConnectionObjects;
+    }
+
+    public IEnumerator SpawnConnections (List<ConnectionObject> listofConnectionObjects) {
+        yield return new WaitForSeconds (3f);
+        foreach (ConnectionObject co in listofConnectionObjects) {
+            GameObject m1 = ma2MaComManager.modulesManager.FindModuleWithNameInNewRobot (co.moduleName1);
+            GameObject m2 = ma2MaComManager.modulesManager.FindModuleWithNameInNewRobot (co.moduleName2);
+            GameObject n1 = m1.GetComponent<ModuleRefPointerController> ().GetNodePointerByName (co.nodeName1);
+            GameObject n2 = m2.GetComponent<ModuleRefPointerController> ().GetNodePointerByName (co.nodeName2);
+            ConnectNode2Node (n1, n2);
         }
     }
 

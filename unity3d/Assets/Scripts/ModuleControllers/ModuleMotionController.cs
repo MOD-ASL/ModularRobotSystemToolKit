@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -18,7 +18,7 @@ public class ModuleMotionController : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-	
+        //transform.parent.position = transform.position - transform.localPosition;
 	}
 
     void Awake () {
@@ -60,6 +60,8 @@ public class ModuleMotionController : MonoBehaviour {
     public ModuleStateObject GetModuleStateObject () {
         ModuleStateObject mso = new ModuleStateObject ();
         mso.name = gameObject.name;
+        mso.position = mo2MaComController.moduleRefPointerController.GetPartPointerByName (ModuleRefPointerController.PartNames.BackPlate.ToString ()).transform.position;
+        mso.rotation = mo2MaComController.moduleRefPointerController.GetPartPointerByName (ModuleRefPointerController.PartNames.BackPlate.ToString ()).transform.rotation;
         foreach (JointCommandObject jco in jointCommandObjectDict.Values) {
             mso.listOfJointCommands.Add (jco.Clone ());
         }
@@ -71,4 +73,5 @@ public class ModuleMotionController : MonoBehaviour {
             UpdateJointAngle (jco.targetValue, jco.name);
         }
     }
+
 }

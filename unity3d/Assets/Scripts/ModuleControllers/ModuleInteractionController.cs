@@ -70,7 +70,10 @@ public class ModuleInteractionController : MonoBehaviour {
             if ((partUnderMouse != null) && (partUnderMouse.tag == "Node")) {
                 partUnderMouse.GetComponent<PartInteractionController> ().HighlightOrNot (mouseOverPart);
                 GameObject touchedNode = partUnderMouse.GetComponent<PartController> ().touchedNode;
-                if (touchedNode != null) {
+                if (partUnderMouse.transform.parent.parent.name == "newRobot" || mo2MaComController.ma2MoComManager.ma2MaComManager.robotManager.nodeOnNewRobot != null) {
+
+                }
+                else if (touchedNode != null) {
                     touchedNode.GetComponent<PartInteractionController> ().HighlightOrNot (mouseOverPart);
                 }
                 else {
@@ -99,8 +102,9 @@ public class ModuleInteractionController : MonoBehaviour {
             if (!dummyModule.GetComponent<DummyModuleController> ().collision) {
                 GameObject partUnderMouseCache = partUnderMouse;
                 Transform newModule = mo2MaComController.ma2MoComManager.ma2MaComManager.modulesManager.InsertModuleAt (dummyModule.transform.position,
-                                                                                                                        dummyModule.transform.rotation,
-                                                                                                                        partUnderMouse);
+                                                                                                                        dummyModule.transform.rotation
+                                                                                                                        );
+                newModule.GetComponent<ModuleModeController> ().SetTrigger (false);
                 StartCoroutine (mo2MaComController.ma2MoComManager.ma2MaComManager.connectionManager.ConnectModule2Node (newModule.gameObject, partUnderMouseCache));
             }
             else {
@@ -111,7 +115,16 @@ public class ModuleInteractionController : MonoBehaviour {
             if (partUnderMouse.tag == "Node") {
                 // When click left mouse button in DisOrConnect mode
                 GameObject touchedNode = partUnderMouse.GetComponent<PartController> ().touchedNode;
-                if (touchedNode != null) {
+                if (partUnderMouse.transform.parent.parent.name == "newRobot") {
+                    mo2MaComController.ma2MoComManager.ma2MaComManager.robotManager.nodeOnNewRobot = partUnderMouse;
+                }
+                else if (mo2MaComController.ma2MoComManager.ma2MaComManager.robotManager.nodeOnNewRobot != null) {
+                    if (partUnderMouse.transform.parent.GetComponent<ModuleConnectionController> ().IsNodeAvailable (partUnderMouse)) {
+                        mo2MaComController.ma2MoComManager.ma2MaComManager.robotManager.MoveNewRobot (mo2MaComController.ma2MoComManager.ma2MaComManager.robotManager.nodeOnNewRobot, partUnderMouse);
+                        mo2MaComController.ma2MoComManager.ma2MaComManager.robotManager.nodeOnNewRobot = null;
+                    }
+                }
+                else if (touchedNode != null) {
                     // Toggle the connection and display the new color
                     mo2MaComController.ma2MoComManager.ma2MaComManager.connectionManager.ToggleConnection (partUnderMouse, touchedNode);
                     mo2MaComController.moduleConnectionController.ShowConnectionsOrNot (true);

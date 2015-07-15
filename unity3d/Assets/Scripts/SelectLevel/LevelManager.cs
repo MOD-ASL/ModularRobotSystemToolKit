@@ -58,6 +58,7 @@ public class LevelManager : MonoBehaviour {
     }
 
     public void SelectLevel (Level l) {
+        Debug.Log ("Loading" + l.name);
         imagePreview.sprite = Resources.Load<Sprite> (l.name);
         textIntro.text = l.intro;
         selectedLevel = l;

@@ -11,7 +11,7 @@ public class JointCommandController : MonoBehaviour {
 
     // constant
     //float jointSpringForce = 100000.0f;
-    //float jointDamperForce = 3000.0f;
+    float jointDamperForce = 30.0f;
 
 	// Use this for initialization
 	void Start () {
@@ -33,7 +33,7 @@ public class JointCommandController : MonoBehaviour {
     public void SetJointAngle (float jointValue) {
         JointSpring spring = joint.spring;
         //spring.spring = jointSpringForce;
-        //spring.damper = jointDamperForce;
+        spring.damper = jointDamperForce;
         spring.targetPosition = jointValue;
         joint.spring = spring;
     }

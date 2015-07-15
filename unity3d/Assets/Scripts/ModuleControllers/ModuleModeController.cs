@@ -12,7 +12,7 @@ public class ModuleModeController : MonoBehaviour {
     public enum ModuleMode {Static, Edit, Simulation};
     // currentMode of the module
     [HideInInspector]
-    public int currentModuleMode;
+    public ModuleMode currentModuleMode;
 
 	// Use this for initialization
 	void Start () {
@@ -29,7 +29,7 @@ public class ModuleModeController : MonoBehaviour {
     }
 
     // Set the mode and update the module accordingly
-    public void SetMode (int mode) {
+    public void SetMode (ModuleMode mode) {
         if (mode != currentModuleMode) {
             currentModuleMode = mode;
             OnChangeMode ();
@@ -37,7 +37,13 @@ public class ModuleModeController : MonoBehaviour {
     }
 
     public void OnChangeMode () {
-
+        if (currentModuleMode == ModuleMode.Simulation) {
+            SetKinematic (false);
+            SetGravity (true);
+        }
+        if (currentModuleMode == ModuleMode.Edit) {
+            SetGravity (false);
+        }
     }
 
     // set all parts to be kinematic or not
@@ -51,6 +57,13 @@ public class ModuleModeController : MonoBehaviour {
     public void SetGravity (bool gravity) {
         foreach (GameObject part in mo2MaComController.moduleRefPointerController.GetAllPartPointers ()) {
             part.GetComponent<Rigidbody> ().useGravity = gravity;
+        }
+    }
+
+    // set all parts to trigger or not
+    public void SetTrigger (bool trigger) {
+        foreach (GameObject part in mo2MaComController.moduleRefPointerController.GetAllPartPointers ()) {
+            part.GetComponent<MeshCollider> ().isTrigger = trigger;
         }
     }
 

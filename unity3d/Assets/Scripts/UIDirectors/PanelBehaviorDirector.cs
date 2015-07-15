@@ -55,10 +55,19 @@ public class PanelBehaviorDirector : MonoBehaviour {
         }
     }
 
-    public void InsertButton (int index, RobotStateObject rso) {
-        AddButton (rso).transform.SetSiblingIndex (index);
+    public GameObject InsertButton (int index, RobotStateObject rso) {
+        GameObject button = AddButton (rso);
+        button.transform.SetSiblingIndex (index);
+        return button;
     }
 
+    public GameObject ChangeButton (int index, RobotStateObject rso) {
+        GameObject button = AddButton (rso);
+        button.transform.SetSiblingIndex (index);
+        DeleteButton ();
+        return button;
+    }
+    
     public void ClearAllButtons () {
         List<GameObject> children = new List<GameObject> ();
         foreach (Transform child in panelBehaviorList.transform) children.Add (child.gameObject);

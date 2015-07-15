@@ -23,7 +23,7 @@ public class NetworkManager : MonoBehaviour {
         WWW w = new WWW (myUri.ToString ());
         yield return w;
         //Debug.Log(w.text);
-        callback (w.text, file.name);
+        callback (file.name, w.text);
     }
 
     public IEnumerator GetFileList (System.Action<string> callback) {
@@ -35,10 +35,10 @@ public class NetworkManager : MonoBehaviour {
         callback (w.text);
     }
 
-    public IEnumerator SaveConfig (XmlDocument configFile, string configName, string userName) {
-               
+    public IEnumerator SaveConfig (string data, string configName, string userName) {
+        
         //converting the xml to bytes to be ready for upload
-        byte[] configData = Encoding.UTF8.GetBytes (configFile.OuterXml);
+        byte[] configData = Encoding.UTF8.GetBytes (data);
         
         //generate a long random file name , to avoid duplicates and overwriting
         string fileName = configName + ".xml";
@@ -50,26 +50,31 @@ public class NetworkManager : MonoBehaviour {
         //this method saves you from the hassle of making complex server side back ends which enlists available levels
         //this way you could enlist outstanding levels just by posting the levels code on a blog or forum, this way its easier to share, without the need of user accounts or install procedures
         WWWForm form = new WWWForm();
-
+        
         form.AddField ("action", "fileserver/upload/handler");
         form.AddField ("name", configName);
         form.AddField ("data_type", "Configuration");
         form.AddField ("user_name", userName);
         form.AddField ("client", "unity");
-
+        
         form.AddField ("data_file","data_file");
         form.AddBinaryData ("data_file", configData, fileName,"multipart/form-data");
-       
+        
         WWW w = new WWW ("http://45.79.174.242:8080/fileserver/upload/handler",form);
         
         yield return w;
-
+        
         if (w.error != null)
         {
             print ("error");
             print ( w.error );    
         }
-
+        
         Debug.Log (w.text);
+    }
+
+    public IEnumerator SaveConfig (XmlDocument configFile, string configName, string userName) {             
+        SaveConfig (configFile.OuterXml, configName, userName);
+        yield return null;
     }
 }
