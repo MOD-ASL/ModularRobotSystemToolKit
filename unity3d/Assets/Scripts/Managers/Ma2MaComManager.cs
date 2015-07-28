@@ -12,6 +12,7 @@ public class Ma2MaComManager : MonoBehaviour {
     public BehaviorManager behaviorManager;
     public SaveLoadManagerNew saveLoadManagerNew;
     public NetworkManager networkManager;
+	public SensorManager sensorManager;
 
 	// Use this for initialization
 	void Start () {

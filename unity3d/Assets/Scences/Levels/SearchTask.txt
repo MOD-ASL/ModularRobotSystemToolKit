@@ -1,0 +1,1 @@
+Search for three targets in a room.

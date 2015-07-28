@@ -14,7 +14,6 @@ public class ModulesManager : MonoBehaviour {
     public Vector3 initialPosition;
 
     public GameObject anchorModule;
-    private GameObject sensorModule;
 
     private Quaternion initialRotation;
 
@@ -153,25 +152,12 @@ public class ModulesManager : MonoBehaviour {
         }
     }
 
-    public void SetSelectedModuleAsSensor () {
-        if (ma2MaComManager.selectionManager.selectedModule) {
-            SetSensorModule (ma2MaComManager.selectionManager.selectedModule);
-        }
-        else {
-            ma2MaComManager.ma2UIComManager.uI2MaComDirector.statusBarDirector.SetTempTextMessage ("Please select a module before click \"Set Sensor\".");
-        }
-    }
-
     public void SetAnchorModule (GameObject module) {
         if (anchorModule != null) {
             anchorModule.GetComponent<ModuleModeController> ().SetAnchorOrNot (false);
         }
         anchorModule = module;
         anchorModule.GetComponent<ModuleModeController> ().SetAnchorOrNot (true);
-    }
-
-    public void SetSensorModule (GameObject module) {
-        sensorModule = module;
     }
 
     public List<ModuleStateObject> GetAllModuleStateObjects () {
