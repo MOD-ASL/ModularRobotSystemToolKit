@@ -58,7 +58,6 @@ public class LevelManager : MonoBehaviour {
     }
 
     public void SelectLevel (Level l) {
-        Debug.Log ("Loading" + l.name);
         imagePreview.sprite = Resources.Load<Sprite> (l.name);
         textIntro.text = l.intro;
         selectedLevel = l;
@@ -66,7 +65,13 @@ public class LevelManager : MonoBehaviour {
 
     public void onClickLoadLevel () {
         if (selectedLevel != null) {
-            Application.LoadLevel (selectedLevel.name);
+			if (selectedLevel.name == "Blank") {
+				Application.LoadLevel (selectedLevel.name);
+			}
+			else {
+				Application.LoadLevel ("Blank");
+				Application.LoadLevelAdditive (selectedLevel.name);
+			}
         }
     }
 }

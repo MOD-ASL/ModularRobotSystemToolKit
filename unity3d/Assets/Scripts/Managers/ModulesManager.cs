@@ -25,7 +25,7 @@ public class ModulesManager : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-	
+
 	}
 
     public void Clear (bool spawn = true) {

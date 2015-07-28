@@ -8,12 +8,16 @@ public class PanelJointDirector : MonoBehaviour {
     private Slider sliderJointAngle;
     private string jointName;
     private ModuleMotionController moduleMotionController;
+	public Text unit;
+	public Toggle toggleCmdType;
 
     public float initialAngle;
 
+	public JointCommandObject.CommandTypes cmdType;
+
 	// Use this for initialization
 	void Start () {
-	
+		cmdType = JointCommandObject.CommandTypes.Position;
 	}
 	
 	// Update is called once per frame
@@ -48,6 +52,16 @@ public class PanelJointDirector : MonoBehaviour {
     public void SetJointInfo (ModuleMotionController mmc, string name) {
         moduleMotionController = mmc;
         jointName = name;
+		if (moduleMotionController.jointCommandObjectDict[jointName].commandType == JointCommandObject.CommandTypes.Velocity) {
+			if (toggleCmdType != null) {
+				toggleCmdType.isOn = true;
+			}
+		}
+		else if (moduleMotionController.jointCommandObjectDict[jointName].commandType == JointCommandObject.CommandTypes.Position){
+			if (toggleCmdType != null) {
+				toggleCmdType.isOn = false;
+			}
+		}
         SetJointAngle (mmc.GetJointValue (jointName));
     }
 
@@ -58,11 +72,32 @@ public class PanelJointDirector : MonoBehaviour {
     }
 
     public void OnUserChangeJointAngle (float newValue) {
-        moduleMotionController.UpdateJointAngle (newValue, jointName);
+		if (cmdType == JointCommandObject.CommandTypes.Position) {
+			moduleMotionController.UpdateJointAngle (newValue, jointName);
+		}
+		else if (cmdType == JointCommandObject.CommandTypes.Velocity) {
+			moduleMotionController.UpdateJointVelocity (newValue, jointName);
+		} 
     }
 
     public void OnUserChangeJointAngle (string newValue) {
-        moduleMotionController.UpdateJointAngle (float.Parse (newValue), jointName);
+		if (cmdType == JointCommandObject.CommandTypes.Position) {
+			moduleMotionController.UpdateJointAngle (float.Parse (newValue), jointName);
+		}
+		else if (cmdType == JointCommandObject.CommandTypes.Velocity) {
+			moduleMotionController.UpdateJointVelocity (float.Parse (newValue), jointName);
+		}
     }
+
+	public void OnToggleJointCmdMode (bool value) {
+		if (value) {
+			cmdType = JointCommandObject.CommandTypes.Velocity;
+			unit.text = "Deg/s";
+		}
+		else {
+			cmdType = JointCommandObject.CommandTypes.Position;
+			unit.text = "Degree";
+		}
+	}
 
 }

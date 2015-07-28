@@ -9,7 +9,7 @@ public class ModuleMotionController : MonoBehaviour {
 
     // Name of part joint connected to -> JointCommandObject
     // Possible key: FrontWheel, RightWheel, LeftWheel, Body
-    private Dictionary<string, JointCommandObject> jointCommandObjectDict = new Dictionary<string, JointCommandObject>();
+    public Dictionary<string, JointCommandObject> jointCommandObjectDict = new Dictionary<string, JointCommandObject>();
 
     // Use this for initialization
 	void Start () {
@@ -53,9 +53,21 @@ public class ModuleMotionController : MonoBehaviour {
 
     // update joint target position with the given value
     public void UpdateJointAngle (float jointValue, string jointName) {
+		mo2MaComController.moduleRefPointerController.GetJointCommandControllerByName (jointName).ChangeCommandType (JointCommandObject.CommandTypes.Position);
         mo2MaComController.moduleRefPointerController.GetJointCommandControllerByName (jointName).UpdateJointAngle (jointValue);
+
+		jointCommandObjectDict[jointName].commandType = JointCommandObject.CommandTypes.Position;
         jointCommandObjectDict[jointName].targetValue = jointValue;
     }
+
+	// update joint target position with the given value
+	public void UpdateJointVelocity (float jointValue, string jointName) {
+		mo2MaComController.moduleRefPointerController.GetJointCommandControllerByName (jointName).ChangeCommandType (JointCommandObject.CommandTypes.Velocity);
+		mo2MaComController.moduleRefPointerController.GetJointCommandControllerByName (jointName).SetJointVelocity (jointValue);
+
+		jointCommandObjectDict[jointName].commandType = JointCommandObject.CommandTypes.Velocity;
+		jointCommandObjectDict[jointName].targetValue = jointValue;
+	}
 
     public ModuleStateObject GetModuleStateObject () {
         ModuleStateObject mso = new ModuleStateObject ();
@@ -84,8 +96,17 @@ public class ModuleMotionController : MonoBehaviour {
 			}
 		}
         foreach (JointCommandObject jco in mso.listOfJointCommands) {
-            UpdateJointAngle (jco.targetValue, jco.name);
+			SetJointFromJointCommandObject (jco);
         }
     }
+
+	public void SetJointFromJointCommandObject (JointCommandObject jco) {
+		if (jco.commandType == JointCommandObject.CommandTypes.Position) {
+			UpdateJointAngle (jco.targetValue, jco.name);
+		}
+		else if (jco.commandType == JointCommandObject.CommandTypes.Velocity) {
+			UpdateJointVelocity (jco.targetValue, jco.name);
+		}
+	}
 
 }
