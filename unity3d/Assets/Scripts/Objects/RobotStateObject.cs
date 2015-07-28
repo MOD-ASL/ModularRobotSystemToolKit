@@ -11,6 +11,8 @@ public class RobotStateObject {
     [XmlIgnoreAttribute]
     public GameObject button;
 
+	public string anchorModuleName;
+
     [XmlArray("ModuleStates")]
     [XmlArrayItem("ModuleState")]
     public List<ModuleStateObject> listOfModuleStateObjects;

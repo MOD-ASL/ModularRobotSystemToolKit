@@ -72,14 +72,15 @@ public class BehaviorManager : MonoBehaviour {
     }
 
     public void OnClickClear () {
-        currentBehaviorObject.listOfRobotStateObjects.Clear ();
+		if (currentBehaviorObject != null) {
+			currentBehaviorObject.listOfRobotStateObjects.Clear ();
+		}
         ma2MaComManager.ma2UIComManager.uI2MaComDirector.panelBehaviorDirector.ClearAllButtons ();
         currentRobotStateObject = null;
     }
 
     public void Play () {
         if (reachRobotStateObject) {
-
             currentBehaviorObject.listOfRobotStateObjects[robotStateObjectIndex].button.GetComponent<ButtonRobotStateObjectDirector> ().SetSeletedOrNot (true);
             StartCoroutine (PlayRobotStateObjectAndWait (currentBehaviorObject.listOfRobotStateObjects[robotStateObjectIndex]));
             reachRobotStateObject = false;

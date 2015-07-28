@@ -14,8 +14,13 @@ public class ModuleStateObject {
     [XmlArrayItem("JointCommand")]
     public List<JointCommandObject> listOfJointCommands;
 
+	[XmlArray("PartStates")]
+	[XmlArrayItem("PartState")]
+	public List<PartStateObject> listOfPartStates;
+
     public ModuleStateObject () {
         name = "";
         listOfJointCommands = new List<JointCommandObject> ();
+		listOfPartStates = new List<PartStateObject> ();
     }
 }

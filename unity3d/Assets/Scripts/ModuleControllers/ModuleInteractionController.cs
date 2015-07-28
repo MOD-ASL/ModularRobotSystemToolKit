@@ -99,17 +99,20 @@ public class ModuleInteractionController : MonoBehaviour {
         if (addMode.status) {
             // In add mode and click on module
             // Check if there is collision
-            if (!dummyModule.GetComponent<DummyModuleController> ().collision) {
-                GameObject partUnderMouseCache = partUnderMouse;
-                Transform newModule = mo2MaComController.ma2MoComManager.ma2MaComManager.modulesManager.InsertModuleAt (dummyModule.transform.position,
-                                                                                                                        dummyModule.transform.rotation
-                                                                                                                        );
-                newModule.GetComponent<ModuleModeController> ().SetTrigger (false);
-                StartCoroutine (mo2MaComController.ma2MoComManager.ma2MaComManager.connectionManager.ConnectModule2Node (newModule.gameObject, partUnderMouseCache));
-            }
-            else {
-                mo2MaComController.ma2MoComManager.ma2MaComManager.ma2UIComManager.uI2MaComDirector.statusBarDirector.SetTempTextMessage ("Cannot add new module: Collision detected.");
-            }
+			if (dummyModule != null) {
+				if (!dummyModule.GetComponent<DummyModuleController> ().collision) {
+					GameObject partUnderMouseCache = partUnderMouse;
+					Transform newModule = mo2MaComController.ma2MoComManager.ma2MaComManager.modulesManager.InsertModuleAt (dummyModule.transform.position,
+					                                                                                                        dummyModule.transform.rotation
+					                                                                                                        );
+					newModule.GetComponent<ModuleModeController> ().SetTrigger (false);
+					mo2MaComController.ma2MoComManager.ma2MaComManager.robotManager.currentConfigurationID = System.Guid.NewGuid ().ToString ();
+					StartCoroutine (mo2MaComController.ma2MoComManager.ma2MaComManager.connectionManager.ConnectModule2Node (newModule.gameObject, partUnderMouseCache));
+				}
+				else {
+					mo2MaComController.ma2MoComManager.ma2MaComManager.ma2UIComManager.uI2MaComDirector.statusBarDirector.SetTempTextMessage ("Cannot add new module: Collision detected.");
+				}
+			}  
         }
         else if (disOrConnectMode.status) {
             if (partUnderMouse.tag == "Node") {

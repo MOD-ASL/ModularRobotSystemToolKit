@@ -13,7 +13,7 @@ public class ModulesManager : MonoBehaviour {
     public string moduleRootName;
     public Vector3 initialPosition;
 
-    private GameObject anchorModule;
+    public GameObject anchorModule;
     private GameObject sensorModule;
 
     private Quaternion initialRotation;
@@ -28,20 +28,27 @@ public class ModulesManager : MonoBehaviour {
 	
 	}
 
-    public void Clear () {
+    public void Clear (bool spawn = true) {
 
         // Clear everything
         RemoveAllModules ();
         ma2MaComManager.selectionManager.ResetSelectedModule ();
+		ma2MaComManager.modulesManager.anchorModule = null;
 
-        // Spawn a new one
-        Transform clone = Instantiate (modulePrefab, initialPosition, Quaternion.identity) as Transform;
-        clone.name = moduleRootName + "_0";
-        clone.SetParent (robot.transform);
-        clone.GetComponent <ModuleModeController> ().SetTrigger (false);
-        initialRotation = clone.GetComponent<ModuleRefPointerController> ().GetPartPointerByName (ModuleRefPointerController.PartNames.BackPlate.ToString ()).transform.rotation;
-
-        SetAnchorModule (clone.gameObject);
+		if (spawn) {
+			// Spawn a new one
+			Transform clone = Instantiate (modulePrefab, initialPosition, Quaternion.identity) as Transform;
+			clone.name = moduleRootName + "_0";
+			clone.SetParent (robot.transform);
+			clone.GetComponent <ModuleModeController> ().SetTrigger (false);
+			initialRotation = clone.GetComponent<ModuleRefPointerController> ().GetPartPointerByName (ModuleRefPointerController.PartNames.BackPlate.ToString ()).transform.rotation;
+			
+			SetAnchorModule (clone.gameObject);
+			
+			ma2MaComManager.robotManager.currentConfigurationID = System.Guid.NewGuid ().ToString ();
+		}
+		ma2MaComManager.behaviorManager.OnClickClear ();
+		ma2MaComManager.robotManager.currentConfigurationID = System.Guid.NewGuid ().ToString ();
     }
 
     public void ResetModulePositions () {
@@ -75,6 +82,7 @@ public class ModulesManager : MonoBehaviour {
             DeleteModule (ma2MaComManager.selectionManager.selectedModule);
             ma2MaComManager.selectionManager.ResetSelectedModule ();
             ma2MaComManager.ma2UIComManager.uI2MaComDirector.statusBarDirector.ResetTextMessage ();
+			ma2MaComManager.robotManager.currentConfigurationID = System.Guid.NewGuid ().ToString ();
         }
         else {
             ma2MaComManager.ma2UIComManager.uI2MaComDirector.statusBarDirector.SetTempTextMessage ("Please select a module before click \"Delete\".");
@@ -116,7 +124,7 @@ public class ModulesManager : MonoBehaviour {
     }
 
     public string FindNextAvailableName () {
-        int i = 1;
+        int i = 0;
         while (robot.Find (moduleRootName + "_" + i.ToString ()) != null) {
             i++;
         }
@@ -174,11 +182,11 @@ public class ModulesManager : MonoBehaviour {
         return listOfModuleStateObjects;
     }
 
-    public void SetAllModuleStateObjects (List<ModuleStateObject> listOfModuleStateObjects) {
+    public void SetAllModuleStateObjects (List<ModuleStateObject> listOfModuleStateObjects, bool reset = false) {
         foreach (ModuleStateObject mso in listOfModuleStateObjects) {
             GameObject m = FindModuleWithName (mso.name);
             if (m != null) {
-                m.GetComponent<ModuleMotionController> ().SetModuleStateObject (mso);
+				m.GetComponent<ModuleMotionController> ().SetModuleStateObject (mso, reset);
             }
             else {
                 Debug.Log ("Cannot find module with name " + mso.name);
@@ -186,13 +194,17 @@ public class ModulesManager : MonoBehaviour {
         }
     }
 
+	public GameObject FindModuleWithName (string name, Transform robotPointer) {
+		foreach (Transform m in robotPointer) {
+			if (m.name == name) {
+				return m.gameObject;
+			}
+		}
+		return null;
+	}
+
     public GameObject FindModuleWithName (string name) {
-        foreach (Transform m in robot) {
-            if (m.name == name) {
-                return m.gameObject;
-            }
-        }
-        return null;
+        return FindModuleWithName (name, robot);
     }
 
     public GameObject FindModuleWithNameInNewRobot (string name) {
@@ -217,7 +229,6 @@ public class ModulesManager : MonoBehaviour {
     public void SpawnModules (List<ModuleStateObject> listOfModuleStateObjects, GameObject newRobot = null) {
         foreach (ModuleStateObject mso in listOfModuleStateObjects) {
             GameObject m = InsertModuleAt (mso.position, mso.rotation, newRobot, mso.name).gameObject;
-            m.GetComponent<ModuleModeController> ().SetAnchorOrNot (true);
             m.transform.Rotate (Vector3.right, 90.0f);
             m.GetComponent <ModuleMotionController> ().SetModuleStateObject (mso);
         }

@@ -26,6 +26,7 @@ public class ButtonPlayBehaviorAssistant : MonoBehaviour {
         
         // Check if it is in mode
         if (buttonDirector.mode.status) {
+			uI2MaComDirector.ma2UIComManager.ma2MaComManager.robotManager.TakeSnapshot ();
             if (behaviorManager.currentBehaviorObject.listOfRobotStateObjects.Count == 0) {
                 uI2MaComDirector.statusBarDirector.SetTempTextMessage ("Cannot play behavior: No robot state added.");
                 return;
@@ -44,7 +45,7 @@ public class ButtonPlayBehaviorAssistant : MonoBehaviour {
             behaviorManager.play = false;
             panelBehaviorDirector.ShowPanelOrNot (false);
             uI2MaComDirector.ma2UIComManager.ma2MaComManager.modulesManager.SetAllModuleMode (ModuleModeController.ModuleMode.Edit);
-            uI2MaComDirector.ma2UIComManager.ma2MaComManager.modulesManager.ResetModulePositions ();
+			uI2MaComDirector.ma2UIComManager.ma2MaComManager.robotManager.ResetRobot ();
         }
     }
 }

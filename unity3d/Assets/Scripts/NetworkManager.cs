@@ -8,6 +8,7 @@ using System.Xml.Serialization;
 
 public class NetworkManager : MonoBehaviour {
 
+	public Ma2MaComManager ma2MaComManager;
     Uri baseUri = new Uri("http://45.79.174.242:8080");
 
     void Start () {
@@ -18,37 +19,69 @@ public class NetworkManager : MonoBehaviour {
         StartCoroutine ("GetFileList");
     }
 
-    public IEnumerator Download (File file, System.Action<string, string> callback) {
+    public IEnumerator Download (File file, System.Action<File, string> callback) {
         Uri myUri = new Uri(baseUri, file.url);
         WWW w = new WWW (myUri.ToString ());
         yield return w;
         //Debug.Log(w.text);
-        callback (file.name, w.text);
+        callback (file, w.text);
     }
 
-    public IEnumerator GetFileList (System.Action<string> callback) {
+    public IEnumerator GetFileList (System.Action<string, string> callback, string fileType) {
         WWWForm form = new WWWForm ();
-        form.AddField ("data_type", "Configuration");
-
+        form.AddField ("data_type", fileType);
         WWW w = new WWW ("http://45.79.174.242:8080/fileserver/files/list", form);
         yield return w;
-        callback (w.text);
+        callback (w.text, fileType);
     }
+
+	public IEnumerator SaveFile (string data, string fileName, string userName, string fileType) {
+		
+		//converting the xml to bytes to be ready for upload
+		byte[] byteData = Encoding.UTF8.GetBytes (data);
+		
+		fileName = fileName + ".xml";
+		
+		WWWForm form = new WWWForm();
+		
+		form.AddField ("action", "fileserver/upload/handler");
+		form.AddField ("name", fileName);
+		form.AddField ("data_type", fileType);
+		form.AddField ("user_name", userName);
+		form.AddField ("client", "unity");
+		if (fileType == "Configuration") {
+			string id = System.Guid.NewGuid ().ToString ();
+			ma2MaComManager.robotManager.currentConfigurationID = id;
+			form.AddField ("configuration_id", id);
+		}
+		else if (fileType == "Behavior") {
+			form.AddField ("configuration_id", ma2MaComManager.robotManager.currentConfigurationID);
+		}
+
+		
+		form.AddField ("data_file","data_file");
+		form.AddBinaryData ("data_file", byteData, fileName,"multipart/form-data");
+		
+		WWW w = new WWW ("http://45.79.174.242:8080/fileserver/upload/handler",form);
+		
+		yield return w;
+		
+		if (w.error != null)
+		{
+			print ("error");
+			print ( w.error );    
+		}
+		
+		Debug.Log (w.text);
+	}
 
     public IEnumerator SaveConfig (string data, string configName, string userName) {
         
         //converting the xml to bytes to be ready for upload
         byte[] configData = Encoding.UTF8.GetBytes (data);
-        
-        //generate a long random file name , to avoid duplicates and overwriting
+
         string fileName = configName + ".xml";
-        
-        //if you save the generated name, you can make people be able to retrieve the uploaded file, without the needs of listings
-        //just provide the level code name , and it will retrieve it just like a qrcode or something like that, please read below the method used to validate the upload,
-        //that same method is used to retrieve the just uploaded file, and validate it
-        //this method is similar to the one used by the popular game bike baron
-        //this method saves you from the hassle of making complex server side back ends which enlists available levels
-        //this way you could enlist outstanding levels just by posting the levels code on a blog or forum, this way its easier to share, without the need of user accounts or install procedures
+
         WWWForm form = new WWWForm();
         
         form.AddField ("action", "fileserver/upload/handler");

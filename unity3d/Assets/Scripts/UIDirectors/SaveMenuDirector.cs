@@ -43,6 +43,10 @@ public class SaveMenuDirector : MonoBehaviour {
             uI2MaComDirector.ma2UIComManager.ma2MaComManager.saveLoadManagerNew.SaveCurrentConfiguration (fileName.text, userName.text);
         }
 
+		if (fileType == SaveLoadManagerNew.FileType.Behavior) {
+			uI2MaComDirector.ma2UIComManager.ma2MaComManager.saveLoadManagerNew.SaveCurrentBehavior (fileName.text, userName.text);
+		}
+
         panelSaveMenu.SetActive (false);
     }
 }

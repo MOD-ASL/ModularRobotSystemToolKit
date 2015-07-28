@@ -81,11 +81,11 @@ public class ConnectionManager : MonoBehaviour {
         return listOfConnectionObjects;
     }
 
-    public IEnumerator SpawnConnections (List<ConnectionObject> listofConnectionObjects) {
+    public IEnumerator SpawnConnections (List<ConnectionObject> listofConnectionObjects, Transform robotPointer) {
         yield return new WaitForSeconds (3f);
         foreach (ConnectionObject co in listofConnectionObjects) {
-            GameObject m1 = ma2MaComManager.modulesManager.FindModuleWithNameInNewRobot (co.moduleName1);
-            GameObject m2 = ma2MaComManager.modulesManager.FindModuleWithNameInNewRobot (co.moduleName2);
+            GameObject m1 = ma2MaComManager.modulesManager.FindModuleWithName (co.moduleName1, robotPointer);
+			GameObject m2 = ma2MaComManager.modulesManager.FindModuleWithName (co.moduleName2, robotPointer);
             GameObject n1 = m1.GetComponent<ModuleRefPointerController> ().GetNodePointerByName (co.nodeName1);
             GameObject n2 = m2.GetComponent<ModuleRefPointerController> ().GetNodePointerByName (co.nodeName2);
             ConnectNode2Node (n1, n2);

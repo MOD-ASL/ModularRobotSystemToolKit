@@ -116,7 +116,7 @@ public class SaveLoadManager : MonoBehaviour {
         StartCoroutine (networkManager.Download (file, Load));
     }
 
-	public void Load (string fileContent, string name) {
+	public void Load (File file, string fileContent) {
 
 //		#if UNITY_EDITOR
 //		string filename = EditorUtility.OpenFilePanel(
@@ -145,10 +145,10 @@ public class SaveLoadManager : MonoBehaviour {
 
     public void OnClickLoad () {
         fileSelectionManager.ClearList ();
-        StartCoroutine (networkManager.GetFileList (DisplayFileList));
+        StartCoroutine (networkManager.GetFileList (DisplayFileList, "Configuration"));
     }
 
-    public void DisplayFileList (string fileList) {
+    public void DisplayFileList (string fileList, string fileType) {
 
         fileSelectionManager.ShowPanelOrNot (true);
 
@@ -161,7 +161,7 @@ public class SaveLoadManager : MonoBehaviour {
             string userName = el.SelectSingleNode ("user_name").InnerText;
             string url = el.SelectSingleNode ("url").InnerText;
 
-            File newFile = new File (name, userName, url, DownloadAndLoad);
+            File newFile = new File (name, userName, url, fileType, DownloadAndLoad);
             fileSelectionManager.fileList.Add (newFile);
         }
 

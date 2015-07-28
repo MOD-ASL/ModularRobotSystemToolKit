@@ -8,8 +8,10 @@ public class RobotManager : MonoBehaviour {
     public Transform robot;
     public GameObject newRobot;
     public Mode dragMode;
+	public string currentConfigurationID;
 
     public GameObject nodeOnNewRobot;
+	private RobotStateObject snapshotRSO;
 
 	// Use this for initialization
 	void Start () {
@@ -43,21 +45,42 @@ public class RobotManager : MonoBehaviour {
         if (withConnection) {
             rso.listOfConnectionObjects = ma2MaComManager.connectionManager.GetAllConnectionObjects ();
         }
+		rso.anchorModuleName = ma2MaComManager.modulesManager.anchorModule.name;
         return rso;
     }
 
-    public void SetRobotState (RobotStateObject rso) {
-        ma2MaComManager.modulesManager.SetAllModuleStateObjects (rso.listOfModuleStateObjects);
+	public void TakeSnapshot () {
+		snapshotRSO = GetRobotStateObject ();
+	}
+
+	public void ResetRobot () {
+		SetRobotState (snapshotRSO, true);
+	}
+
+    public void SetRobotState (RobotStateObject rso, bool reset = false) {
+        ma2MaComManager.modulesManager.SetAllModuleStateObjects (rso.listOfModuleStateObjects, reset);
     }
 
     public void SpawnRobot (RobotStateObject rso) {
         Destroy (newRobot);
         newRobot = new GameObject ("newRobot");
         ma2MaComManager.modulesManager.SpawnModules (rso.listOfModuleStateObjects, newRobot);
-        StartCoroutine (ma2MaComManager.connectionManager.SpawnConnections (rso.listOfConnectionObjects));
+        StartCoroutine (ma2MaComManager.connectionManager.SpawnConnections (rso.listOfConnectionObjects, newRobot.transform));
         dragMode.status = true;
         nodeOnNewRobot = null;
     }
+
+	public IEnumerator ReplaceRobot (RobotStateObject rso) {
+		ma2MaComManager.modulesManager.Clear (false);
+		yield return new WaitForSeconds (2f);
+
+		ma2MaComManager.modulesManager.SpawnModules (rso.listOfModuleStateObjects);
+		StartCoroutine (ma2MaComManager.connectionManager.SpawnConnections (rso.listOfConnectionObjects, robot));
+		GameObject m = ma2MaComManager.modulesManager.FindModuleWithName (rso.anchorModuleName, robot);
+		ma2MaComManager.modulesManager.SetAnchorModule (m);
+		ma2MaComManager.modulesManager.SetAllModuleMode (ModuleModeController.ModuleMode.Edit);
+
+	}
 
     public void MoveNewRobot (GameObject n1, GameObject n2) {
         GameObject baseNode;

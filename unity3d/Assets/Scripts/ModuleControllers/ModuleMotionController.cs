@@ -13,7 +13,7 @@ public class ModuleMotionController : MonoBehaviour {
 
     // Use this for initialization
 	void Start () {
-	
+
 	}
 	
 	// Update is called once per frame
@@ -65,10 +65,24 @@ public class ModuleMotionController : MonoBehaviour {
         foreach (JointCommandObject jco in jointCommandObjectDict.Values) {
             mso.listOfJointCommands.Add (jco.Clone ());
         }
+		foreach (Transform part in transform) {
+			PartStateObject pso = new PartStateObject ();
+			pso.name = part.name;
+			pso.position = part.position;
+			pso.rotation = part.rotation;
+			mso.listOfPartStates.Add (pso);
+		}
         return mso;
     }
 
-    public void SetModuleStateObject (ModuleStateObject mso) {
+    public void SetModuleStateObject (ModuleStateObject mso, bool reset = false) {
+		if (reset) {
+			foreach (PartStateObject pso in mso.listOfPartStates) {
+				Transform part = transform.FindChild (pso.name);
+				part.position = pso.position;
+				part.rotation = pso.rotation;
+			}
+		}
         foreach (JointCommandObject jco in mso.listOfJointCommands) {
             UpdateJointAngle (jco.targetValue, jco.name);
         }

@@ -21,7 +21,7 @@ public class ModuleModeController : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-	
+
 	}
 
     void Awake () {
@@ -43,6 +43,7 @@ public class ModuleModeController : MonoBehaviour {
         }
         if (currentModuleMode == ModuleMode.Edit) {
             SetGravity (false);
+			SetTrigger (false);
         }
     }
 
