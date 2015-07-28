@@ -21,8 +21,7 @@ public class DummyModuleController : MonoBehaviour {
     void ChangeColor (Color color) {
         foreach (Transform part in transform) {
             rend = part.gameObject.GetComponent<Renderer> ();
-            rend.material.EnableKeyword ("_EMISSION");
-            rend.material.SetColor ("_EmissionColor", color);
+            rend.material.color = color;
         }
     }
 

@@ -59,10 +59,10 @@ public class PartInteractionController : MonoBehaviour, IPointerEnterHandler, IP
     // Highlight by changing the emission of the material
     public void HighlightOrNot (bool highlight) {
         if (highlight || selected) {
-            rend.material.SetColor ("_EmissionColor", Color.gray);
+			rend.material.color = Color.white;
         }
         else {
-            rend.material.SetColor ("_EmissionColor", Color.black);
+			rend.material.color = originalColor;
         }
     }
 

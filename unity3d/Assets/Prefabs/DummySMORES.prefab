@@ -506,7 +506,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bcbf17e9c20c93a409c842355a263cf9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  normalColor: {r: .615686297, g: .639215708, b: .207843155, a: .753000021}
+  normalColor: {r: .861080587, g: .897058845, b: .237456769, a: 1}
   collisionColor: {r: 1, g: .198529422, b: .198529422, a: .597000003}
   collision: 0
 --- !u!114 &11470066
@@ -607,6 +607,22 @@ Prefab:
     - target: {fileID: 0}
       propertyPath: m_LocalScale.x
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: normalColor.r
+      value: .861080587
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: normalColor.g
+      value: .897058845
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: normalColor.b
+      value: .237456769
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: normalColor.a
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
