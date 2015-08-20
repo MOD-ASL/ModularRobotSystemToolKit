@@ -160,10 +160,10 @@ public class ModulesManager : MonoBehaviour {
         anchorModule.GetComponent<ModuleModeController> ().SetAnchorOrNot (true);
     }
 
-    public List<ModuleStateObject> GetAllModuleStateObjects () {
+    public List<ModuleStateObject> GetAllModuleStateObjects (bool forConfiguration) {
         List<ModuleStateObject> listOfModuleStateObjects = new List<ModuleStateObject> ();
         foreach (Transform m in robot) {
-            listOfModuleStateObjects.Add (m.GetComponent<ModuleMotionController> ().GetModuleStateObject ());
+            listOfModuleStateObjects.Add (m.GetComponent<ModuleMotionController> ().GetModuleStateObject (forConfiguration));
         }
         return listOfModuleStateObjects;
     }
@@ -217,6 +217,7 @@ public class ModulesManager : MonoBehaviour {
             GameObject m = InsertModuleAt (mso.position, mso.rotation, newRobot, mso.name).gameObject;
             m.transform.Rotate (Vector3.right, 90.0f);
             m.GetComponent <ModuleMotionController> ().SetModuleStateObject (mso);
+            m.GetComponent<ModuleModeController> ().SetMode (ModuleModeController.ModuleMode.Static);
         }
     }
 

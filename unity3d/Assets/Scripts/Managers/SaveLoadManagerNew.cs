@@ -33,6 +33,14 @@ public class SaveLoadManagerNew : MonoBehaviour {
 			ma2MaComManager.ma2UIComManager.uI2MaComDirector.panelFileSelectionDirector.fileType = FileType.Configuration;
 			ma2MaComManager.ma2UIComManager.uI2MaComDirector.panelFileSelectionDirector.ClearList ();
 			StartCoroutine (ma2MaComManager.networkManager.GetFileList (DisplayFileList, FileType.Configuration.ToString ()));
+//            var path = EditorUtility.OpenFilePanel(
+//                "Overwrite with png",
+//                Application.persistentDataPath,
+//                "xml");
+//            if (path.Length != 0) {
+//                Debug.Log (path);
+//                LoadConfiguration (System.IO.File.ReadAllText (path));
+//            }
 		}
 		else {
 			ma2MaComManager.ma2UIComManager.uI2MaComDirector.panelFileSelectionDirector.ShowPanelOrNot (false);
@@ -126,14 +134,14 @@ public class SaveLoadManagerNew : MonoBehaviour {
         
         using (StringWriter textWriter = new StringWriter ()) {
             using (XmlWriter xmlWriter = XmlWriter.Create (textWriter, settings)) {
-                serializer.Serialize(xmlWriter, ma2MaComManager.robotManager.GetRobotStateObject (true));
+                serializer.Serialize(xmlWriter, ma2MaComManager.robotManager.GetRobotStateObject (true, true));
             }
 			StartCoroutine (ma2MaComManager.networkManager.SaveFile (textWriter.ToString(), fileName, userName, FileType.Configuration.ToString ()));
         }
 
-        FileStream stream = new FileStream (Application.persistentDataPath + "/" + fileName + ".xml", FileMode.Create);
-        serializer.Serialize (stream, ma2MaComManager.robotManager.GetRobotStateObject (true));
-        stream.Close ();
+//        FileStream stream = new FileStream (Application.persistentDataPath + "/" + fileName + ".xml", FileMode.Create);
+//        serializer.Serialize (stream, ma2MaComManager.robotManager.GetRobotStateObject (true, true));
+//        stream.Close ();
     }
 
     public void LoadConfiguration (File file, string fileContent) {
@@ -150,6 +158,20 @@ public class SaveLoadManagerNew : MonoBehaviour {
         }
 
 		ma2MaComManager.robotManager.currentConfigurationID = file.configurationID;
+    }
+    public void LoadConfiguration (string fileContent) {
+        XmlSerializer serializer = new XmlSerializer (typeof (RobotStateObject));
+        
+        XmlReaderSettings settings = new XmlReaderSettings ();
+        // No settings need modifying here
+        
+        using (StringReader textReader = new StringReader (fileContent)) {
+            using (XmlReader xmlReader = XmlReader.Create (textReader, settings)) {
+                RobotStateObject rso = serializer.Deserialize (xmlReader) as RobotStateObject;
+                StartCoroutine (ma2MaComManager.robotManager.ReplaceRobot (rso));
+            }
+        }
+
     }
 
 	public void InsertConfiguration (File file, string fileContent) {

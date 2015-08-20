@@ -26,6 +26,7 @@ public class ModuleModeController : MonoBehaviour {
 
     void Awake () {
         mo2MaComController = gameObject.GetComponent<Mo2MaComController> ();
+        OnChangeMode ();
     }
 
     // Set the mode and update the module accordingly
@@ -37,13 +38,19 @@ public class ModuleModeController : MonoBehaviour {
     }
 
     public void OnChangeMode () {
+        if (currentModuleMode == ModuleMode.Static) {
+            SetAnchorOrNot (true);
+            SetGravity (false);
+        }
         if (currentModuleMode == ModuleMode.Simulation) {
             SetKinematic (false);
             SetGravity (true);
+            SetTrigger (false);
         }
         if (currentModuleMode == ModuleMode.Edit) {
             SetGravity (false);
 			SetTrigger (false);
+            SetKinematic (false);
         }
     }
 

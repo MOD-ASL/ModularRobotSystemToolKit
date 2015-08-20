@@ -11,6 +11,8 @@ public class PanelJointDirector : MonoBehaviour {
 	public Text unit;
 	public Toggle toggleCmdType;
 
+    public InputField inputFieldTime;
+
     public float initialAngle;
 
 	public JointCommandObject.CommandTypes cmdType;
@@ -30,6 +32,9 @@ public class PanelJointDirector : MonoBehaviour {
         sliderJointAngle = gameObject.GetComponentInChildren<Slider> ();
 
         SetJointAngle (initialAngle);
+        if (inputFieldTime != null) {
+            inputFieldTime.text = "3.0";
+        }
     }
 
     public void UpdateText (float newValue) {
@@ -62,6 +67,9 @@ public class PanelJointDirector : MonoBehaviour {
 				toggleCmdType.isOn = false;
 			}
 		}
+        if (inputFieldTime != null) {
+            inputFieldTime.text = mmc.jointCommandObjectDict[jointName].period.ToString ();
+        }
         SetJointAngle (mmc.GetJointValue (jointName));
     }
 
@@ -76,7 +84,7 @@ public class PanelJointDirector : MonoBehaviour {
 			moduleMotionController.UpdateJointAngle (newValue, jointName);
 		}
 		else if (cmdType == JointCommandObject.CommandTypes.Velocity) {
-			moduleMotionController.UpdateJointVelocity (newValue, jointName);
+			moduleMotionController.UpdateJointVelocity (newValue, jointName, float.Parse (inputFieldTime.text));
 		} 
     }
 
@@ -85,7 +93,7 @@ public class PanelJointDirector : MonoBehaviour {
 			moduleMotionController.UpdateJointAngle (float.Parse (newValue), jointName);
 		}
 		else if (cmdType == JointCommandObject.CommandTypes.Velocity) {
-			moduleMotionController.UpdateJointVelocity (float.Parse (newValue), jointName);
+            moduleMotionController.UpdateJointVelocity (float.Parse (newValue), jointName, float.Parse (inputFieldTime.text));
 		}
     }
 
@@ -93,10 +101,14 @@ public class PanelJointDirector : MonoBehaviour {
 		if (value) {
 			cmdType = JointCommandObject.CommandTypes.Velocity;
 			unit.text = "Deg/s";
+            inputFieldTime.interactable = true;
+            sliderJointAngle.minValue = -360.0f;
 		}
 		else {
 			cmdType = JointCommandObject.CommandTypes.Position;
 			unit.text = "Degree";
+            inputFieldTime.interactable = false;
+            sliderJointAngle.minValue = 0.0f;
 		}
 	}
 

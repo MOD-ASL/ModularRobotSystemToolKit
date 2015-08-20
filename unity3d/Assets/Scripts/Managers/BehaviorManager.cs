@@ -9,8 +9,8 @@ public class BehaviorManager : MonoBehaviour {
     public BehaviorObject currentBehaviorObject;
     [HideInInspector]
     public RobotStateObject currentRobotStateObject = null;
-
-    public float waitTime = 2f;
+    [HideInInspector]
+    public IEnumerator currentCoroutine;
 
     private bool reachRobotStateObject = true;
     public int robotStateObjectIndex = 0;
@@ -82,14 +82,18 @@ public class BehaviorManager : MonoBehaviour {
     public void Play () {
         if (reachRobotStateObject) {
             currentBehaviorObject.listOfRobotStateObjects[robotStateObjectIndex].button.GetComponent<ButtonRobotStateObjectDirector> ().SetSeletedOrNot (true);
-            StartCoroutine (PlayRobotStateObjectAndWait (currentBehaviorObject.listOfRobotStateObjects[robotStateObjectIndex]));
+            if (currentCoroutine != null) {
+                StopCoroutine (currentCoroutine);
+            }
+            currentCoroutine = PlayRobotStateObjectAndWait (currentBehaviorObject.listOfRobotStateObjects[robotStateObjectIndex]);
+            StartCoroutine (currentCoroutine);
             reachRobotStateObject = false;
         } 
     }
 
     public IEnumerator PlayRobotStateObjectAndWait (RobotStateObject rso) {
         ma2MaComManager.robotManager.SetRobotState (rso);
-        yield return new WaitForSeconds (waitTime);
+        yield return new WaitForSeconds (rso.period);
         rso.button.GetComponent<ButtonRobotStateObjectDirector> ().SetSeletedOrNot (false);
         robotStateObjectIndex++;
         if (robotStateObjectIndex == currentBehaviorObject.listOfRobotStateObjects.Count) {

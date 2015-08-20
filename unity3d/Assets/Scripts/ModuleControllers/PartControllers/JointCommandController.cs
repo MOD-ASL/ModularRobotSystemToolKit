@@ -9,7 +9,8 @@ public class JointCommandController : MonoBehaviour {
 
     private float targetValue = 0f;
 
-    private float jointVelocity = 0f;
+    private float jointPositionCmdVelocity = 0f;
+    private float jointTargetVelocity = 0f;
 
 	public JointCommandObject.CommandTypes cmdType;
 
@@ -25,7 +26,7 @@ public class JointCommandController : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		if (cmdType == JointCommandObject.CommandTypes.Position) {
-			float newValue = Mathf.SmoothDampAngle(joint.angle, targetValue, ref jointVelocity, 1f);
+            float newValue = Mathf.SmoothDampAngle(joint.angle, targetValue, ref jointPositionCmdVelocity, 1f);
 			SetJointAngle (newValue);
 		}  
 	}
@@ -63,6 +64,23 @@ public class JointCommandController : MonoBehaviour {
 		joint.motor = motor;
 	}
 
+    public IEnumerator SetJointVelocityAndWait (float vel, float period) {
+        JointMotor motor = joint.motor;
+        motor.force = motorForce;
+        motor.targetVelocity = vel;
+        jointTargetVelocity = vel;
+        joint.motor = motor;
+        yield return new WaitForSeconds (period);
+        motor.targetVelocity = 0.0f;
+        joint.motor = motor;
+    }
+
+    public void StopJoint () {
+        JointMotor motor = joint.motor;
+        motor.targetVelocity = 0f;
+        joint.motor = motor;
+    }
+
     // return the joint value of the given joint name
     public float GetJointValue (bool targetValue = true) {
         if (targetValue) {
@@ -70,7 +88,7 @@ public class JointCommandController : MonoBehaviour {
 				return Mathf.Round(joint.spring.targetPosition * 10f) / 10f;
 			}
 			else if (cmdType == JointCommandObject.CommandTypes.Velocity) {
-				return Mathf.Round(joint.motor.targetVelocity * 10f) / 10f;
+                return Mathf.Round(jointTargetVelocity * 10f) / 10f;
 			}
         }
 		if (cmdType == JointCommandObject.CommandTypes.Position) {

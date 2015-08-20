@@ -12,6 +12,7 @@ public class RobotStateObject {
     public GameObject button;
 
 	public string anchorModuleName;
+    public float period;
 
     [XmlArray("ModuleStates")]
     [XmlArrayItem("ModuleState")]
@@ -25,5 +26,6 @@ public class RobotStateObject {
         name = "";
         listOfModuleStateObjects = new List<ModuleStateObject> ();
         listOfConnectionObjects = new List<ConnectionObject> ();
+        period = 0.0f;
     }
 }

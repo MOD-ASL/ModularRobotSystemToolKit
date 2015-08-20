@@ -61,21 +61,39 @@ public class ModuleMotionController : MonoBehaviour {
     }
 
 	// update joint target position with the given value
-	public void UpdateJointVelocity (float jointValue, string jointName) {
+	public void UpdateJointVelocity (float jointValue, string jointName, float period = 3.0f) {
 		mo2MaComController.moduleRefPointerController.GetJointCommandControllerByName (jointName).ChangeCommandType (JointCommandObject.CommandTypes.Velocity);
-		mo2MaComController.moduleRefPointerController.GetJointCommandControllerByName (jointName).SetJointVelocity (jointValue);
+        if (jointCommandObjectDict[jointName].cmdCoroutine != null) {
+            StopCoroutine (jointCommandObjectDict[jointName].cmdCoroutine);
+        }
+        jointCommandObjectDict[jointName].cmdCoroutine = mo2MaComController.moduleRefPointerController.GetJointCommandControllerByName (jointName).SetJointVelocityAndWait (jointValue, period);
+        StartCoroutine (jointCommandObjectDict[jointName].cmdCoroutine);
+
 
 		jointCommandObjectDict[jointName].commandType = JointCommandObject.CommandTypes.Velocity;
 		jointCommandObjectDict[jointName].targetValue = jointValue;
+        jointCommandObjectDict[jointName].period = period;
 	}
 
-    public ModuleStateObject GetModuleStateObject () {
+    // update joint target position with the given value
+    public void StopJoint (string jointName) {
+        if (jointCommandObjectDict[jointName].cmdCoroutine != null) {
+            StopCoroutine (jointCommandObjectDict[jointName].cmdCoroutine);
+        }
+        mo2MaComController.moduleRefPointerController.GetJointCommandControllerByName (jointName).StopJoint ();
+    }
+
+    public ModuleStateObject GetModuleStateObject (bool forConfiguration) {
         ModuleStateObject mso = new ModuleStateObject ();
         mso.name = gameObject.name;
         mso.position = mo2MaComController.moduleRefPointerController.GetPartPointerByName (ModuleRefPointerController.PartNames.BackPlate.ToString ()).transform.position;
         mso.rotation = mo2MaComController.moduleRefPointerController.GetPartPointerByName (ModuleRefPointerController.PartNames.BackPlate.ToString ()).transform.rotation;
         foreach (JointCommandObject jco in jointCommandObjectDict.Values) {
-            mso.listOfJointCommands.Add (jco.Clone ());
+            JointCommandObject jcoClone = jco.Clone (forConfiguration);
+            mso.listOfJointCommands.Add (jcoClone);
+            if (mso.period < jcoClone.period) {
+                mso.period = jcoClone.period;
+            }
         }
 		foreach (Transform part in transform) {
 			PartStateObject pso = new PartStateObject ();
@@ -96,16 +114,21 @@ public class ModuleMotionController : MonoBehaviour {
 			}
 		}
         foreach (JointCommandObject jco in mso.listOfJointCommands) {
-			SetJointFromJointCommandObject (jco);
+			SetJointFromJointCommandObject (jco, reset);
         }
     }
 
-	public void SetJointFromJointCommandObject (JointCommandObject jco) {
+	public void SetJointFromJointCommandObject (JointCommandObject jco, bool reset = false) {
 		if (jco.commandType == JointCommandObject.CommandTypes.Position) {
 			UpdateJointAngle (jco.targetValue, jco.name);
 		}
 		else if (jco.commandType == JointCommandObject.CommandTypes.Velocity) {
-			UpdateJointVelocity (jco.targetValue, jco.name);
+            if (reset) {
+                StopJoint (jco.name);
+            }
+            else {
+                UpdateJointVelocity (jco.targetValue, jco.name, jco.period);
+            }
 		}
 	}
 

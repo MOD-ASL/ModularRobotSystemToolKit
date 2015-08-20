@@ -43,6 +43,7 @@ public class ButtonPlayBehaviorAssistant : MonoBehaviour {
         }
         else {
             behaviorManager.play = false;
+            StopCoroutine (behaviorManager.currentCoroutine);
             panelBehaviorDirector.ShowPanelOrNot (false);
             uI2MaComDirector.ma2UIComManager.ma2MaComManager.modulesManager.SetAllModuleMode (ModuleModeController.ModuleMode.Edit);
 			uI2MaComDirector.ma2UIComManager.ma2MaComManager.robotManager.ResetRobot ();

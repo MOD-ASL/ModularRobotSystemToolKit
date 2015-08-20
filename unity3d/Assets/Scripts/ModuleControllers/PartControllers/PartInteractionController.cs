@@ -51,19 +51,25 @@ public class PartInteractionController : MonoBehaviour, IPointerEnterHandler, IP
 
     void Awake (){
         rend = gameObject.GetComponent<Renderer> ();
-        rend.material.EnableKeyword ("_EMISSION");
         originalColor = rend.material.color;
         moduleInteractionController = gameObject.GetComponentInParent<ModuleInteractionController> ();
+        ResetColor ();
     }
 
-    // Highlight by changing the emission of the material
     public void HighlightOrNot (bool highlight) {
+        if (moduleInteractionController.mo2MaComController.ma2MoComManager.ma2MaComManager.modeManagerNew.GetOrCreateModeByName ("DisOrConnect").status) {
+            return;
+        }
         if (highlight || selected) {
-			rend.material.color = Color.white;
+			rend.material.color = Color.yellow;
         }
         else {
-			rend.material.color = originalColor;
+            rend.material.color = originalColor;
         }
+    }
+
+    public void ResetColor () {
+        rend.material.color = originalColor;
     }
 
     public void ShowConnectionsOrNot (bool show, bool connected) {
@@ -82,6 +88,11 @@ public class PartInteractionController : MonoBehaviour, IPointerEnterHandler, IP
 
     public void SelectOrNot (bool select) {
         selected = select;
-        HighlightOrNot (select);
+        if (select) {
+            HighlightOrNot (select);
+        }
+        else {
+            ResetColor ();
+        }
     }
 }

@@ -5,8 +5,8 @@ using System.Collections;
 public class SaveMenuDirector : MonoBehaviour {
 
     public GameObject panelSaveMenu;
-    public Text fileName;
-    public Text userName;
+    public InputField fileName;
+    public InputField userName;
     public UI2MaComDirector uI2MaComDirector;
 
     public SaveLoadManagerNew.FileType fileType;
@@ -27,6 +27,7 @@ public class SaveMenuDirector : MonoBehaviour {
 
     public void ShowPanelOrNot (bool show) {
         panelSaveMenu.SetActive (show);
+        fileName.text = "";
     }
 
     public void OnClickSave () {

@@ -12,8 +12,6 @@ public class ModuleInteractionController : MonoBehaviour {
 
     public GameObject dummyModulePrefab;
 
-    private bool selected = false;
-
 	// Use this for initialization
 	void Start () {
 	
@@ -30,9 +28,13 @@ public class ModuleInteractionController : MonoBehaviour {
         mo2MaComController = gameObject.GetComponent<Mo2MaComController> ();
     }
 
-    public void HighLightOrNot (bool highlight) {
+    public bool CheckSelected () {
+        return gameObject == mo2MaComController.ma2MoComManager.ma2MaComManager.selectionManager.selectedModule;
+    }
+
+    public void HighlightOrNot (bool highlight) {
         // If the module is selected then keep highligh unless deselected
-        if (!(selected && !highlight)) {
+        if (!(CheckSelected () && !highlight)) {
             foreach (GameObject part in mo2MaComController.moduleRefPointerController.GetAllPartPointers ()) {
                 part.GetComponent<PartInteractionController> ().HighlightOrNot (highlight);
             }
@@ -40,11 +42,9 @@ public class ModuleInteractionController : MonoBehaviour {
     }
 
     public void SelectedOrNot (bool s) {
-        selected = s;
         foreach (GameObject part in mo2MaComController.moduleRefPointerController.GetAllPartPointers ()) {
             part.GetComponent<PartInteractionController> ().SelectOrNot (s);
         }
-        HighLightOrNot (selected);
     }
 
     public void OnMouseOverPartOrNot (bool mouseOverPart) {
@@ -82,7 +82,7 @@ public class ModuleInteractionController : MonoBehaviour {
             }
         }
         else {
-            HighLightOrNot (mouseOverPart);
+            HighlightOrNot (mouseOverPart);
         }
     }
 
@@ -105,7 +105,7 @@ public class ModuleInteractionController : MonoBehaviour {
 					Transform newModule = mo2MaComController.ma2MoComManager.ma2MaComManager.modulesManager.InsertModuleAt (dummyModule.transform.position,
 					                                                                                                        dummyModule.transform.rotation
 					                                                                                                        );
-					newModule.GetComponent<ModuleModeController> ().SetTrigger (false);
+					newModule.GetComponent<ModuleModeController> ().SetMode (ModuleModeController.ModuleMode.Edit);
 					mo2MaComController.ma2MoComManager.ma2MaComManager.robotManager.currentConfigurationID = System.Guid.NewGuid ().ToString ();
 					StartCoroutine (mo2MaComController.ma2MoComManager.ma2MaComManager.connectionManager.ConnectModule2Node (newModule.gameObject, partUnderMouseCache));
 				}

@@ -39,18 +39,23 @@ public class RobotManager : MonoBehaviour {
         }
 	}
 
-    public RobotStateObject GetRobotStateObject (bool withConnection = false) {
+    public RobotStateObject GetRobotStateObject (bool withConnection = false, bool forConfiguration = false) {
         RobotStateObject rso = new RobotStateObject ();
-        rso.listOfModuleStateObjects = ma2MaComManager.modulesManager.GetAllModuleStateObjects ();
+        rso.listOfModuleStateObjects = ma2MaComManager.modulesManager.GetAllModuleStateObjects (forConfiguration);
         if (withConnection) {
             rso.listOfConnectionObjects = ma2MaComManager.connectionManager.GetAllConnectionObjects ();
         }
 		rso.anchorModuleName = ma2MaComManager.modulesManager.anchorModule.name;
+        foreach (ModuleStateObject mso in rso.listOfModuleStateObjects) {
+            if (rso.period < mso.period) {
+                rso.period = mso.period;
+            }
+        }
         return rso;
     }
 
 	public void TakeSnapshot () {
-		snapshotRSO = GetRobotStateObject ();
+		snapshotRSO = GetRobotStateObject (true);
 	}
 
 	public void ResetRobot () {
@@ -78,7 +83,7 @@ public class RobotManager : MonoBehaviour {
 		StartCoroutine (ma2MaComManager.connectionManager.SpawnConnections (rso.listOfConnectionObjects, robot));
 		GameObject m = ma2MaComManager.modulesManager.FindModuleWithName (rso.anchorModuleName, robot);
 		ma2MaComManager.modulesManager.SetAnchorModule (m);
-		ma2MaComManager.modulesManager.SetAllModuleMode (ModuleModeController.ModuleMode.Edit);
+		//ma2MaComManager.modulesManager.SetAllModuleMode (ModuleModeController.ModuleMode.Edit);
 
 	}
 
