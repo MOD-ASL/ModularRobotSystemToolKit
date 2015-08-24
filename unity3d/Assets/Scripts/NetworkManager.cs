@@ -71,8 +71,6 @@ public class NetworkManager : MonoBehaviour {
 			print ("error");
 			print ( w.error );    
 		}
-		
-		Debug.Log (w.text);
 	}
 
     public IEnumerator SaveConfig (string data, string configName, string userName) {

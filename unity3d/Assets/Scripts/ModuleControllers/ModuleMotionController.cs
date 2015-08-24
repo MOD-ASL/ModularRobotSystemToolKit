@@ -132,4 +132,9 @@ public class ModuleMotionController : MonoBehaviour {
 		}
 	}
 
+    public void MoveAllPartsByOffset (Vector3 offset) {
+        foreach (GameObject part in mo2MaComController.moduleRefPointerController.GetAllPartPointers ()) {
+            part.transform.position += offset;
+        }
+    }
 }

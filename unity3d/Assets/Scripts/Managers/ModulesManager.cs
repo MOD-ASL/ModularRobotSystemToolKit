@@ -13,6 +13,7 @@ public class ModulesManager : MonoBehaviour {
     public string moduleRootName;
     public Vector3 initialPosition;
 
+    [HideInInspector]
     public GameObject anchorModule;
 
     private Quaternion initialRotation;
@@ -221,4 +222,14 @@ public class ModulesManager : MonoBehaviour {
         }
     }
 
+    public void MoveAllModulesByOffset (Vector3 offset) {
+        foreach (Transform m in robot) {
+            m.GetComponent<ModuleMotionController> ().MoveAllPartsByOffset (offset);
+        }
+    }
+
+    public Vector3 GetAnchorModulePosition () {
+        return ma2MaComManager.modulesManager.anchorModule.GetComponent<ModuleRefPointerController> ().
+            GetPartPointerByName (ModuleRefPointerController.PartNames.BackPlate.ToString ()).transform.position;
+    }
 }

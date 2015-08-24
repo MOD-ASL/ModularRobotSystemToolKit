@@ -94,7 +94,9 @@ public class BehaviorManager : MonoBehaviour {
     public IEnumerator PlayRobotStateObjectAndWait (RobotStateObject rso) {
         ma2MaComManager.robotManager.SetRobotState (rso);
         yield return new WaitForSeconds (rso.period);
-        rso.button.GetComponent<ButtonRobotStateObjectDirector> ().SetSeletedOrNot (false);
+        if (rso.button != null) {
+            rso.button.GetComponent<ButtonRobotStateObjectDirector> ().SetSeletedOrNot (false);
+        }
         robotStateObjectIndex++;
         if (robotStateObjectIndex == currentBehaviorObject.listOfRobotStateObjects.Count) {
             robotStateObjectIndex = 0;
