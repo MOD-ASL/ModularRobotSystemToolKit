@@ -43,6 +43,8 @@ public class SaveLoadManagerNew : MonoBehaviour {
 //            }
 		}
 		else {
+			ma2MaComManager.saveLoadManagerNew.LoadAllBehaviorsOfConfiguration (
+				ma2MaComManager.robotManager.currentConfigurationID);
 			ma2MaComManager.ma2UIComManager.uI2MaComDirector.panelFileSelectionDirector.ShowPanelOrNot (false);
 		}
 	}
@@ -69,9 +71,7 @@ public class SaveLoadManagerNew : MonoBehaviour {
 	}
 
     public void DisplayFileList (string fileList, string fileType) {
-        
-        ma2MaComManager.ma2UIComManager.uI2MaComDirector.panelFileSelectionDirector.ShowPanelOrNot (true);
-        
+               
         xmlDoc = new XmlDocument ();
         xmlDoc.LoadXml(fileList);
         XmlNode list = xmlDoc.SelectSingleNode (fileType + "_list");
@@ -171,8 +171,13 @@ public class SaveLoadManagerNew : MonoBehaviour {
                 StartCoroutine (ma2MaComManager.robotManager.ReplaceRobot (rso));
             }
         }
-
     }
+
+	public void LoadAllBehaviorsOfConfiguration (string configurationID){
+		ma2MaComManager.ma2UIComManager.uI2MaComDirector.panelFileSelectionDirector.fileType = FileType.Behavior;
+		ma2MaComManager.ma2UIComManager.uI2MaComDirector.panelFileSelectionDirector.ClearList ();
+		StartCoroutine (ma2MaComManager.networkManager.GetFileList (DisplayFileList, FileType.Behavior.ToString (), configurationID));
+	}
 
 	public void InsertConfiguration (File file, string fileContent) {
 		XmlSerializer serializer = new XmlSerializer (typeof (RobotStateObject));

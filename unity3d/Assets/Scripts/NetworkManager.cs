@@ -27,9 +27,10 @@ public class NetworkManager : MonoBehaviour {
         callback (file, w.text);
     }
 
-    public IEnumerator GetFileList (System.Action<string, string> callback, string fileType) {
+    public IEnumerator GetFileList (System.Action<string, string> callback, string fileType, string configuration_id = "") {
         WWWForm form = new WWWForm ();
         form.AddField ("data_type", fileType);
+		form.AddField ("configuration_id", configuration_id);
         WWW w = new WWW ("http://45.79.174.242:8080/fileserver/files/list", form);
         yield return w;
         callback (w.text, fileType);

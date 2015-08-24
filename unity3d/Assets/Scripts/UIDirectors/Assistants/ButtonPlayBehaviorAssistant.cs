@@ -27,19 +27,21 @@ public class ButtonPlayBehaviorAssistant : MonoBehaviour {
         // Check if it is in mode
         if (buttonDirector.mode.status) {
 			uI2MaComDirector.ma2UIComManager.ma2MaComManager.robotManager.TakeSnapshot ();
-            if (behaviorManager.currentBehaviorObject.listOfRobotStateObjects.Count == 0) {
-                uI2MaComDirector.statusBarDirector.SetTempTextMessage ("Cannot play behavior: No robot state added.");
-                return;
-            }
+
+//            if (behaviorManager.currentBehaviorObject.listOfRobotStateObjects.Count == 0) {
+//                uI2MaComDirector.statusBarDirector.SetTempTextMessage ("Cannot play behavior: No robot state added.");
+//                return;
+//            }
             uI2MaComDirector.ma2UIComManager.ma2MaComManager.modulesManager.SetAllModuleMode (ModuleModeController.ModuleMode.Simulation);
+			uI2MaComDirector.ma2UIComManager.ma2MaComManager.ma2UIComManager.uI2MaComDirector.panelFileSelectionDirector.ShowPanelOrNot (true);
             panelBehaviorDirector.ShowPanelOrNot (true);
-            if (behaviorManager.currentRobotStateObject != null) {
-                behaviorManager.robotStateObjectIndex = behaviorManager.currentBehaviorObject.listOfRobotStateObjects.IndexOf (behaviorManager.currentRobotStateObject);
-            }
-            else {
-                behaviorManager.robotStateObjectIndex = 0;
-            }
-            behaviorManager.play = true;
+//            if (behaviorManager.currentRobotStateObject != null) {
+//                behaviorManager.robotStateObjectIndex = behaviorManager.currentBehaviorObject.listOfRobotStateObjects.IndexOf (behaviorManager.currentRobotStateObject);
+//            }
+//            else {
+//                behaviorManager.robotStateObjectIndex = 0;
+//            }
+//            behaviorManager.play = true;
         }
         else {
             behaviorManager.play = false;
@@ -47,6 +49,7 @@ public class ButtonPlayBehaviorAssistant : MonoBehaviour {
                 StopCoroutine (behaviorManager.currentCoroutine);
             }
             panelBehaviorDirector.ShowPanelOrNot (false);
+			uI2MaComDirector.ma2UIComManager.ma2MaComManager.ma2UIComManager.uI2MaComDirector.panelFileSelectionDirector.ShowPanelOrNot (false);
             uI2MaComDirector.ma2UIComManager.ma2MaComManager.modulesManager.SetAllModuleMode (ModuleModeController.ModuleMode.Edit);
 			uI2MaComDirector.ma2UIComManager.ma2MaComManager.robotManager.LiftRobot ();
         }

@@ -49,6 +49,9 @@ public class ModulesManager : MonoBehaviour {
 		}
 		ma2MaComManager.behaviorManager.OnClickClear ();
 		ma2MaComManager.robotManager.currentConfigurationID = System.Guid.NewGuid ().ToString ();
+		ma2MaComManager.ma2UIComManager.uI2MaComDirector.panelFileSelectionDirector.ClearList ();
+		ma2MaComManager.behaviorManager.currentBehaviorObject = new BehaviorObject ();
+		ma2MaComManager.behaviorManager.currentRobotStateObject = null;
     }
 
     public void ResetModulePositions () {
