@@ -31,4 +31,8 @@ public class MenuManager : MonoBehaviour {
     public void OnClickLevels () {
         Application.LoadLevel ("SelectLevel");
     }
+
+    public void OnClickExit () {
+        Application.Quit ();
+    }
 }
