@@ -840,6 +840,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   joint: {fileID: 0}
+  motorForce: 1000
   cmdType: 0
 --- !u!114 &11409944
 MonoBehaviour:
@@ -905,6 +906,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   joint: {fileID: 0}
+  motorForce: 1000
   cmdType: 0
 --- !u!114 &11420198
 MonoBehaviour:
@@ -918,6 +920,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   joint: {fileID: 0}
+  motorForce: 1000
   cmdType: 0
 --- !u!114 &11422758
 MonoBehaviour:
@@ -1016,6 +1019,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   joint: {fileID: 0}
+  motorForce: 1000
   cmdType: 0
 --- !u!114 &11462284
 MonoBehaviour:
@@ -1075,7 +1079,7 @@ SphereCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: .00999999978
+  m_Radius: .0199999996
   m_Center: {x: .5, y: 0, z: 0}
 --- !u!135 &13565834
 SphereCollider:
@@ -1087,7 +1091,7 @@ SphereCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: .00999999978
+  m_Radius: .0199999996
   m_Center: {x: 0, y: .5, z: 0}
 --- !u!135 &13588796
 SphereCollider:
@@ -1099,7 +1103,7 @@ SphereCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: .00999999978
+  m_Radius: .0199999996
   m_Center: {x: 0, y: -.5, z: 0}
 --- !u!135 &13598184
 SphereCollider:
@@ -1111,7 +1115,7 @@ SphereCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: .00999999978
+  m_Radius: .0199999996
   m_Center: {x: -.5, y: 0, z: 0}
 --- !u!1001 &100100000
 Prefab:
@@ -1176,6 +1180,10 @@ Prefab:
     - target: {fileID: 0}
       propertyPath: m_Motor.force
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: m_Radius
+      value: .0199999996
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}

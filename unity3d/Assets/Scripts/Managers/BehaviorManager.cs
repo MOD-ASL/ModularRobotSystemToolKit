@@ -80,14 +80,16 @@ public class BehaviorManager : MonoBehaviour {
     }
 
     public void Play () {
-        if (reachRobotStateObject) {
-            currentBehaviorObject.listOfRobotStateObjects[robotStateObjectIndex].button.GetComponent<ButtonRobotStateObjectDirector> ().SetSeletedOrNot (true);
-            if (currentCoroutine != null) {
-                StopCoroutine (currentCoroutine);
+        if (reachRobotStateObject && ma2MaComManager.ma2UIComManager.uI2MaComDirector.panelBehaviorDirector.toggleAutoLoop.isOn) {
+            if (currentBehaviorObject.listOfRobotStateObjects.Count > 0) {
+                currentBehaviorObject.listOfRobotStateObjects[robotStateObjectIndex].button.GetComponent<ButtonRobotStateObjectDirector> ().SetSeletedOrNot (true);
+                if (currentCoroutine != null) {
+                    StopCoroutine (currentCoroutine);
+                }
+                currentCoroutine = PlayRobotStateObjectAndWait (currentBehaviorObject.listOfRobotStateObjects[robotStateObjectIndex]);
+                StartCoroutine (currentCoroutine);
+                reachRobotStateObject = false;
             }
-            currentCoroutine = PlayRobotStateObjectAndWait (currentBehaviorObject.listOfRobotStateObjects[robotStateObjectIndex]);
-            StartCoroutine (currentCoroutine);
-            reachRobotStateObject = false;
         } 
     }
 

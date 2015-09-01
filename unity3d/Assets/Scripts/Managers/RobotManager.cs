@@ -83,7 +83,7 @@ public class RobotManager : MonoBehaviour {
         Destroy (newRobot);
         newRobot = new GameObject ("newRobot");
         ma2MaComManager.modulesManager.SpawnModules (rso.listOfModuleStateObjects, newRobot);
-        StartCoroutine (ma2MaComManager.connectionManager.SpawnConnections (rso.listOfConnectionObjects, newRobot.transform));
+        ma2MaComManager.connectionManager.SpawnConnections (rso.listOfConnectionObjects, newRobot.transform);
         dragMode.status = true;
         nodeOnNewRobot = null;
     }
@@ -91,18 +91,20 @@ public class RobotManager : MonoBehaviour {
 	public IEnumerator ReplaceRobot (RobotStateObject rso) {
         robotPosition = GetRobotPosition ();
 		ma2MaComManager.modulesManager.Clear (false);
+
 		yield return new WaitForSeconds (2f);
 
         ma2MaComManager.modulesManager.SpawnModules (rso.listOfModuleStateObjects);
+        yield return new WaitForSeconds (0.5f);
         GameObject m = ma2MaComManager.modulesManager.FindModuleWithName (rso.anchorModuleName, robot);
         ma2MaComManager.modulesManager.SetAnchorModule (m);
+
+        yield return new WaitForSeconds (3f);
+        ma2MaComManager.modulesManager.SetAllModuleMode (ModuleModeController.ModuleMode.Edit);
         Vector3 offset = robotPosition - GetRobotPosition ();
         ma2MaComManager.modulesManager.MoveAllModulesByOffset (offset);
 
-		StartCoroutine (ma2MaComManager.connectionManager.SpawnConnections (rso.listOfConnectionObjects, robot));
-		
-		//ma2MaComManager.modulesManager.SetAllModuleMode (ModuleModeController.ModuleMode.Edit);
-
+		ma2MaComManager.connectionManager.SpawnConnections (rso.listOfConnectionObjects, robot);
 	}
 
     public void MoveNewRobot (GameObject n1, GameObject n2) {

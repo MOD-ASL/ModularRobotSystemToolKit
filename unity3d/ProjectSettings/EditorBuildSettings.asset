@@ -21,3 +21,5 @@ EditorBuildSettings:
     path: Assets/Scences/Levels/RecycleTask.unity
   - enabled: 1
     path: Assets/Scences/Levels/SearchTask.unity
+  - enabled: 1
+    path: Assets/Scences/Levels/SensingTask.unity

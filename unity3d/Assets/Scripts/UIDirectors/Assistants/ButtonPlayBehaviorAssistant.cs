@@ -28,20 +28,11 @@ public class ButtonPlayBehaviorAssistant : MonoBehaviour {
         if (buttonDirector.mode.status) {
 			uI2MaComDirector.ma2UIComManager.ma2MaComManager.robotManager.TakeSnapshot ();
 
-//            if (behaviorManager.currentBehaviorObject.listOfRobotStateObjects.Count == 0) {
-//                uI2MaComDirector.statusBarDirector.SetTempTextMessage ("Cannot play behavior: No robot state added.");
-//                return;
-//            }
             uI2MaComDirector.ma2UIComManager.ma2MaComManager.modulesManager.SetAllModuleMode (ModuleModeController.ModuleMode.Simulation);
 			uI2MaComDirector.ma2UIComManager.ma2MaComManager.ma2UIComManager.uI2MaComDirector.panelFileSelectionDirector.ShowPanelOrNot (true);
             panelBehaviorDirector.ShowPanelOrNot (true);
-//            if (behaviorManager.currentRobotStateObject != null) {
-//                behaviorManager.robotStateObjectIndex = behaviorManager.currentBehaviorObject.listOfRobotStateObjects.IndexOf (behaviorManager.currentRobotStateObject);
-//            }
-//            else {
-//                behaviorManager.robotStateObjectIndex = 0;
-//            }
-//            behaviorManager.play = true;
+            behaviorManager.robotStateObjectIndex = 0;
+            behaviorManager.play = true;
         }
         else {
             behaviorManager.play = false;

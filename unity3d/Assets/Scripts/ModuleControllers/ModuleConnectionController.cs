@@ -63,6 +63,7 @@ public class ModuleConnectionController : MonoBehaviour {
 
     public void Connect (GameObject thisNode, GameObject otherNode) {
         connectionDict[thisNode] = otherNode;
+        thisNode.GetComponent<PartController> ().touchedNode = otherNode;
     }
 
     public GameObject DisconnectAndReturnOtherNode (GameObject thisNode) {
@@ -88,9 +89,9 @@ public class ModuleConnectionController : MonoBehaviour {
             if (node.GetComponent<FixedJoint> () != null) {
                 ConnectionObject co = new ConnectionObject ();
                 co.moduleName1 = node.transform.parent.name;
-                co.moduleName2 = node.GetComponent<PartController> ().touchedNode.transform.parent.name;
+                co.moduleName2 = node.GetComponent<FixedJoint> ().connectedBody.transform.parent.name;
                 co.nodeName1 = node.name;
-                co.nodeName2 = node.GetComponent<PartController> ().touchedNode.name;
+                co.nodeName2 = node.GetComponent<FixedJoint> ().connectedBody.transform.name;
 
                 listOfConnectionObjects.Add (co);
             }

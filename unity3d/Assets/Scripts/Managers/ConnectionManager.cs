@@ -81,8 +81,7 @@ public class ConnectionManager : MonoBehaviour {
         return listOfConnectionObjects;
     }
 
-    public IEnumerator SpawnConnections (List<ConnectionObject> listofConnectionObjects, Transform robotPointer) {
-        yield return new WaitForSeconds (3f);
+    public void SpawnConnections (List<ConnectionObject> listofConnectionObjects, Transform robotPointer) {
         foreach (ConnectionObject co in listofConnectionObjects) {
             GameObject m1 = ma2MaComManager.modulesManager.FindModuleWithName (co.moduleName1, robotPointer);
 			GameObject m2 = ma2MaComManager.modulesManager.FindModuleWithName (co.moduleName2, robotPointer);

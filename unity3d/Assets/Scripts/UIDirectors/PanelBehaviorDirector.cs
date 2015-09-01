@@ -10,6 +10,7 @@ public class PanelBehaviorDirector : MonoBehaviour {
     public GameObject buttonRobotStateObject;
 
     public ScrollRect scrollRect;
+    public Toggle toggleAutoLoop;
 
     public Transform panelBehaviorList;
 
@@ -73,6 +74,15 @@ public class PanelBehaviorDirector : MonoBehaviour {
         foreach (Transform child in panelBehaviorList.transform) children.Add (child.gameObject);
         children.ForEach (child => Destroy (child));
         currentButtonRobotStateObjectDirector = null;
+    }
+
+    public void OnToggleAutoLoop () {
+        if (toggleAutoLoop.isOn) {
+            if (currentButtonRobotStateObjectDirector != null) {
+                currentButtonRobotStateObjectDirector.SetSeletedOrNot (false);
+            }
+            uI2MaComDirector.ma2UIComManager.ma2MaComManager.behaviorManager.robotStateObjectIndex = 0;
+        }
     }
 
     public void OnButtonClick (ButtonRobotStateObjectDirector buttonRobotStateObjectDirector) {
