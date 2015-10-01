@@ -9,7 +9,7 @@ using System.Xml.Serialization;
 public class NetworkManager : MonoBehaviour {
 
 	public Ma2MaComManager ma2MaComManager;
-    Uri baseUri = new Uri("http://45.79.174.242:8080");
+    Uri baseUri = new Uri("http://www.vsparc.org");
 
     void Start () {
         //StartUpload ();
@@ -31,7 +31,8 @@ public class NetworkManager : MonoBehaviour {
         WWWForm form = new WWWForm ();
         form.AddField ("data_type", fileType);
 		form.AddField ("configuration_id", configuration_id);
-        WWW w = new WWW ("http://45.79.174.242:8080/fileserver/files/list", form);
+        Uri myUri = new Uri(baseUri, "fileserver/files/list");
+        WWW w = new WWW (myUri.ToString (), form);
         yield return w;
         callback (w.text, fileType);
     }
@@ -63,7 +64,8 @@ public class NetworkManager : MonoBehaviour {
 		form.AddField ("data_file","data_file");
 		form.AddBinaryData ("data_file", byteData, fileName,"multipart/form-data");
 		
-		WWW w = new WWW ("http://45.79.174.242:8080/fileserver/upload/handler",form);
+        Uri myUri = new Uri(baseUri, "fileserver/upload/handler");
+		WWW w = new WWW (myUri.ToString (),form);
 		
 		yield return w;
 		
@@ -92,7 +94,8 @@ public class NetworkManager : MonoBehaviour {
         form.AddField ("data_file","data_file");
         form.AddBinaryData ("data_file", configData, fileName,"multipart/form-data");
         
-        WWW w = new WWW ("http://45.79.174.242:8080/fileserver/upload/handler",form);
+        Uri myUri = new Uri(baseUri, "fileserver/upload/handler");
+		WWW w = new WWW (myUri.ToString (),form);
         
         yield return w;
         
