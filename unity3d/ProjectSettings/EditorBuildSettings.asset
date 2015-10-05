@@ -10,16 +10,12 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scences/Levels/Blank.unity
   - enabled: 1
-    path: Assets/Scences/Levels/Stairs.unity
+    path: Assets/Scences/Levels/PushButton/Stairs.unity
   - enabled: 1
-    path: Assets/Scences/Levels/Pillers.unity
+    path: Assets/Scences/Levels/PushButton/Pillers.unity
   - enabled: 1
-    path: Assets/Scences/Levels/Ramp.unity
+    path: Assets/Scences/Levels/PushBox/Ramp.unity
   - enabled: 1
-    path: Assets/Scences/Levels/Tunnel.unity
+    path: Assets/Scences/Levels/PushButton/Tunnel.unity
   - enabled: 1
-    path: Assets/Scences/Levels/RecycleTask.unity
-  - enabled: 1
-    path: Assets/Scences/Levels/SearchTask.unity
-  - enabled: 1
-    path: Assets/Scences/Levels/SensingTask.unity
+    path: Assets/Scences/Levels/TakePicture/SensingTask.unity

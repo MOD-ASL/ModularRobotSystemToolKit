@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using System;
 using System.IO;
 using System.Collections;
+using System.Collections.Generic;
 
 [System.Serializable]
 public class Level {
@@ -37,23 +38,33 @@ public class LevelManager : MonoBehaviour {
 
     public void LoadLevels () {
         string levelDirectory = Path.Combine (Application.dataPath, Path.Combine ("Scences", "Levels"));
-        string [] fileEntries = Directory.GetFiles (levelDirectory, "*.unity");
+        string[] taskDirectories = Directory.GetDirectories(levelDirectory);
 
-        foreach(string fileName in fileEntries) {
-            Level l = new Level ();
+        foreach (string taskDirectory in taskDirectories) {
+            if (System.IO.File.Exists (Path.ChangeExtension (taskDirectory, ".unity"))) {
 
-            l.name = Path.GetFileNameWithoutExtension (fileName);
+                string taskName = Path.GetFileNameWithoutExtension (taskDirectory);
+                levelList.taskDictionary.Add (taskName, new List<Level> ());
 
-            string line;
-            l.intro = "";
-            System.IO.StreamReader file = new System.IO.StreamReader (Path.ChangeExtension (fileName, ".txt"));
-            while ((line = file.ReadLine()) != null) {
-                l.intro += line;
+
+                string[] workspaceScenceFiles = Directory.GetFiles (taskDirectory, "*.unity");
+                foreach (string workspaceScenceFile in workspaceScenceFiles) {
+                    Level l = new Level ();
+
+                    l.name = Path.GetFileNameWithoutExtension (workspaceScenceFile);
+
+                    string line;
+                    l.intro = "";
+                    System.IO.StreamReader file = new System.IO.StreamReader (Path.ChangeExtension (workspaceScenceFile, ".txt"));
+                    while ((line = file.ReadLine ()) != null) {
+                        l.intro += line;
+                    }
+
+                    l.thingToDo.AddListener (() => { SelectLevel (l); });
+
+                    levelList.taskDictionary[taskName].Add (l);
+                }
             }
-
-            l.thingToDo.AddListener (() => {SelectLevel(l);});
-
-            levelList.levelList.Add (l);
         }
     }
 
