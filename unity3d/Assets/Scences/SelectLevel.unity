@@ -120,7 +120,7 @@ MonoBehaviour:
   scrollRectWorkspaces: {fileID: 1533629588}
   contentPanelWorkspaces: {fileID: 800982032}
   panelWorkspaces: {fileID: 879743900}
-  levelList: []
+  selectedTask: 
 --- !u!114 &72025765
 MonoBehaviour:
   m_ObjectHideFlags: 0

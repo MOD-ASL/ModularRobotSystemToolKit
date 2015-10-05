@@ -14,9 +14,10 @@ public class LevelList : MonoBehaviour {
     public GameObject panelWorkspaces;
 
     [HideInInspector]
-    public List<Level> levelList;
-    [HideInInspector]
     public Dictionary<string, List<Level>> taskDictionary;
+
+    [HideInInspector]
+    public string selectedTask;
 
 	// Use this for initialization
 	void Start () {
@@ -49,6 +50,7 @@ public class LevelList : MonoBehaviour {
         ButtonBehaviorController button = newButton.GetComponent <ButtonBehaviorController> ();
         button.nameLabel.text = taskName;
         button.button.onClick.AddListener (() => { ShowPanelWorkspaces (levelList); });
+        button.button.onClick.AddListener (() => { selectedTask = taskName; });
         newButton.transform.SetParent (contentPanel);
         scrollRect.normalizedPosition = new Vector2 (0f, 0f);
     }

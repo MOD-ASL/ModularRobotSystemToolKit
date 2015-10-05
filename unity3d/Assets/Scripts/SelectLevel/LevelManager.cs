@@ -82,6 +82,7 @@ public class LevelManager : MonoBehaviour {
 			else {
 				Application.LoadLevel ("Blank");
 				Application.LoadLevelAdditive (selectedLevel.name);
+                Application.LoadLevelAdditive (levelList.selectedTask);
 			}
         }
     }
