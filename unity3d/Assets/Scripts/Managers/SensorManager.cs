@@ -22,6 +22,7 @@ public class SensorManager : MonoBehaviour {
 	public void AttachSensorToSelectedModule () {
 		if (sensorCamera == null) {
 			sensorCamera = Instantiate (sensorCameraPrefab).GetComponent<Camera> ();
+            sensorCamera.name = "SensorCamera";
 		}
 		if (headLight == null) {
 			headLight = Instantiate (headLightPrefab).GetComponent<Light> ();

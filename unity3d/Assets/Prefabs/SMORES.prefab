@@ -18,7 +18,7 @@ GameObject:
   - 114: {fileID: 11481290}
   - 114: {fileID: 11403216}
   - 135: {fileID: 13598184}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: BackPlate
   m_TagString: Node
   m_Icon: {fileID: 0}
@@ -41,7 +41,7 @@ GameObject:
   - 114: {fileID: 11480194}
   - 135: {fileID: 13514918}
   - 114: {fileID: 11403380}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: FrontWheel
   m_TagString: Node
   m_Icon: {fileID: 0}
@@ -62,7 +62,7 @@ GameObject:
   - 114: {fileID: 11443556}
   - 114: {fileID: 11456334}
   - 114: {fileID: 11422758}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: SMORES
   m_TagString: Module
   m_Icon: {fileID: 0}
@@ -85,7 +85,7 @@ GameObject:
   - 114: {fileID: 11409944}
   - 135: {fileID: 13588796}
   - 114: {fileID: 11456358}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: LeftWheel
   m_TagString: Node
   m_Icon: {fileID: 0}
@@ -108,7 +108,7 @@ GameObject:
   - 114: {fileID: 11444850}
   - 135: {fileID: 13565834}
   - 114: {fileID: 11420198}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: RightWheel
   m_TagString: Node
   m_Icon: {fileID: 0}
@@ -125,7 +125,7 @@ GameObject:
   - 4: {fileID: 489706}
   - 33: {fileID: 3335814}
   - 23: {fileID: 2340626}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Mark
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -142,7 +142,7 @@ GameObject:
   - 4: {fileID: 427036}
   - 33: {fileID: 3342142}
   - 23: {fileID: 2386382}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Mark
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -165,7 +165,7 @@ GameObject:
   - 114: {fileID: 11462284}
   - 114: {fileID: 11455392}
   - 114: {fileID: 11419934}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Body
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -182,7 +182,7 @@ GameObject:
   - 4: {fileID: 406544}
   - 33: {fileID: 3371012}
   - 23: {fileID: 2317218}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Mark
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1184,6 +1184,10 @@ Prefab:
     - target: {fileID: 0}
       propertyPath: m_Radius
       value: .0199999996
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
